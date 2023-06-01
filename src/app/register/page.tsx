@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Register = () => {
   return (
-    <main className="fixed w-full h-full flex items-center justify-center">
+    <main className="fixed w-full h-full flex items-center justify-center bg-white">
       <div className="shadow-2xl w-5/12 text-[#333] rounded-2xl flex overflow-hidden">
         {/* <Image
           src="https://ichef.bbci.co.uk/news/976/cpsprodpb/D2D2/production/_118707935_untitled-1.jpg"

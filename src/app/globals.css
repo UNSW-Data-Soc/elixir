@@ -25,28 +25,10 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  /*
   background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-  */
-  background: -webkit-linear-gradient(
-    45deg,
-    var(--yellow),
-    var(--orange),
-    var(--red),
-    var(--purple),
-    var(--blue)
-  );
-  background: linear-gradient(
-    45deg,
-    var(--yellow),
-    var(--orange),
-    var(--red),
-    var(--purple),
-    var(--blue)
-  );
 }
