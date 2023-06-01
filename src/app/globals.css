@@ -6,6 +6,13 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* colours */
+  --yellow: #ebb43e;
+  --orange: #da7446;
+  --red: #cf5156;
+  --purple: #96659e;
+  --blue: #4799d1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,10 +25,28 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  /*
   background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  */
+  background: -webkit-linear-gradient(
+    45deg,
+    var(--yellow),
+    var(--orange),
+    var(--red),
+    var(--purple),
+    var(--blue)
+  );
+  background: linear-gradient(
+    45deg,
+    var(--yellow),
+    var(--orange),
+    var(--red),
+    var(--purple),
+    var(--blue)
+  );
 }
