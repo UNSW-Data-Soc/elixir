@@ -32,3 +32,19 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.bg-light-rainbow {
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.35),
+      rgba(255, 255, 255, 0.35)
+    ),
+    linear-gradient(
+        235deg,
+        var(--yellow) 20%,
+        var(--orange),
+        var(--red),
+        var(--purple) 60%,
+        var(--blue)
+      )
+      80%;
+}
