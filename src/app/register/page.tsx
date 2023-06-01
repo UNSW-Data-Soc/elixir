@@ -13,13 +13,7 @@ const Register = () => {
           priority
           style={{ width: "auto" }}
         /> */}
-        <div
-          className="md:w-6/12 flex justify-center items-center flex-col py-10 md:p-0"
-          style={{
-            background:
-              "linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), linear-gradient(235deg,var(--yellow) 20%,var(--orange),var(--red),var(--purple) 60%,var(--blue)) 80%",
-          }}
-        >
+        <div className="md:w-6/12 flex justify-center items-center flex-col py-10 md:p-0 bg-light-rainbow">
           <Image
             src="/logo_greyscale.jpeg"
             width={100}
@@ -30,7 +24,6 @@ const Register = () => {
           />
           <p className="text-[#4a4a4a]">Welcome to</p>
           <p className="text-[#4a4a4a] text-3xl font-semibold text-center">
-            {" "}
             UNSW DataSoc
           </p>
         </div>
