@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
@@ -51,8 +52,8 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={register}>
-      <div className="flex flex-col gap-2 py-3">
+    <form onSubmit={register} noValidate>
+      <div className="flex flex-col gap-2 pb-3">
         <InputLabel text="Name" />
         <input
           className="py-3 px-4 border-2 rounded-xl transition-all focus:border-[#aaa] outline-none"
@@ -62,9 +63,10 @@ const RegisterForm = () => {
           value={name}
         />
       </div>
-      <div className="flex flex-col gap-2 py-3">
+      <div className="flex flex-col gap-2 pb-3">
         <InputLabel text="Email" />
         <input
+          formNoValidate
           className="py-3 px-4 border-2 rounded-xl transition-all focus:border-[#aaa] outline-none"
           type="email"
           placeholder="enter your email..."
@@ -72,7 +74,7 @@ const RegisterForm = () => {
           value={email}
         />
       </div>
-      <div className="flex flex-col gap-2 py-3">
+      <div className="flex flex-col gap-2 pb-3">
         <InputLabel text="Password" />
         <input
           className="py-3 px-4 border-2 rounded-xl transition-all focus:border-[#aaa] outline-none"
@@ -82,6 +84,13 @@ const RegisterForm = () => {
           value={password}
         />
       </div>
+      <p className="text-[#6a6a6a]">
+        Already have an account?{" "}
+        <Link href="/login" className="text-[#3b7bca] underline">
+          Login
+        </Link>{" "}
+        to proceed.
+      </p>
       <input
         className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
         type="submit"
