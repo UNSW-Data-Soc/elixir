@@ -1,18 +1,16 @@
-import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-row items-center justify-center p-24 bg-light-rainbow gap-5 fixed left-0 top-0 w-full z-0">
-      <Link href="/login">
-        <button className="text-black shadow-xl hover:bg-[#ddd] transition-all p-5 rounded-xl bg-white">
-          Login
-        </button>
-      </Link>
-      <Link href="/register">
-        <button className="text-black shadow-xl hover:bg-[#ddd] transition-all p-5 rounded-xl bg-white">
-          Register
-        </button>
-      </Link>
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-light-rainbow gap-10 fixed left-0 top-0 w-full z-0 select-none">
+      <Image
+        src="/logo_greyscale.jpeg"
+        width={300}
+        height={300}
+        className="mix-blend-multiply"
+        alt="logo"
+      />
+      <h1 className="text-6xl font-extrabold text-[#865A5E]">UNSW DataSoc</h1>
     </main>
   );
 }
