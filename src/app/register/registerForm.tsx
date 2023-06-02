@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 
@@ -9,7 +9,8 @@ const RegisterForm = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const register = async () => {
+  const register: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
     toast.dismiss();
 
     if (name.length === 0) {
@@ -26,7 +27,7 @@ const RegisterForm = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/user", {
+      const res = await fetch("http://127.0.0.1:8000/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,14 +38,20 @@ const RegisterForm = () => {
           password,
         }),
       });
-      //   console.log(response);
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+      toast.success("Registered successfully!");
+      console.log(await res.json());
     } catch (error) {
-      toast.error(JSON.stringify(error));
+      toast.error(JSON.parse((error as any).message).detail);
     }
   };
 
   return (
-    <>
+    <form onSubmit={register}>
       <div className="flex flex-col gap-2 py-3">
         <InputLabel text="Name" />
         <input
@@ -75,13 +82,12 @@ const RegisterForm = () => {
           value={password}
         />
       </div>
-      <button
+      <input
         className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-        onClick={register}
-      >
-        Register
-      </button>
-    </>
+        type="submit"
+        value="Register"
+      />
+    </form>
   );
 };
 

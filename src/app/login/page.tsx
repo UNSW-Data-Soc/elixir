@@ -1,4 +1,4 @@
-import RegisterForm from "./registerForm";
+import LoginForm from "./loginForm";
 import Image from "next/image";
 
 const Register = () => {
@@ -21,8 +21,8 @@ const Register = () => {
           </p>
         </div>
         <div className="p-12 md:w-6/12">
-          <h1 className="text-2xl font-bold">Register</h1>
-          <RegisterForm />
+          <h1 className="text-2xl font-bold">Login</h1>
+          <LoginForm />
         </div>
       </div>
     </main>
