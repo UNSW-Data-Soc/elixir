@@ -13,7 +13,7 @@ interface Session {
   token_type: "bearer";
 }
 
-export const CURRENT_USER_COOKIE = "currentUser";
+const CURRENT_USER_COOKIE = "currentUser";
 
 export const login: ({
   email,
@@ -80,12 +80,18 @@ export const useSession = () => {
   return user;
 };
 
-export const logout = async (
+/**
+ * @param session current user session; defaults to the value of the current_user_cookie
+ * @returns whether logout was successful
+ */
+export const logout: (session: Session) => Promise<boolean> = async (
   session: Session = JSON.parse(Cookies.get(CURRENT_USER_COOKIE) ?? "")
 ) => {
   toast.dismiss();
 
-  console.log(session.access_token);
+  if (!session) {
+    return false;
+  }
 
   try {
     const res = await fetch("http://127.0.0.1:8000/logout", {
@@ -99,8 +105,15 @@ export const logout = async (
       const err = await res.text();
       throw new Error(err);
     }
+
+    Cookies.remove(CURRENT_USER_COOKIE);
+
     toast.success("Logout success!");
+
+    return true;
   } catch (error) {
     toast.error(JSON.parse((error as any).message).detail);
+
+    return false;
   }
 };
