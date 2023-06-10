@@ -4,8 +4,11 @@ import Link from "next/link";
 import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
+import { useRouter } from "next/navigation";
+import { login } from "../auth";
 
 const RegisterForm = () => {
+  const router = useRouter();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -45,6 +48,8 @@ const RegisterForm = () => {
         throw new Error(err);
       }
       toast.success("Registered successfully!");
+      await login({ email, password });
+      router.push("/");
       console.log(await res.json());
     } catch (error) {
       toast.error(JSON.parse((error as any).message).detail);
