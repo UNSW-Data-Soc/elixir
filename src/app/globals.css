@@ -48,3 +48,16 @@ body {
       )
       80%;
 }
+
+.bg-kentosoc {
+  background-image: url("/kentosoc.jpeg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.bg-kentosoc-repeat {
+  background-image: url("/kentosoc.jpeg");
+  /* background-position: center; */
+  background-repeat: repeat;
+  background-size: 200px 300px;
+}
