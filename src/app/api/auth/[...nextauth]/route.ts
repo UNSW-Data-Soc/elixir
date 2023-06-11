@@ -27,7 +27,7 @@ const handler = NextAuth({
         // Add logic here to look up the user from the credentials supplied
         // const user = { id: "1", name: "Josh", email: "jsmith@example.com" };
         if (!credentials || !credentials.email || !credentials.password) {
-          return null;
+          throw new Error("Please enter an email and password to login.");
         }
 
         const token = await login({
@@ -39,8 +39,9 @@ const handler = NextAuth({
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
     signOut: "/",
+    error: "/auth/login",
   },
   session: {
     strategy: "jwt",
