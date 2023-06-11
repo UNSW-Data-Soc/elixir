@@ -5,7 +5,7 @@ import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 import { useRouter } from "next/navigation";
-import { login } from "../auth";
+import { login } from "../api/auth/[...nextauth]/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -29,6 +29,8 @@ const RegisterForm = () => {
       toast.error("Make sure your password is 8 or more characters.");
       return;
     }
+
+    console.log({ name, password, email });
 
     try {
       const res = await fetch("http://127.0.0.1:8000/user", {
