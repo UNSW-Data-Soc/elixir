@@ -9,6 +9,7 @@ export default function Home() {
         height={300}
         className="mix-blend-multiply"
         alt="logo"
+        priority
       />
       <h1 className="text-6xl font-extrabold text-[#865A5E]">UNSW DataSoc</h1>
     </main>

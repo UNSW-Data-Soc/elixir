@@ -2,15 +2,14 @@
 
 import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
-
-import { login } from "../api/auth/[...nextauth]/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const LoginForm = () => {
   const router = useRouter();
+  const session = useSession();
 
   // const session = useSession();
 
@@ -21,11 +20,11 @@ const LoginForm = () => {
     e.preventDefault();
     toast.dismiss();
 
-    signIn("credentials", { email, password });
+    await signIn("credentials", { email, password });
 
-    // if (await login({ email, password })) {
-    //   router.push("/");
-    // }
+    if (session.status === "authenticated") {
+      router.push("/");
+    }
   };
 
   return (
