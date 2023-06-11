@@ -1,7 +1,12 @@
+import { getServerSession } from "next-auth";
 import LoginForm from "./loginForm";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-const Register = () => {
+const Login = async () => {
+  const session = await getServerSession();
+  if (session) return redirect("/");
+
   return (
     <main className="fixed w-full h-full flex items-center justify-center bg-white p-5">
       <div className="shadow-2xl xl:w-7/12 lg:w-8/12 md:w-10/12 sm:w-8/12 w-10/12 md:flex-row flex-col max-w-4xl text-[#333] rounded-2xl flex overflow-hidden">
@@ -29,4 +34,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

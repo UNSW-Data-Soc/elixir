@@ -5,7 +5,13 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { logout } from "./api/auth/[...nextauth]/auth";
 
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
+  BoltIcon,
+  HomeIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const Navbar = () => {
   const router = useRouter();
@@ -25,38 +31,46 @@ const Navbar = () => {
     <nav className="w-full fixed z-50 text-black shadow-xl  transition-all bg-white flex flex-row justify-between">
       <div>
         <Link href="/" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all">Home</button>
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            <HomeIcon className="h-6 w-6" />
+            <span>Home</span>
+          </button>
         </Link>
       </div>
       <div className="flex flex-row">
         {session.status === "unauthenticated" && (
           <>
             <Link href="/auth/login" className="">
-              <button className="hover:bg-[#ddd] p-5 transition-all">
-                Login
+              <button className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3">
+                <ArrowRightOnRectangleIcon className="h-6 w-6" />
+                <span>Login</span>
               </button>
             </Link>
             <Link href="/auth/register" className="">
-              <button className="hover:bg-[#ddd] p-5 transition-all">
-                Register
+              <button className="hover:bg-[#ddd] p-5 transition-all border-l border-l-black flex flex-row gap-3">
+                <BoltIcon className="h-6 w-6" />
+                <span>Register</span>
               </button>
             </Link>
           </>
         )}
         {session.status === "authenticated" && (
           <>
-            <p className="p-5 ">
-              Logged in as{" "}
-              <span className="text-[#555] italic">
-                {session.data?.user?.email}
+            <p className="p-5 flex flex-row gap-3">
+              <UserCircleIcon className="h-6 w-6" />
+              <span>
+                <span>Logged in as </span>
+                <span className="text-[#555] italic">
+                  {session.data?.user?.email}
+                </span>
               </span>
             </p>
             <button
-              className="hover:bg-[#ddd] p-5 transition-all"
+              className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3 border-l-black border-l"
               onClick={logoutClick}
             >
+              <ArrowLeftOnRectangleIcon className="h-6 w-6" />
               <span>Logout</span>
-              {/* <ArrowRightOnRectangleIcon /> */}
             </button>
           </>
         )}

@@ -1,7 +1,12 @@
+import { getServerSession } from "next-auth";
 import RegisterForm from "./registerForm";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-const Register = () => {
+const Register = async () => {
+  const session = await getServerSession();
+  if (session) return redirect("/");
+
   return (
     // <main className="fixed w-full h-full flex items-center justify-center bg-kentosoc-repeat p-5">
     <main className="fixed w-full h-full flex items-center justify-center bg-white p-5">
