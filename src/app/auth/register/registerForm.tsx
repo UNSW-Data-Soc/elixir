@@ -1,21 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { FormEventHandler, useState } from "react";
-import toast from "react-hot-toast";
+import { FormEventHandler, useEffect, useState } from "react";
+import toast, { useToasterStore } from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 import { useRouter } from "next/navigation";
 import { authRegister } from "../../api/auth/[...nextauth]/auth";
+import { signIn } from "next-auth/react";
 
 const RegisterForm = () => {
   const router = useRouter();
+
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const { toasts } = useToasterStore();
+  // set toast limit to 3
+  useEffect(() => {
+    toasts
+      .filter((t) => t.visible) // Only consider visible toasts
+      .filter((_, i) => i >= 3) // Is toast index over limit?
+      .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
+  }, [toasts]);
+
   const register: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    toast.dismiss();
 
     // TODO: replace with react-form or zod or something
     if (name.length === 0) {
@@ -31,7 +41,26 @@ const RegisterForm = () => {
       return;
     }
 
-    await authRegister({ name, password, email });
+    const res = await authRegister({ name, password, email });
+    if (res.error) {
+      toast.error(res.error);
+      return;
+    }
+
+    const signInResponse = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    if (!signInResponse) {
+      toast.error("Sign in error.");
+      return;
+    } else if (signInResponse.error) {
+      toast.error(signInResponse.error);
+      return;
+    }
+
+    return signInResponse;
 
     router.push("/");
   };
