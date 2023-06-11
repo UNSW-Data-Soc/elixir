@@ -52,7 +52,7 @@ const LoginForm = () => {
       </div>
       <p className="text-[#6a6a6a]">
         New here?{" "}
-        <Link href="/register" className="text-[#3b7bca] underline">
+        <Link href="/auth/register" className="text-[#3b7bca] underline">
           Register
         </Link>{" "}
         to create a new account.

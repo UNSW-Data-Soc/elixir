@@ -5,7 +5,7 @@ import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 import { useRouter } from "next/navigation";
-import { authRegister } from "../api/auth/[...nextauth]/auth";
+import { authRegister } from "../../api/auth/[...nextauth]/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -71,7 +71,7 @@ const RegisterForm = () => {
       </div>
       <p className="text-[#6a6a6a]">
         Already have an account?{" "}
-        <Link href="/login" className="text-[#3b7bca] underline">
+        <Link href="/auth/login" className="text-[#3b7bca] underline">
           Login
         </Link>{" "}
         to proceed.

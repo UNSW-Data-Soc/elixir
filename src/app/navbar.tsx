@@ -31,12 +31,12 @@ const Navbar = () => {
       <div className="flex flex-row">
         {session.status === "unauthenticated" && (
           <>
-            <Link href="/login" className="">
+            <Link href="/auth/login" className="">
               <button className="hover:bg-[#ddd] p-5 transition-all">
                 Login
               </button>
             </Link>
-            <Link href="/register" className="">
+            <Link href="/auth/register" className="">
               <button className="hover:bg-[#ddd] p-5 transition-all">
                 Register
               </button>
