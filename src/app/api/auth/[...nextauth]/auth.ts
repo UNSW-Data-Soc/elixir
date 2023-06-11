@@ -1,7 +1,5 @@
-import toast from "react-hot-toast";
-import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
+import { getSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 interface LoginCredentials {
   email: string;
@@ -18,21 +16,10 @@ const CURRENT_USER_COOKIE = "currentUser";
 export const login: ({
   email,
   password,
-}: LoginCredentials) => Promise<boolean> = async ({
+}: LoginCredentials) => Promise<string> = async ({
   email,
   password,
 }: LoginCredentials) => {
-  toast.dismiss();
-
-  if (email.length === 0) {
-    toast.error("Please enter your email.");
-    return false;
-  }
-  if (password.length === 0) {
-    toast.error("Please enter your password.");
-    return false;
-  }
-
   const formBodyStrings: string[] = [];
   formBodyStrings.push("username=" + encodeURIComponent(email));
   formBodyStrings.push("password=" + encodeURIComponent(password));
@@ -51,43 +38,29 @@ export const login: ({
       const err = await res.text();
       throw new Error(err);
     }
-    const session = await res.json();
-    Cookies.set(CURRENT_USER_COOKIE, JSON.stringify(session));
-    toast.success("Login success!");
+    const session: Session = await res.json();
+    return session.access_token;
+    // Cookies.set(CURRENT_USER_COOKIE, JSON.stringify(session));
+    // toast.success("Login success!");
 
-    return true;
+    // return true;
   } catch (error) {
     let errorMessage = JSON.parse((error as any).message).detail;
     if (!(typeof errorMessage === "string")) {
       errorMessage = JSON.stringify(errorMessage);
     }
-    toast.error(errorMessage);
+    // toast.error(errorMessage);
 
-    return false;
+    throw new Error(errorMessage);
   }
-};
-
-export const useSession = () => {
-  const [user, setUser] = useState<Session | null>(null);
-
-  useEffect(() => {
-    const currentUser = Cookies.get(CURRENT_USER_COOKIE);
-    if (currentUser) {
-      setUser(JSON.parse(currentUser));
-    }
-  }, []);
-
-  return user;
 };
 
 /**
  * @param session current user session; defaults to the value of the current_user_cookie
  * @returns whether logout was successful
  */
-export const logout: (session: Session) => Promise<boolean> = async (
-  session: Session = JSON.parse(Cookies.get(CURRENT_USER_COOKIE) ?? "")
-) => {
-  toast.dismiss();
+export const logout: () => Promise<boolean> = async () => {
+  const session = await getSession();
 
   if (!session) {
     return false;
@@ -97,7 +70,7 @@ export const logout: (session: Session) => Promise<boolean> = async (
     const res = await fetch("http://127.0.0.1:8000/logout", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${session.user.token}`,
       },
     });
 
@@ -106,14 +79,10 @@ export const logout: (session: Session) => Promise<boolean> = async (
       throw new Error(err);
     }
 
-    Cookies.remove(CURRENT_USER_COOKIE);
-
-    toast.success("Logout success!");
+    await signOut();
 
     return true;
   } catch (error) {
-    toast.error(JSON.parse((error as any).message).detail);
-
     return false;
   }
 };

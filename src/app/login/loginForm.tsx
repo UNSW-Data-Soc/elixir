@@ -3,14 +3,16 @@
 import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 
-import { login, useSession } from "../auth";
+import { login } from "../api/auth/[...nextauth]/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
+import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const router = useRouter();
 
-  const session = useSession();
+  // const session = useSession();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -19,9 +21,11 @@ const LoginForm = () => {
     e.preventDefault();
     toast.dismiss();
 
-    if (await login({ email, password })) {
-      router.push("/");
-    }
+    signIn("credentials", { email, password });
+
+    // if (await login({ email, password })) {
+    //   router.push("/");
+    // }
   };
 
   return (
