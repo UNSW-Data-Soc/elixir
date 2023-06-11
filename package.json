@@ -16,7 +16,6 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "install": "^0.13.0",
-    "js-cookie": "^3.0.5",
     "next": "13.4.2",
     "next-auth": "^4.22.1",
     "npm": "^9.7.1",
