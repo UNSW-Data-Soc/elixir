@@ -1,9 +1,15 @@
-import { getSession } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import toast from "react-hot-toast";
 
 interface LoginCredentials {
   email: string;
   password: string;
+}
+interface RegisterCredentials {
+  email: string;
+  password: string;
+  name: string;
 }
 
 interface Session {
@@ -11,7 +17,44 @@ interface Session {
   token_type: "bearer";
 }
 
-const CURRENT_USER_COOKIE = "currentUser";
+export const authRegister: ({
+  email,
+  password,
+  name,
+}: RegisterCredentials) => Promise<string> = async ({
+  email,
+  password,
+  name,
+}) => {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        name,
+        password,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    console.log(await res.json());
+
+    const a = await signIn("credentials", { email, password });
+
+    return "ok";
+  } catch (error) {
+    const errMessage = JSON.parse((error as any).message).detail;
+    toast.error(errMessage);
+    throw new Error(errMessage);
+  }
+};
 
 export const login: ({
   email,
@@ -40,10 +83,6 @@ export const login: ({
     }
     const session: Session = await res.json();
     return session.access_token;
-    // Cookies.set(CURRENT_USER_COOKIE, JSON.stringify(session));
-    // toast.success("Login success!");
-
-    // return true;
   } catch (error) {
     let errorMessage = JSON.parse((error as any).message).detail;
     if (!(typeof errorMessage === "string")) {

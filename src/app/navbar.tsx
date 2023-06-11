@@ -5,12 +5,11 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { logout } from "./api/auth/[...nextauth]/auth";
 
+import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+
 const Navbar = () => {
   const router = useRouter();
   const session = useSession();
-
-  console.log("SESSION:");
-  console.log(session);
 
   const logoutClick = async () => {
     if (!session) {
@@ -46,12 +45,18 @@ const Navbar = () => {
         )}
         {session.status === "authenticated" && (
           <>
-            <p className="p-5 ">Hello, {session.data?.user?.email}</p>
+            <p className="p-5 ">
+              Logged in as{" "}
+              <span className="text-[#555] italic">
+                {session.data?.user?.email}
+              </span>
+            </p>
             <button
               className="hover:bg-[#ddd] p-5 transition-all"
               onClick={logoutClick}
             >
-              Logout
+              <span>Logout</span>
+              {/* <ArrowRightOnRectangleIcon /> */}
             </button>
           </>
         )}

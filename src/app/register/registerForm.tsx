@@ -5,7 +5,7 @@ import { FormEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 import { useRouter } from "next/navigation";
-import { login } from "../api/auth/[...nextauth]/auth";
+import { authRegister } from "../api/auth/[...nextauth]/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -17,6 +17,7 @@ const RegisterForm = () => {
     e.preventDefault();
     toast.dismiss();
 
+    // TODO: replace with react-form or zod or something
     if (name.length === 0) {
       toast.error("Please enter your name.");
       return;
@@ -30,32 +31,9 @@ const RegisterForm = () => {
       return;
     }
 
-    console.log({ name, password, email });
+    await authRegister({ name, password, email });
 
-    try {
-      const res = await fetch("http://127.0.0.1:8000/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          name,
-          password,
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
-      }
-      toast.success("Registered successfully!");
-      await login({ email, password });
-      router.push("/");
-      console.log(await res.json());
-    } catch (error) {
-      toast.error(JSON.parse((error as any).message).detail);
-    }
+    router.push("/");
   };
 
   return (
