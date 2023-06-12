@@ -9,6 +9,10 @@ export default function Blog() {
           here for you!
         </p>
       </header>
+      <button style={{ backgroundColor: "red" }}>
+        Add Blog (TODO: change this button to a clickable "+" card, only visible to mods/admins)
+      </button>
+      <p>TODO: Dialog for <b>tags</b> go here!</p>
     </main>
   );
 }
