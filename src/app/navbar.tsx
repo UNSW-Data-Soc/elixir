@@ -28,8 +28,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full fixed z-50 text-black shadow-xl  transition-all bg-white flex flex-row justify-between">
-      <div>
+    <nav className="w-full z-50 text-black relative shadow-xl transition-all bg-white flex flex-row justify-between">
+      <div className="flex">
         <Link href="/" className="">
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
             <HomeIcon className="h-6 w-6" />
