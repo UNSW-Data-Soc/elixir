@@ -60,8 +60,6 @@ const RegisterForm = () => {
       return;
     }
 
-    return signInResponse;
-
     router.push("/");
   };
 
