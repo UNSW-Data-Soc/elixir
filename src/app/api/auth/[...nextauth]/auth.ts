@@ -104,6 +104,8 @@ export const login: ({
 export const logout: () => Promise<boolean> = async () => {
   const session = await getSession();
 
+  await signOut();
+
   if (!session) {
     return false;
   }
@@ -120,8 +122,6 @@ export const logout: () => Promise<boolean> = async () => {
       const err = await res.text();
       throw new Error(err);
     }
-
-    await signOut();
 
     return true;
   } catch (error) {

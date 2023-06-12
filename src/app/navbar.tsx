@@ -9,6 +9,7 @@ import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
   BoltIcon,
+  ChatBubbleBottomCenterIcon,
   HomeIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -29,11 +30,17 @@ const Navbar = () => {
 
   return (
     <nav className="w-full fixed z-50 text-black shadow-xl  transition-all bg-white flex flex-row justify-between">
-      <div>
+      <div className="flex">
         <Link href="/" className="">
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
             <HomeIcon className="h-6 w-6" />
             <span>Home</span>
+          </button>
+        </Link>
+        <Link href="/blog" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <span>Blog</span>
           </button>
         </Link>
       </div>
