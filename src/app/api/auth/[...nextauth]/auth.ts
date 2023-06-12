@@ -1,5 +1,6 @@
 import { SignInResponse, getSession, signIn } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { endpoints } from "../../backend/endpoints";
 
 interface LoginCredentials {
   email: string;
@@ -21,34 +22,16 @@ interface Session {
   token_type: "bearer";
 }
 
-export const authRegister: ({
-  email,
-  password,
-  name,
-}: RegisterCredentials) => Promise<RegisterResponse> = async ({
-  email,
-  password,
-  name,
-}) => {
+export const authRegister: (credentials: RegisterCredentials) => Promise<RegisterResponse> = async (
+  credentials
+) => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        name,
-        password,
-      }),
-    });
+    const res = await endpoints.auth.register(credentials);
 
     if (!res.ok) {
       const err = await res.text();
       return { ok: false, error: JSON.parse(err).detail };
     }
-
-    console.log(await res.json());
 
     return { ok: true, error: null };
   } catch (error) {
@@ -58,26 +41,11 @@ export const authRegister: ({
   }
 };
 
-export const login: ({
-  email,
-  password,
-}: LoginCredentials) => Promise<string> = async ({
-  email,
-  password,
-}: LoginCredentials) => {
-  const formBodyStrings: string[] = [];
-  formBodyStrings.push("username=" + encodeURIComponent(email));
-  formBodyStrings.push("password=" + encodeURIComponent(password));
-  const formBody = formBodyStrings.join("&");
-
+export const login: (credentials: LoginCredentials) => Promise<string> = async (
+  credentials: LoginCredentials
+) => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      },
-      body: formBody,
-    });
+    const res = await endpoints.auth.login(credentials);
 
     if (!res.ok) {
       const err = await res.text();
@@ -111,12 +79,7 @@ export const logout: () => Promise<boolean> = async () => {
   }
 
   try {
-    const res = await fetch("http://127.0.0.1:8000/logout", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${session.user.token}`,
-      },
-    });
+    const res = await endpoints.auth.logout({ token: session.user.token });
 
     if (!res.ok) {
       const err = await res.text();
