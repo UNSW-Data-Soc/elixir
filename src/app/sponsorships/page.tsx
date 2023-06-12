@@ -9,6 +9,11 @@ export default function Sponsorships() {
       </header>
       <button style={{ backgroundColor: "red" }}>
         Add Sponsor (TODO: change this button to a clickable "+" card, only visible to mods/admins)
+        {/* 
+          HINT: To only show the button when user is a mod/admin:
+            const session = await getServerSession();
+            if (session) return redirect("/");
+        */}
       </button>
       <p>TODO: Dialog for <b>company</b> go here!</p>
     </main>
