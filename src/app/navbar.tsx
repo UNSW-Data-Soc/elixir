@@ -29,7 +29,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full fixed z-50 text-black shadow-xl  transition-all bg-white flex flex-row justify-between">
+    <nav className="w-full z-50 text-black relative shadow-xl transition-all bg-white flex flex-row justify-between">
       <div className="flex">
         <Link href="/" className="">
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
@@ -37,10 +37,39 @@ const Navbar = () => {
             <span>Home</span>
           </button>
         </Link>
-        <Link href="/blog" className="">
+        <Link href="/sponsorships" className="">
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            {/* TOOD: Change to appropriate icons */}
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" /> 
+            <span>Sponsors</span>
+          </button>
+        </Link>
+        <Link href="/events" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            {/* TOOD: Change to appropriate icons */}
             <ChatBubbleBottomCenterIcon className="h-6 w-6" />
-            <span>Blog</span>
+            <span>Events</span>
+          </button>
+        </Link>
+        <Link href="/jobs" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            {/* TOOD: Change to appropriate icons */}
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <span>Jobs</span>
+          </button>
+        </Link>
+        <Link href="/blogs" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            {/* TOOD: Change to appropriate icons */}
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <span>Blogs</span>
+          </button>
+        </Link>
+        <Link href="/resources" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            {/* TOOD: Change to appropriate icons */}
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <span>Resources</span>
           </button>
         </Link>
       </div>
