@@ -1,4 +1,7 @@
+
+import TagForm from './tagForm';
 export default function Blog() {
+
   return (
     <main className="bg-white ">
       <header className="text-white p-12 bg-[#4799d1] flex flex-col gap-4">
@@ -13,6 +16,7 @@ export default function Blog() {
         Add Blog (TODO: change this button to a clickable "+" card, only visible to mods/admins)
       </button>
       <p>TODO: Dialog for <b>tags</b> go here!</p>
+      <p>hello</p>
     </main>
   );
 }
