@@ -1,6 +1,15 @@
-
+"use client";
+import React, { useState } from "react";
 import TagForm from './tagForm';
+
 export default function Blog() {
+
+  const [tags, setTags] = useState([]);
+  
+  const handleCreateTag = (tag) => {
+    setTags([...tags, tag]);
+  };
+
 
   return (
     <main className="bg-white ">
@@ -15,8 +24,18 @@ export default function Blog() {
       <button style={{ backgroundColor: "red" }}>
         Add Blog (TODO: change this button to a clickable "+" card, only visible to mods/admins)
       </button>
-      <p>TODO: Dialog for <b>tags</b> go here!</p>
-      <p>hello</p>
+      <TagForm onSubmit={handleCreateTag} />
+      <div>
+        <h2>Tags</h2>
+        {tags.map((tag, index) => (
+          <div key={index}>
+            <span>Name: {tag.name}</span>
+            <span>Color: {tag.color}</span>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
+
+
