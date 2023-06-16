@@ -1,6 +1,6 @@
 import { SignInResponse, getSession, signIn } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { endpoints } from "../../backend/endpoints";
+import { endpoints } from "../backend/endpoints";
 import { parse } from "path";
 
 interface LoginCredentials {
@@ -39,12 +39,7 @@ export const authRegister: (credentials: RegisterCredentials) => Promise<Registe
   credentials
 ) => {
   try {
-    const res = await endpoints.auth.register(credentials);
-
-    if (!res.ok) {
-      const err = await res.text();
-      return { ok: false, error: JSON.parse(err).detail };
-    }
+    await endpoints.auth.register(credentials);
 
     return { ok: true, error: null };
   } catch (error) {
@@ -60,14 +55,7 @@ export const login: (
   credentials: LoginCredentials
 ) => {
   try {
-    const res = await endpoints.auth.login(credentials);
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err);
-    }
-
-    const session: Session = await res.json();
+    const session: Session = await endpoints.auth.login(credentials);
 
     const decodedJwt: Jwt = parseJwt(session.access_token);
 
@@ -94,20 +82,13 @@ export const login: (
 export const logout: () => Promise<boolean> = async () => {
   const session = await getSession();
 
-  await signOut();
-
   if (!session) {
     return false;
   }
 
   try {
-    const res = await endpoints.auth.logout({ token: session.user.token });
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err);
-    }
-
+    await endpoints.auth.logout();
+    await signOut();
     return true;
   } catch (error) {
     return false;

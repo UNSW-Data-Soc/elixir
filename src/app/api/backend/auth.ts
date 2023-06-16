@@ -31,12 +31,11 @@ const login = async ({ email, password }: { email: string; password: string }) =
   });
 };
 
-const logout = async ({ token }: { token: string }) => {
+const logout = async () => {
   return await callFetch({
     route: "/logout",
     method: "POST",
     authRequired: true,
-    accessToken: token,
   });
 };
 

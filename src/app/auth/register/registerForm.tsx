@@ -5,7 +5,7 @@ import { FormEventHandler, useEffect, useState } from "react";
 import toast, { useToasterStore } from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 import { useRouter } from "next/navigation";
-import { authRegister } from "../../api/auth/[...nextauth]/auth";
+import { authRegister } from "../../api/auth/auth";
 import { signIn } from "next-auth/react";
 
 const RegisterForm = () => {
