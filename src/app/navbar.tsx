@@ -40,7 +40,7 @@ const Navbar = () => {
         <Link href="/sponsorships" className="">
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" /> 
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
             <span>Sponsors</span>
           </button>
         </Link>
