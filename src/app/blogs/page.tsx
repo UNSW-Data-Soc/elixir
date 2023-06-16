@@ -1,4 +1,6 @@
 import { endpoints } from "../api/backend/endpoints";
+import { type Blog } from "../api/backend/blogs";
+
 import BlogsAddButton from "./blogsAddButton";
 
 export default function Blog() {
@@ -31,13 +33,18 @@ async function BlogsContainer() {
 
   return (
     <div className="container">
-      {blogs.map((blog: any) => (
-        <BlogCard key={blog} {...blog} />
+      {blogs.map((blog) => (
+        <BlogCard key={blog.id} {...blog} />
       ))}
     </div>
   );
 }
 
-function BlogCard(blog: any) {
-  return <div></div>;
+function BlogCard(blog: Blog) {
+  return (
+    <div>
+      <h3>{blog.title}</h3>
+      <p>{blog.author}</p>
+    </div>
+  );
 }
