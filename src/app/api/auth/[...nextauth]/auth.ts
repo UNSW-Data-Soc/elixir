@@ -1,6 +1,7 @@
 import { SignInResponse, getSession, signIn } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { endpoints } from "../../backend/endpoints";
+import { parse } from "path";
 
 interface LoginCredentials {
   email: string;
@@ -22,6 +23,18 @@ interface Session {
   token_type: "bearer";
 }
 
+interface Jwt {
+  id: string;
+  exp: number;
+  iat: number;
+  nbf: string;
+  access_level: "member" | "administrator";
+}
+
+function parseJwt(token: string): Jwt {
+  return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+}
+
 export const authRegister: (credentials: RegisterCredentials) => Promise<RegisterResponse> = async (
   credentials
 ) => {
@@ -41,9 +54,9 @@ export const authRegister: (credentials: RegisterCredentials) => Promise<Registe
   }
 };
 
-export const login: (credentials: LoginCredentials) => Promise<string> = async (
+export const login: (
   credentials: LoginCredentials
-) => {
+) => Promise<{ token: string; admin: boolean }> = async (credentials: LoginCredentials) => {
   try {
     const res = await endpoints.auth.login(credentials);
 
@@ -51,9 +64,15 @@ export const login: (credentials: LoginCredentials) => Promise<string> = async (
       const err = await res.text();
       throw new Error(err);
     }
+
     const session: Session = await res.json();
 
-    return session.access_token;
+    console.log(parseJwt(session.access_token));
+
+    return {
+      token: session.access_token,
+      admin: parseJwt(session.access_token).access_level === "administrator",
+    };
   } catch (error) {
     let errorMessage = JSON.parse((error as any).message).detail;
 
