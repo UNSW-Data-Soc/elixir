@@ -6,6 +6,13 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* colours */
+  --yellow: #ebb43e;
+  --orange: #da7446;
+  --red: #cf5156;
+  --purple: #96659e;
+  --blue: #4799d1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,11 +24,42 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb)); */
+  color: #000;
+  background: #fff;
+}
+
+.bg-light-rainbow {
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.35),
+      rgba(255, 255, 255, 0.35)
+    ),
+    linear-gradient(
+        235deg,
+        var(--yellow) 20%,
+        var(--orange),
+        var(--red),
+        var(--purple) 60%,
+        var(--blue)
+      )
+      80%;
+}
+
+.bg-kentosoc {
+  background-image: url("/kentosoc.jpeg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.bg-kentosoc-repeat {
+  background-image: url("/kentosoc.jpeg");
+  /* background-position: center; */
+  background-repeat: repeat;
+  background-size: 200px 300px;
 }
