@@ -1,6 +1,6 @@
 import { callFetch } from "./endpoints";
 
-const getAllBlogs = async () => {
+const getAll = async () => {
   return await callFetch({
     route: "/blogs",
     method: "GET",
@@ -9,5 +9,5 @@ const getAllBlogs = async () => {
 };
 
 export const blogs = {
-  getAllBlogs,
+  getAll,
 };

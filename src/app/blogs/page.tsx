@@ -1,3 +1,4 @@
+import { endpoints } from "../api/backend/endpoints";
 import BlogsAddButton from "./blogsAddButton";
 
 export default function Blog() {
@@ -23,6 +24,20 @@ export default function Blog() {
   );
 }
 
-function BlogsContainer() {
-  return <div className="container"></div>;
+async function BlogsContainer() {
+  const blogs = await endpoints.blogs.getAll();
+
+  console.log(blogs);
+
+  return (
+    <div className="container">
+      {blogs.map((blog: any) => (
+        <BlogCard key={blog} {...blog} />
+      ))}
+    </div>
+  );
+}
+
+function BlogCard(blog: any) {
+  return <div></div>;
 }
