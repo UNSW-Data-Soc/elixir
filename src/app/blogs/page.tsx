@@ -1,18 +1,39 @@
 "use client";
 import React, { useState } from "react";
 import TagForm from './tagForm';
+import TagEditForm from './tagEditForm';
+
 
 export default function Blog() {
 
   const [tags, setTags] = useState([]);
+
+   const [editingTagIndex, setEditingTagIndex] = useState(null); 
   
   const handleCreateTag = (tag) => {
     setTags([...tags, tag]);
   };
 
+  const handleDeleteTag = (index) => {
+    const updatedTags = [...tags];
+    updatedTags.splice(index, 1);
+    setTags(updatedTags);
+  };
 
+  const handleEditTag = (index) => {
+    setEditingTagIndex(index);
+  }
+
+  const handleSaveTag = (updatedTag) => {
+    const updatedTags = [...tags];
+    updatedTags[editingTagIndex] = updatedTag;
+    setTags(updatedTags);
+    setEditingTagIndex(null);
+  };
+
+  
   return (
-    <main className="bg-white ">
+    <main className="bg-white">
       <header className="text-white p-12 bg-[#4799d1] flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">Blog</h1>
         <p>
@@ -28,14 +49,39 @@ export default function Blog() {
       <div>
         <h2>Tags</h2>
         {tags.map((tag, index) => (
-          <div key={index}>
-            <span>Name: {tag.name}</span>
-            <span>Color: {tag.color}</span>
+          <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ marginRight: '8px' }}>
+              {tag.name}
+            </span>
+            <div
+              style={{
+                display: 'inline-block',
+                width: '20px',
+                height: '20px',
+                backgroundColor: tag.color,
+              }}
+            />
+            <button
+              style={{ marginLeft: '8px' }}
+              onClick={() => handleDeleteTag(index)}
+            >
+              Delete
+            </button>
+            <button
+              style={{ marginLeft: '8px' }}
+              onClick={() => handleEditTag(index)}
+            >
+              Modify
+            </button>
           </div>
         ))}
       </div>
+      {editingTagIndex !== null && (
+        <TagEditForm
+          tag={tags[editingTagIndex]}
+          onSave={handleSaveTag}
+        />
+      )}
     </main>
   );
 }
-
-
