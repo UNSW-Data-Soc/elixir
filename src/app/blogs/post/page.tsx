@@ -21,7 +21,7 @@ export default async function BlogsPost() {
   // ));
 
   return (
-    <main className="p-10 flex justify-center items-center text-black">
+    <main className="p-10 flex justify-center items-center text-black h-screen overflow-hidden fixed w-screen">
       {/* <h1 className="text-3xl font-bold">Create a new blog post.</h1> */}
       <BlogsAddForm />
     </main>
