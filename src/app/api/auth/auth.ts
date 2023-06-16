@@ -1,7 +1,6 @@
-import { SignInResponse, getSession, signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { endpoints } from "../backend/endpoints";
-import { parse } from "path";
 
 interface LoginCredentials {
   email: string;
