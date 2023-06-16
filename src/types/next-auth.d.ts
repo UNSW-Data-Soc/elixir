@@ -7,6 +7,7 @@ declare module "next-auth" {
       name: string;
       token: string;
       admin: boolean;
+      exp: number;
     };
   }
 }

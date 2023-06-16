@@ -30,11 +30,11 @@ const handler = NextAuth({
           throw new Error("Please enter an email and password to login.");
         }
 
-        const { token, admin } = await login({
+        const { token, admin, exp } = await login({
           email: credentials?.email,
           password: credentials?.password,
         });
-        return { id: "UNSW DataSoc", email: credentials.email, token, admin };
+        return { id: "UNSW DataSoc", email: credentials.email, token, admin, exp };
       },
     }),
   ],

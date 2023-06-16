@@ -56,7 +56,9 @@ export const authRegister: (credentials: RegisterCredentials) => Promise<Registe
 
 export const login: (
   credentials: LoginCredentials
-) => Promise<{ token: string; admin: boolean }> = async (credentials: LoginCredentials) => {
+) => Promise<{ token: string; admin: boolean; exp: number }> = async (
+  credentials: LoginCredentials
+) => {
   try {
     const res = await endpoints.auth.login(credentials);
 
@@ -67,11 +69,12 @@ export const login: (
 
     const session: Session = await res.json();
 
-    console.log(parseJwt(session.access_token));
+    const decodedJwt: Jwt = parseJwt(session.access_token);
 
     return {
       token: session.access_token,
-      admin: parseJwt(session.access_token).access_level === "administrator",
+      admin: decodedJwt.access_level === "administrator",
+      exp: decodedJwt.exp,
     };
   } catch (error) {
     let errorMessage = JSON.parse((error as any).message).detail;
