@@ -21,17 +21,24 @@ export const callFetch = async ({
 }: FetchArguments) => {
   const session = await getSession();
 
+  console.log(session);
+  console.log(body);
+
   const headers: HeadersInit = { "Content-Type": contentType };
   if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
 
-  const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
+  try {
+    const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.log(error);
   }
-
-  return await res.json();
 };
 
 export const endpoints = {

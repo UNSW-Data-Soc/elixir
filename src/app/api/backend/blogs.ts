@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { callFetch } from "./endpoints";
 
 export interface Blog {
@@ -19,6 +20,21 @@ const getAll: () => Promise<Blog[]> = async () => {
   })) as Blog[];
 };
 
+interface CreateBlog {
+  title: string;
+  author: string;
+  body: string;
+}
+const create: (blog: CreateBlog) => Promise<Blog> = async (blog: CreateBlog) => {
+  return await callFetch({
+    method: "POST",
+    route: "/blog",
+    authRequired: true,
+    body: JSON.stringify({ ...blog, public: true, creator: self.crypto.randomUUID() }),
+  });
+};
+
 export const blogs = {
   getAll,
+  create,
 };
