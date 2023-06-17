@@ -30,7 +30,7 @@ const create: (blog: CreateBlog) => Promise<Blog> = async (blog: CreateBlog) => 
     method: "POST",
     route: "/blog",
     authRequired: true,
-    body: JSON.stringify({ ...blog, public: true, creator: self.crypto.randomUUID() }),
+    body: JSON.stringify({ ...blog, public: true }),
   });
 };
 

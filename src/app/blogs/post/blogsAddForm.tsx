@@ -4,8 +4,11 @@ import { FormEventHandler, useEffect, useState } from "react";
 import { HEADLINES, LOREM, NAMES } from "./formPlaceholders";
 import { Converter } from "showdown";
 import { endpoints } from "@/app/api/backend/endpoints";
+import { useRouter } from "next/navigation";
 
 export function BlogsAddForm() {
+  const router = useRouter();
+
   // placeholder states
   const [headlineNum, setHeadlineNum] = useState<number>(
     Math.floor(Math.random() * HEADLINES.length)
@@ -13,13 +16,13 @@ export function BlogsAddForm() {
   const [nameNum, setNameNum] = useState<number>(Math.floor(Math.random() * NAMES.length));
 
   // change placeholder text every 2.5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHeadlineNum(Math.floor(Math.random() * HEADLINES.length));
-      setNameNum(Math.floor(Math.random() * NAMES.length));
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [headlineNum, nameNum]);
+  //   useEffect(() => {
+  //     const timer = setTimeout(() => {
+  //       setHeadlineNum(Math.floor(Math.random() * HEADLINES.length));
+  //       setNameNum(Math.floor(Math.random() * NAMES.length));
+  //     }, 2500);
+  //     return () => clearTimeout(timer);
+  //   }, [headlineNum, nameNum]);
 
   // inputs
   const [title, setTitle] = useState<string>("");
@@ -32,7 +35,10 @@ export function BlogsAddForm() {
     e.preventDefault();
 
     const blog = await endpoints.blogs.create({ title, author, body });
-    console.log(blog);
+
+    if (blog) {
+      router.push("/blogs");
+    }
   };
 
   return (
@@ -70,7 +76,7 @@ export function BlogsAddForm() {
             placeholder={LOREM}
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            className="no-scrollbars h-[30rem] outline-none py-3 px-5 w-full rounded-xl min-h-fit"
+            className="no-scrollbars min-h-[30rem] outline-none py-3 px-5 w-full rounded-xl h-full"
           ></textarea>
           <label className="font-bold text-[#96659e] tracking-wider py-2 px-4 rounded-full bg-[#c3a4c7] uppercase h-11 mt-1 border-2 border-[#96659e]">
             Body
@@ -78,7 +84,7 @@ export function BlogsAddForm() {
         </div>
         <div className="w-6/12 flex flex-row justify-start gap-2 border-2 rounded-3xl hover:border-slate-400 transition-all py-2 ps-2 pe-4 overflow-scroll no-scrollbars">
           <div
-            className="no-scrollbars h-[30rem] outline-none py-3 px-5 w-full rounded-xl min-h-fit markdown"
+            className="m-0 no-scrollbars min-h-[30rem] outline-none py-3 px-5 w-full rounded-xl h-full markdown"
             dangerouslySetInnerHTML={{ __html: html }}
           ></div>
           <label className="font-bold text-[#62bc4c] tracking-wider py-2 px-4 rounded-full bg-[#b7ffa4] uppercase h-11 mt-1 border-2 border-[#62bc4c]">

@@ -1,7 +1,16 @@
 import { endpoints } from "../api/backend/endpoints";
 import { type Blog } from "../api/backend/blogs";
 
-import BlogsAddButton from "./blogsAddButton";
+import { getServerSession } from "next-auth";
+import BlogsAddCard from "./blogsAddCard";
+
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
+import { remark } from "remark";
+import strip from "strip-markdown";
+import Image from "next/image";
 
 export default function Blog() {
   return (
@@ -13,15 +22,10 @@ export default function Blog() {
           data science in the real world, they&apos;re here for you!
         </p>
       </header>
-      <BlogsContainer />
-      <button style={{ backgroundColor: "red" }}>
-        Add Blog (TODO: change this button to a clickable &quot;+&quot; card, only visible to
-        mods/admins)
-      </button>
       <p>
         TODO: Dialog for <b>tags</b> go here!
       </p>
-      <BlogsAddButton />
+      <BlogsContainer />
     </main>
   );
 }
@@ -29,10 +33,9 @@ export default function Blog() {
 async function BlogsContainer() {
   const blogs = await endpoints.blogs.getAll();
 
-  console.log(blogs);
-
   return (
-    <div className="container">
+    <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
+      <BlogsAddCard />
       {blogs.map((blog) => (
         <BlogCard key={blog.id} {...blog} />
       ))}
@@ -40,11 +43,32 @@ async function BlogsContainer() {
   );
 }
 
-function BlogCard(blog: Blog) {
+async function BlogCard(blog: Blog) {
+  const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
+
+  const strippedBody = String(await remark().use(strip).process(blog.body));
+
   return (
-    <div>
-      <h3>{blog.title}</h3>
-      <p>{blog.author}</p>
+    <div className="border-[1px] border-black flex flex-col items-center w-4/12">
+      <div
+        className="w-full relative h-[200px]"
+        style={{
+          backgroundImage: "url(/adrian.jpeg)",
+          backgroundOrigin: "content-box",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      ></div>
+      <div className="flex flex-col gap-3 p-5 items-center">
+        <h3 className="text-xl font-bold">{blog.title}</h3>
+        <p className="">
+          <span className="italic">{blog.author}</span>
+          <span className="mx-3">|</span>
+          <span>{createdDate}</span>
+        </p>
+        <p className="text-[#555]">{strippedBody.substring(0, 200)}...</p>
+      </div>
     </div>
   );
 }

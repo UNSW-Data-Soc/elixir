@@ -12,7 +12,7 @@
 }
 @media only screen {
   .markdown {
-    margin: 2em auto;
+    /* margin: 2em auto; */
     max-width: 900px;
     color: rgb(55, 53, 47);
   }
@@ -20,7 +20,7 @@
 
 .markdown {
   line-height: 1.5;
-  white-space: pre-wrap;
+  white-space: pre-line;
 }
 
 .markdown a,

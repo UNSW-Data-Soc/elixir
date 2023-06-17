@@ -21,9 +21,6 @@ export const callFetch = async ({
 }: FetchArguments) => {
   const session = await getSession();
 
-  console.log(session);
-  console.log(body);
-
   const headers: HeadersInit = { "Content-Type": contentType };
   if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
 

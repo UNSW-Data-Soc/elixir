@@ -5,11 +5,11 @@ import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 
 export default async function BlogsPost() {
+  // TODO: redirect not authorized users
   // const session = useSession();
   // const router = useRouter();
   // if (session.status === "unauthenticated" || !session.data?.user.admin) router.push("/blogs");
   const session = await getServerSession();
-  console.log(session);
   if (!session) return redirect("/");
 
   // const cookieStore = cookies();
