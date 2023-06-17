@@ -2,6 +2,7 @@
 
 import { FormEventHandler, useEffect, useState } from "react";
 import { HEADLINES, LOREM, NAMES } from "./formPlaceholders";
+import { Converter } from "showdown";
 
 export function BlogsAddForm() {
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = (e) => {
@@ -14,6 +15,10 @@ export function BlogsAddForm() {
     Math.floor(Math.random() * HEADLINES.length)
   );
   const [nameNum, setNameNum] = useState<number>(Math.floor(Math.random() * NAMES.length));
+  const [body, setBody] = useState<string>("");
+
+  const converter = new Converter();
+  const html = converter.makeHtml(body);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -52,6 +57,8 @@ export function BlogsAddForm() {
         <div className="w-6/12 flex flex-row justify-start gap-2 border-2 rounded-3xl hover:border-slate-400 transition-all py-2 ps-2 pe-4 overflow-hidden">
           <textarea
             placeholder={LOREM}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
             className="no-scrollbars h-[30rem] outline-none py-3 px-5 w-full rounded-xl min-h-fit"
           ></textarea>
           <label className="font-bold text-[#96659e] tracking-wider py-2 px-4 rounded-full bg-[#c3a4c7] uppercase h-11 mt-1 border-2 border-[#96659e]">
@@ -59,7 +66,10 @@ export function BlogsAddForm() {
           </label>
         </div>
         <div className="w-6/12 flex flex-row justify-start gap-2 border-2 rounded-3xl hover:border-slate-400 transition-all py-2 ps-2 pe-4 overflow-hidden">
-          <div className="no-scrollbars h-[30rem] outline-none py-3 px-5 w-full rounded-xl min-h-fit"></div>
+          <div
+            className="no-scrollbars h-[30rem] outline-none py-3 px-5 w-full rounded-xl min-h-fit markdown-preview"
+            dangerouslySetInnerHTML={{ __html: html }}
+          ></div>
           <label className="font-bold text-[#62bc4c] tracking-wider py-2 px-4 rounded-full bg-[#b7ffa4] uppercase h-11 mt-1 border-2 border-[#62bc4c]">
             Preview
           </label>
