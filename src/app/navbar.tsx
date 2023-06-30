@@ -12,6 +12,7 @@ import {
   ChatBubbleBottomCenterIcon,
   HomeIcon,
   UserCircleIcon,
+  UsersIcon
 } from "@heroicons/react/24/outline";
 
 const Navbar = () => {
@@ -93,6 +94,12 @@ const Navbar = () => {
         )}
         {session.status === "authenticated" && (
           <>
+            <Link href="/users" className="">
+              <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+                <UsersIcon className="h-6 w-6" />
+                <span>User Management</span>
+              </button>
+            </Link>
             <p className="p-5 flex flex-row gap-3">
               <UserCircleIcon className="h-6 w-6" />
               <span>
