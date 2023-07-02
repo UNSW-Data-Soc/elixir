@@ -5,6 +5,7 @@ import { HEADLINES, LOREM, NAMES } from "./formPlaceholders";
 import { Converter } from "showdown";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export function BlogsAddForm() {
   const router = useRouter();
@@ -16,13 +17,13 @@ export function BlogsAddForm() {
   const [nameNum, setNameNum] = useState<number>(Math.floor(Math.random() * NAMES.length));
 
   // change placeholder text every 2.5 seconds
-  //   useEffect(() => {
-  //     const timer = setTimeout(() => {
-  //       setHeadlineNum(Math.floor(Math.random() * HEADLINES.length));
-  //       setNameNum(Math.floor(Math.random() * NAMES.length));
-  //     }, 2500);
-  //     return () => clearTimeout(timer);
-  //   }, [headlineNum, nameNum]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHeadlineNum(Math.floor(Math.random() * HEADLINES.length));
+      setNameNum(Math.floor(Math.random() * NAMES.length));
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [headlineNum, nameNum]);
 
   // inputs
   const [title, setTitle] = useState<string>("");
@@ -36,9 +37,12 @@ export function BlogsAddForm() {
 
     const blog = await endpoints.blogs.create({ title, author, body });
 
-    if (blog) {
-      router.push("/blogs");
+    if (!blog) {
+      toast.error("Failed to create blog");
+      return;
     }
+
+    router.push("/blogs");
   };
 
   return (
