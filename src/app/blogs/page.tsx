@@ -1,17 +1,25 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import TagForm from './tagForm';
 import TagEditForm from './tagEditForm';
+import TagsAddCard from "./tagAddCard";
+import { create } from "../api/backend/tags"; // Import the function to create a tag
 
 
-export default function Blog() {
+
+export default function Tag() {
 
   const [tags, setTags] = useState([]);
 
    const [editingTagIndex, setEditingTagIndex] = useState(null); 
+   const [showTagForm, setShowTagForm] = useState(false);
+
   
   const handleCreateTag = (tag) => {
-    setTags([...tags, tag]);
+    setTags([...tags, createdTag]);
+    setShowTagForm(false);
   };
 
   const handleDeleteTag = (index) => {
@@ -29,58 +37,41 @@ export default function Blog() {
     updatedTags[editingTagIndex] = updatedTag;
     setTags(updatedTags);
     setEditingTagIndex(null);
+    setShowTagForm(true);
+  };
+  
+  const handleFormOpen = () => {
+    setShowTagForm(true);
   };
 
-  
+  const handleFormClose = () => {
+    setShowTagForm(false);
+  };
+
+  const handleButtonClick = () => {
+    setShowTagForm(true);
+  };
+
+ // const router = useRouter();
+
   return (
     <main className="bg-white">
       <header className="text-white p-12 bg-[#4799d1] flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">Blog</h1>
         <p>
-          Stay in the loop with our blog posts! From educational guides to
-          opinion articles about data science in the real world, they&apos;re
-          here for you!
+          Stay in the loop with our blog posts! From educational guides to opinion articles about data science in the real world, they&apos;re here for you!
         </p>
       </header>
-      <button style={{ backgroundColor: "red" }}>
-        Add Blog (TODO: change this button to a clickable "+" card, only visible to mods/admins)
+      <button
+        onClick={handleButtonClick}
+        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+      >
+        + Create Tag
       </button>
-      <TagForm onSubmit={handleCreateTag} />
-      <div>
-        <h2>Tags</h2>
-        {tags.map((tag, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ marginRight: '8px' }}>
-              {tag.name}
-            </span>
-            <div
-              style={{
-                display: 'inline-block',
-                width: '20px',
-                height: '20px',
-                backgroundColor: tag.color,
-              }}
-            />
-            <button
-              style={{ marginLeft: '8px' }}
-              onClick={() => handleDeleteTag(index)}
-            >
-              Delete
-            </button>
-            <button
-              style={{ marginLeft: '8px' }}
-              onClick={() => handleEditTag(index)}
-            >
-              Modify
-            </button>
-          </div>
-        ))}
-      </div>
-      {editingTagIndex !== null && (
-        <TagEditForm
-          tag={tags[editingTagIndex]}
-          onSave={handleSaveTag}
-        />
+      {showTagForm && (
+        <div>
+          <TagForm onSubmit={handleCreateTag} onClose={handleFormClose} />
+        </div>
       )}
     </main>
   );

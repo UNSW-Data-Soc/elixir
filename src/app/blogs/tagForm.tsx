@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { endpoints } from "@/app/api/backend/endpoints";
+
+
 
 const TagForm = ({ onSubmit }) => {
   const router = useRouter();
@@ -17,7 +20,7 @@ const TagForm = ({ onSubmit }) => {
   ];
 
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
 
@@ -30,12 +33,13 @@ const TagForm = ({ onSubmit }) => {
       color,
     };
 
+    const blog = await endpoints.tags.create({ name, color });
     onSubmit(tag);
 
     setName("");
     setColor("");
 
-    router.push("/blogs");
+    router.push("/tags");
   };
 
 
