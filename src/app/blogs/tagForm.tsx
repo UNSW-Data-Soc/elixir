@@ -1,14 +1,10 @@
-"use client";
-import React, { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { endpoints } from "@/app/api/backend/endpoints";
+import React, { useState } from "react";
+import { endpoints } from "../api/backend/endpoints";
+import { Tag } from "../api/backend/tags";
 
-
-
-const TagForm = ({ onSubmit }) => {
-  const router = useRouter();
+const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
   const [name, setName] = useState("");
-  const [color, setColor] = useState("");
+  const [colour, setColour] = useState("");
 
   const colorOptions = [
     { label: 'Red', value: 'red' },
@@ -19,29 +15,20 @@ const TagForm = ({ onSubmit }) => {
     { label: 'Purple', value: 'purple' },
   ];
 
-
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
-    if (!name || !color) {
+    if (!name || !colour) {
       return;
     }
 
-    const tag = {
-      name,
-      color,
-    };
-
-    const blog = await endpoints.tags.create({ name, color });
-    onSubmit(tag);
+    const tag: Tag = { name, colour };
+    await endpoints.tags.create(tag);
 
     setName("");
-    setColor("");
-
-    router.push("/tags");
+    setColour("");
+    onSubmit(tag);
   };
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -55,13 +42,13 @@ const TagForm = ({ onSubmit }) => {
         />
       </div>
       <div>
-        <label htmlFor="color">Color: </label>
+        <label htmlFor="colour">Colour: </label>
         <select
-          id="color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
+          id="colour"
+          value={colour}
+          onChange={(e) => setColour(e.target.value)}
         >
-          <option value="">Select a color</option>
+          <option value="">Select a colour</option>
           {colorOptions.map((option) => (
             <option
               key={option.value}
@@ -79,13 +66,6 @@ const TagForm = ({ onSubmit }) => {
 };
 
 export default TagForm;
-
-
-
-
-
-
-
 
 
 

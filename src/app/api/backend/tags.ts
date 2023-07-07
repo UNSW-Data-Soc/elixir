@@ -7,7 +7,6 @@ export interface Tag {
   colour: string    //hexcode 
 }
 
-
 const getAll: () => Promise<Tag[]> = async () => {
   return (await callFetch({
     route: "/tags",
@@ -15,6 +14,7 @@ const getAll: () => Promise<Tag[]> = async () => {
     authRequired: false,
   })) as Tag[];
 };
+
 
 interface CreateTag {
   name: string;
@@ -33,3 +33,5 @@ export const tags = {
   getAll,
   create,
 };
+
+
