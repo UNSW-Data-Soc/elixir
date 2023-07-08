@@ -30,7 +30,7 @@ export default function Blog() {
   );
 }
 
-async function BlogsContainer(): Promise<JSX.Element> {
+async function BlogsContainer() {
   const blogs = await endpoints.blogs.getAll();
 
   return (
