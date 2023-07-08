@@ -18,13 +18,13 @@ const getAll: () => Promise<Tag[]> = async () => {
 
 interface CreateTag {
   name: string;
-  colour: string    //hexcode 
+  colour: string    //hexcode \
 }
 const create: (tag: CreateTag) => Promise<Tag> = async (tag: CreateTag) => {
   return await callFetch({
     method: "POST",
     route: "/tag",
-    authRequired: true,
+    authRequired: false,
     body: JSON.stringify({ ...tag, public: true }),
   });
 };

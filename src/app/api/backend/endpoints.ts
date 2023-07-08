@@ -1,6 +1,6 @@
 import { auth } from "./auth";
-import { tags } from "./tags";``
 import { blogs } from "./blogs";
+import {tags} from "./tags"
 import { getSession } from "next-auth/react";
 
 const BACKEND_URL = "http://127.0.0.1:8000";
@@ -41,6 +41,6 @@ export const callFetch = async ({
 
 export const endpoints = {
   auth,
-  tags,
-  blogs
+  blogs,
+  tags
 };

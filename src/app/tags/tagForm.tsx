@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { endpoints } from "../api/backend/endpoints";
 import { Tag } from "../api/backend/tags";
 
 const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
@@ -22,12 +21,11 @@ const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
       return;
     }
 
-    const tag: Tag = { name, colour };
-    await endpoints.tags.create(tag);
+   // const tag: Tag = { name, colour };
+    await onSubmit(tag);
 
     setName("");
     setColour("");
-    onSubmit(tag);
   };
 
   return (
@@ -66,8 +64,3 @@ const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
 };
 
 export default TagForm;
-
-
-
-
-

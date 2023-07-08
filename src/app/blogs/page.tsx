@@ -1,8 +1,9 @@
-mport { endpoints } from "../api/backend/endpoints";
+import { endpoints } from "../api/backend/endpoints";
 import { type Blog } from "../api/backend/blogs";
-import TagForm from "./tagForm";
-import { Tag } from "../api/backend/tags";
+
 import BlogsAddCard from "./blogsAddCard";
+import Tags from "../tags/tagComponent";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -23,12 +24,13 @@ export default function Blog() {
       <p>
         TODO: Dialog for <b>tags</b> go here!
       </p>
+      <Tags/>
       <BlogsContainer />
     </main>
   );
 }
 
-async function BlogsContainer() {
+async function BlogsContainer(): Promise<JSX.Element> {
   const blogs = await endpoints.blogs.getAll();
 
   return (
@@ -78,21 +80,24 @@ async function BlogCard(blog: Blog) {
 
 
 
-
-
-
-
-
-
-
-
 /*
+
+import { endpoints } from "../api/backend/endpoints";
+import { type Blog } from "../api/backend/blogs";
+import TagForm from "./tagForm";
+import { Tag } from "../api/backend/tags";
+import BlogsAddCard from "./blogsAddCard";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
+
 "use client";
 import React, { useState } from "react";
 import { endpoints } from "../api/backend/endpoints";
 
 
-export default function Blog() {
+export default function Tag() {
   const [showTagForm, setShowTagForm] = useState(false);
 
   const handleButtonClick = () => {
