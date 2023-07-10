@@ -5,11 +5,13 @@ import UsersList from "./userList";
 
 export default async function Users() {
     const session = await getServerSession();
-    if (!session) return redirect("/");
+    if (!session) {
+        return redirect("/");
+    }
 
     return (
-        <main className="p-10 flex justify-center items-center text-black h-screen overflow-hidden fixed w-screen">
-        <UsersList/>
-        </main>
+        <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
+            <UsersList/>
+        </div>
     );
 }
