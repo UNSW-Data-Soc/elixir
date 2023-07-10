@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { logout } from "./api/auth/[...nextauth]/auth";
+import { logout } from "./api/auth/auth";
 
 import {
   ArrowLeftOnRectangleIcon,
@@ -20,6 +20,7 @@ const Navbar = () => {
 
   const logoutClick = async () => {
     if (!session) {
+      router.push("/");
       return;
     }
     const success = await logout();
@@ -40,7 +41,7 @@ const Navbar = () => {
         <Link href="/sponsorships" className="">
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" /> 
+            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
             <span>Sponsors</span>
           </button>
         </Link>
@@ -96,9 +97,7 @@ const Navbar = () => {
               <UserCircleIcon className="h-6 w-6" />
               <span>
                 <span>Logged in as </span>
-                <span className="text-[#555] italic">
-                  {session.data?.user?.email}
-                </span>
+                <span className="text-[#555] italic">{session.data?.user?.email}</span>
               </span>
             </p>
             <button

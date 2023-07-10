@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { login } from "./auth";
+import { login } from "../auth";
 
 const handler = NextAuth({
   providers: [
@@ -30,11 +30,11 @@ const handler = NextAuth({
           throw new Error("Please enter an email and password to login.");
         }
 
-        const token = await login({
+        const { token, admin, exp } = await login({
           email: credentials?.email,
           password: credentials?.password,
         });
-        return { id: "UNSW DataSoc", email: credentials.email, token: token };
+        return { id: "UNSW DataSoc", email: credentials.email, token, admin, exp };
       },
     }),
   ],
