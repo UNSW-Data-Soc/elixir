@@ -1,7 +1,6 @@
 import { endpoints } from "../api/backend/endpoints";
 import { type Blog } from "../api/backend/blogs";
 
-import { getServerSession } from "next-auth";
 import BlogsAddCard from "./blogsAddCard";
 
 import dayjs from "dayjs";
@@ -10,7 +9,6 @@ dayjs.extend(relativeTime);
 
 import { remark } from "remark";
 import strip from "strip-markdown";
-import Image from "next/image";
 
 export default function Blog() {
   return (
