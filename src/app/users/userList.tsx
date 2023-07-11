@@ -66,38 +66,37 @@ export default function UsersList() {
     <>
       <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
         {users.sort(sortUsers).map((user) => (
-          <div className="border-[1px] border-black flex flex-col items-center w-4/12" style = {getUserBannerStyle(user)}>
-          <div
-            key={user.id}
-            className="w-full relative h-[200px]"
-            style={{
-              backgroundImage: "url(/logo_greyscale.jpeg)",
-              backgroundOrigin: "content-box",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              setShowModal(true);
-              setShowModalUser(user);
-            }}
-          ></div>
-          <div className="flex flex-col gap-3 p-5 items-center">
-            <h3 className="text-xl font-bold">{user.name}</h3>
-            <p className="">
-              <span className="italic">{user.email}</span>
-              { 
-                (user.access_level === "moderator" || user.access_level === "administrator") &&
-                <>
-                  <span className="mx-3">|</span>
-                  <span className="italic">{user.portfolio || "Exec"}</span>
-                </>
-              }
-              <span>{user.portfolio}</span>
-            </p>
-          </div>
-        </div> 
+          <div key={user.id} className="border-[1px] border-black flex flex-col items-center w-4/12" style = {getUserBannerStyle(user)}>
+            <div
+              className="w-full relative h-[200px]"
+              style={{
+                backgroundImage: "url(/logo_greyscale.jpeg)",
+                backgroundOrigin: "content-box",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setShowModal(true);
+                setShowModalUser(user);
+              }}
+            ></div>
+            <div className="flex flex-col gap-3 p-5 items-center">
+              <h3 className="text-xl font-bold">{user.name}</h3>
+              <p className="">
+                <span className="italic">{user.email}</span>
+                { 
+                  (user.access_level === "moderator" || user.access_level === "administrator") &&
+                  <>
+                    <span className="mx-3">|</span>
+                    <span className="italic">{user.portfolio || "Exec"}</span>
+                  </>
+                }
+                <span>{user.portfolio}</span>
+              </p>
+            </div>
+          </div> 
         ))}
         { showModal &&
           showModalUser &&

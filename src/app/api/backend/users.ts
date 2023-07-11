@@ -9,6 +9,8 @@ export interface User {
   access_level: "member" | "moderator" | "administrator";
   about: string;
   retired: boolean;
+  registration_time: "2023-06-16T10:59:09.059Z";
+  years_active: number[];
 }
 
 export interface AccessLevel {
@@ -33,7 +35,20 @@ const updateUserAccessLevel: (update: AccessLevel) => Promise<AccessLevel[]> = a
   })) as AccessLevel[];
 };
 
+async function updateYearsActive(user_id: string, years_active: number[]): Promise<User> {
+  return (await callFetch({
+    route: "/user",
+    method: "PUT",
+    authRequired: true,
+    body: JSON.stringify({
+      id: user_id,
+      years_active: years_active,
+    }),
+  })) as User;
+};
+
 export const users = {
   getAll,
   updateUserAccessLevel,
+  updateYearsActive,
 };
