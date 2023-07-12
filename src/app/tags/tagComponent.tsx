@@ -3,21 +3,14 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { endpoints } from "../api/backend/endpoints";
 import { Tag } from "../api/backend/tags";
-import TagForm from "./tagForm";
-import TagItem from "./tagItem";
+import TagForm from "./TagForm";
+import TagItem from "./TagItem";
 import { useSession } from "next-auth/react";
 
 const TagsComponent = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [showTagForm, setShowTagForm] = useState(false);
-  let isAdmin = false; // Replace with actual admin check logic
   const session = useSession();
-
-  
-
-  if (session.status === "authenticated" && session.data.user.admin)  {
-    isAdmin = true; 
-  }
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -32,25 +25,10 @@ const TagsComponent = () => {
     fetchTags();
   }, []);
 
-  /*const handleAddTag = async (tag: Tag) => {
-    try {
-      const createdTag = await endpoints.tags.create({
-        name: tag.name,
-        colour: tag.colour
-      });
-  
-      // Update the tags list after successful creation
-      const updatedTags = [...tags, createdTag];
-      setTags(updatedTags);
-      setShowTagForm(false);
-    } catch (error) {
-      console.error('Error adding tag:', error);
-    }
-  };*/
-
   const handleTagCreated = (tag: Tag) => {
-    const updatedTags = [...tags, tag];
-    setTags(updatedTags);
+    //const updatedTags = [...tags, tag];
+    //setTags(updatedTags);
+    setTags([...tags, tag]);
     setShowTagForm(false);
   };
 
@@ -60,14 +38,15 @@ const TagsComponent = () => {
       {tags.map((tag) => (
         <TagItem key={tag.id} tag={tag} />
       ))}
-      {isAdmin && (
-        <button onClick={() => setShowTagForm(true)}>Add Tag</button>
+      {session.status === "authenticated" && session.data.user.admin && (
+        <>
+          <button onClick={() => setShowTagForm(true)}>Add Tag</button>
+          {showTagForm && <TagForm onSubmit={handleTagCreated} />}
+        </>
       )}
-      {showTagForm && <TagForm onSubmit={handleTagCreated} />}
     </div>
   );
-};  
-
+};
 
 export default TagsComponent;
 

@@ -46,7 +46,8 @@ const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
     }
 
    // const tag: Tag = { name, colour };
-    //await onSubmit(tag);
+    
+   onSubmit(tag);
 
     setName("");
     setColour("");
