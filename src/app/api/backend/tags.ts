@@ -24,7 +24,7 @@ const create: (tag: CreateTag) => Promise<Tag> = async (tag: CreateTag) => {
   return await callFetch({
     method: "POST",
     route: "/tag",
-    authRequired: false,
+    authRequired: true,
     body: JSON.stringify({ ...tag, public: true }),
   });
 };

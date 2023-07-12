@@ -6,10 +6,11 @@ interface TagItemProps {
 }
 
 const TagItem: React.FC<TagItemProps> = ({ tag }) => {
+  console.log("in tag item");
   return (
     <div>
       <h3>{tag.name}</h3>
-      <p>{tag.color}</p>
+      <p>{tag.colour}</p>
       {/* Additional tag information and actions can be rendered here */}
     </div>
   );

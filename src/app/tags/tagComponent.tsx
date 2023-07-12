@@ -30,7 +30,7 @@ const TagsComponent = () => {
     fetchTags();
   }, []);
 
-  const handleAddTag = async (tag: Tag) => {
+  /*const handleAddTag = async (tag: Tag) => {
     try {
       const createdTag = await endpoints.tags.create({
         name: tag.name,
@@ -44,6 +44,12 @@ const TagsComponent = () => {
     } catch (error) {
       console.error('Error adding tag:', error);
     }
+  };*/
+
+  const handleTagCreated = (tag: Tag) => {
+    const updatedTags = [...tags, tag];
+    setTags(updatedTags);
+    setShowTagForm(false);
   };
 
   return (
@@ -55,10 +61,11 @@ const TagsComponent = () => {
       {isAdmin && (
         <button onClick={() => setShowTagForm(true)}>Add Tag</button>
       )}
-      {showTagForm && <TagForm onSubmit={handleAddTag} />}
+      {showTagForm && <TagForm onSubmit={handleTagCreated} />}
     </div>
   );
-};
+};  
+
 
 export default TagsComponent;
 

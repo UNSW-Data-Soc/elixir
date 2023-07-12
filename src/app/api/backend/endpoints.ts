@@ -27,7 +27,7 @@ export const callFetch = async ({
 
   try {
     const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
-
+    console.log("made it up to here");
     if (!res.ok) {
       const err = await res.text();
       throw new Error(err);
@@ -37,6 +37,9 @@ export const callFetch = async ({
   } catch (error) {
     console.log(error);
   }
+
+  console.log("made it up to here 2");
+
 };
 
 export const endpoints = {
