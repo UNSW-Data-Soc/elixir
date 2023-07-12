@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
 import { endpoints } from "../api/backend/endpoints";
 import { Tag } from "../api/backend/tags";
 import TagForm from "./tagForm";
