@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Select from 'react-select';
 import { Tag } from "../api/backend/tags";
 import { endpoints } from "../api/backend/endpoints";
 import { toast } from "react-hot-toast";
@@ -8,6 +9,7 @@ import { toast } from "react-hot-toast";
 const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
   const [name, setName] = useState("");
   const [colour, setColour] = useState("");
+  const [showPopup, setShowPopup] = useState(true);
 
   /*const colorOptions = [
     { label: 'Red', value: 'red' },
@@ -26,6 +28,7 @@ const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
     { label: 'Purple', value: '#800080' },
   ];
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -47,40 +50,51 @@ const TagForm = ({ onSubmit }: { onSubmit: (tag: Tag) => void }) => {
 
     setName("");
     setColour("");
+    setShowPopup(false);
   };
 
+  if (!showPopup) {
+    return null; // Render nothing if showPopup is false
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Name: </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-12 rounded-xl">
+        <h1 className="text-2xl font-semibold">Add Tag</h1>
+        <br />
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-2 pb-3">
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-2 pb-3">
+            <label htmlFor="colour">Colour:</label>
+            <Select
+              options={colorOptions}
+              classNamePrefix="select"
+              isSearchable={true}
+              name="colour"
+              value={colorOptions.find((option) => option.value === colour)}
+              onChange={(selectedOption) =>
+                setColour(selectedOption?.value || "")
+              }
+            />
+          </div>
+          <button
+            type="submit"
+            className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+            onClick={handleSubmit}
+          >
+            Add
+          </button>
+        </form>
       </div>
-      <div>
-        <label htmlFor="colour">Colour: </label>
-        <select
-          id="colour"
-          value={colour}
-          onChange={(e) => setColour(e.target.value)}
-        >
-          <option value="">Select a colour</option>
-          {colorOptions.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              style={{ backgroundColor: option.value }}
-            >
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button type="submit">Save</button>
-    </form>
+    </div>
   );
 };
 

@@ -13,6 +13,7 @@ const TagsComponent = () => {
   let isAdmin = false; // Replace with actual admin check logic
   const session = useSession();
 
+  
 
   if (session.status === "authenticated" && session.data.user.admin)  {
     isAdmin = true; 
