@@ -31,6 +31,10 @@ const TagsComponent = () => {
     setShowTagForm(false);
   };
 
+  const handleTagFormClose = () => {
+    setShowTagForm(false);
+  };
+
   return (
     <div>
       <h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>Tags:</h2>
@@ -43,7 +47,7 @@ const TagsComponent = () => {
           <FaPlus />
         </button>
       </div>
-      {showTagForm && <TagForm onSubmit={handleTagCreated} />}
+      {showTagForm && <TagForm onSubmit={handleTagCreated}  onClose={handleTagFormClose}/>}
     </div>
   );
 };
