@@ -35,19 +35,6 @@ interface UpdateTag {
   color?: string;
 }
 
-/*const update: (tag: UpdateTag) => Promise<Tag> = async (tag: UpdateTag) => {
-  const { id, ...updateData } = tag;
-  console.log("went intodo update function")
-  console.log(tag);
-  return await callFetch({
-    method: "PUT",
-    route: "/tag",
-    authRequired: true,
-    body: JSON.stringify(updateData),
-  });
-};
-*/
-
 const update: (updateData: Partial<UpdateTag>) => Promise<Tag> = async (updateData: Partial<UpdateTag>) => {
   return await callFetch({
     method: "PUT",
@@ -56,10 +43,20 @@ const update: (updateData: Partial<UpdateTag>) => Promise<Tag> = async (updateDa
     body: JSON.stringify(updateData),
   });
 };
+
+const deleteTag: (tag: Tag) => Promise<void> = async (tag: Tag) => {
+  await callFetch({
+    method: "DELETE",
+    route: "tag",
+    authRequired: true,
+  });
+};
+
 export const tags = {
   getAll,
   create,
   update,
+  deleteTag
 };
 
 
