@@ -80,7 +80,7 @@ export default function UserDialogueInfo(props: {user: User, closeModal: Functio
     }
   };
 
-  let permissionsOptions =[
+  let permissionsOptions: {value: userLevels, label: string, isDisabled: boolean}[] = [
     { value: 'member', label: 'Member', isDisabled: props.user.access_level === "member"},
     { value: 'moderator', label: 'Moderator', isDisabled: props.user.access_level === "moderator" },
     { value: 'administrator', label: 'Administrator', isDisabled: props.user.access_level === "administrator" },
