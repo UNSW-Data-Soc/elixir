@@ -22,7 +22,7 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave, onDelete }) => {
     { label: 'Lavender', value: '#D0B0D0' },
     { label: 'Pink', value: '#F2A5A9' },
     { label: 'Coral', value: '#F5B89E' },
-    { label: 'Light', value: '#FBD896' },
+    { label: 'Light Yellow', value: '#FBD896' },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {

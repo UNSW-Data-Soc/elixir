@@ -60,7 +60,7 @@ const TagsComponent = () => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', alignItems: 'baseline' }}>
       <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '14px' }}>Tags:</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {tags.map((tag) => (
@@ -84,4 +84,5 @@ const TagsComponent = () => {
 };
 
 export default TagsComponent;
+
 

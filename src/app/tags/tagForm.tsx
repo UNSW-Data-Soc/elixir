@@ -23,7 +23,7 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
     { label: 'Lavender', value: '#D0B0D0' },
     { label: 'Pink', value: '#F2A5A9' },
     { label: 'Coral', value: '#F5B89E' },
-    { label: 'Light', value: '#FBD896' },
+    { label: 'Light Yellow', value: '#FBD896' },
 
   ];
   
