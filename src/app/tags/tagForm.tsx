@@ -11,14 +11,7 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
   const [colour, setColour] = useState("");
   const [showPopup, setShowPopup] = useState(true);
 
-  /*const colorOptions = [
-    { label: 'Red', value: 'red' },
-    { label: 'Blue', value: 'blue' },
-    { label: 'Green', value: 'green' },
-    { label: 'Yellow', value: 'yellow' },
-    { label: 'Orange', value: 'orange' },
-    { label: 'Purple', value: 'purple' },
-  ];*/
+
   
   const colorOptions = [
     { label: 'Dark Blue', value: '#159BD6' },
@@ -30,7 +23,7 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
     { label: 'Lavender', value: '#D0B0D0' },
     { label: 'Pink', value: '#F2A5A9' },
     { label: 'Coral', value: '#F5B89E' },
-    { label: 'Light Yellow', value: '#FBD896' },
+    { label: 'Light', value: '#FBD896' },
 
   ];
   
@@ -44,6 +37,10 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
     console.log('hi');
     const tag = await endpoints.tags.create({ name, colour });
     console.log('createdtag'+ tag);
+    console.log('tag id' + tag.id); 
+    console.log('tag name' + tag.name); 
+    console.log('tag colour' + tag.colour); 
+
 
     if (!tag) {
       toast.error("Failed to create tag");

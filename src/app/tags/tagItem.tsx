@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Tag } from '../api/backend/tags';
+import { endpoints } from "../api/backend/endpoints";
+import { FaTimes } from "react-icons/fa";
 import TagEditForm from './TagEditForm';
 
 interface TagItemProps {
   tag: Tag;
   isAdmin: boolean;
-  onUpdateTag: (updatedTag: Tag) => void; 
+  onUpdateTag: (updatedTag: Tag) => void;
+  onDelete: (tagId: string) => void;
 }
 
-const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag }) => {
+const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedTag, setEditedTag] = useState(tag);
 
@@ -28,6 +31,22 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag }) => {
     setShowEditForm(false);
   };
 
+  const handleDelete = () => {
+    onDelete(tag.id);
+  };
+
+  /*const handleDelete = async () => {
+    console.log('in handle delete:');
+    console.log('tagid: ' + tag.id);
+    console.log('tagname: ' + tag.name);
+    console.log('tagcolour: ' + tag.colour);
+
+    await endpoints.tags.deleteTag(tag.id);
+    setShowEditForm(false);
+    onUpdateTag(tag)
+
+  };*/
+  
   const tagStyle = {
     backgroundColor: tag.colour,
     color: '#ffffff',
@@ -62,8 +81,11 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag }) => {
       </div>
       {showEditForm && (
         <div style={popupStyle}>
-          <TagEditForm tag={editedTag} onSave={handleSave} />
-          <button onClick={handleCancelEdit}>Cancel</button>
+          <TagEditForm tag={tag} onSave={handleSave} onDelete={handleDelete} />
+          <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+             onClick={handleCancelEdit}>
+             <FaTimes />
+          </button>
         </div>
       )}
     </div>
@@ -71,3 +93,4 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag }) => {
 }
 
 export default TagItem;
+

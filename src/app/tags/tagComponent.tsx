@@ -50,12 +50,27 @@ const TagsComponent = () => {
     setTags(updatedTags);
   };
 
+  const handleDelete = async (tagId: string) => {
+    try {
+      await endpoints.tags.deleteTag(tagId);
+      setTags(tags.filter((tag) => tag.id !== tagId));
+    } catch (error) {
+      console.error('Error deleting tag:', error);
+    }
+  };
+
   return (
     <div>
-      <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '14px'}}>Tags:</h2>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-      {tags.map((tag) => (
-        <TagItem key={tag.id} tag={tag} isAdmin = {isAdmin} onUpdateTag={handleUpdateTag} />
+      <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '14px' }}>Tags:</h2>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        {tags.map((tag) => (
+          <TagItem
+            key={tag.id}
+            tag={tag}
+            isAdmin={isAdmin}
+            onUpdateTag={handleUpdateTag}
+            onDelete={handleDelete}
+          />
         ))}
         {isAdmin && (
           <button onClick={() => setShowTagForm(true)} style={{ marginLeft: '8px' }}>
@@ -69,5 +84,4 @@ const TagsComponent = () => {
 };
 
 export default TagsComponent;
-
 

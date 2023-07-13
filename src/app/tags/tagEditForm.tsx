@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { endpoints } from "../api/backend/endpoints";
 import Select from "react-select";
 import { Tag } from "../api/backend/tags";
 
 interface TagEditFormProps {
   tag: Tag;
   onSave: (updatedTag: Tag) => void;
+  onDelete: () => void;
 }
 
-const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave }) => {
+const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave, onDelete }) => {
   const [name, setName] = useState(tag.name);
   const [colour, setColour] = useState(tag.colour);
 
@@ -55,6 +55,10 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave }) => {
     }
   };
 
+  const handleDelete = () => {
+    onDelete();
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -78,6 +82,7 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave }) => {
         />
       </div>
       <button onClick={handleSave}>Update</button>
+      <button onClick={handleDelete}>Delete</button>
     </form>
   );
 };

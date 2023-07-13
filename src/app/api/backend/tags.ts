@@ -44,12 +44,19 @@ const update: (updateData: Partial<UpdateTag>) => Promise<Tag> = async (updateDa
   });
 };
 
-const deleteTag: (tag: Tag) => Promise<void> = async (tag: Tag) => {
-  await callFetch({
+const deleteTag = async (tagId: string): Promise<void> => {
+
+  if (!tagId) {
+    throw new Error('Invalid tag ID');
+  }
+
+  const response = await callFetch({
     method: "DELETE",
-    route: "tag",
+    route: `/tag?id=${tagId}`, 
     authRequired: true,
   });
+
+  console.log("response status" + response.status); 
 };
 
 export const tags = {
