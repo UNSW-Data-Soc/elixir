@@ -14,7 +14,8 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
     display: 'inline-block',
     whiteSpace: 'nowrap',
     width: 'auto',
-    fontSize: '10px', 
+    fontSize: '10px',
+  };
 
   return <div style={tagStyle}>{tag.name}</div>;
 };
