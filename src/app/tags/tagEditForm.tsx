@@ -60,18 +60,24 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave, onDelete }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Name: </label>
+    <form onSubmit={handleSubmit} style={{ margin: '10px 0' }}>
+      <div style={{ marginBottom: '10px' }}>
+        <label htmlFor="name" style={{ fontSize: '14px' }}>Name: </label>
         <input
           type="text"
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          style={{
+            fontSize: '12px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            padding: '5px',
+          }}
         />
       </div>
       <div>
-        <label htmlFor="colour">Colour: </label>
+        <label htmlFor="colour" style={{ fontSize: '14px' }}>Colour: </label>
         <Select
           options={colorOptions}
           classNamePrefix="select"
@@ -79,12 +85,39 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave, onDelete }) => {
           id="colour"
           value={colorOptions.find((option) => option.value === colour)}
           onChange={handleColourChange}
+          styles={{
+            control: (provided) => ({
+              ...provided,
+              fontSize: '12px', // Adjust the font size as needed
+            }),
+            menu: (provided) => ({
+              ...provided,
+              fontSize: '12px', // Adjust the font size as needed
+            }),
+            option: (provided) => ({
+              ...provided,
+              fontSize: '12px', // Adjust the font size as needed
+            }),
+          }}
         />
       </div>
-      <button onClick={handleSave}>Update</button>
-      <button onClick={handleDelete}>Delete</button>
+      <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+        <button
+          type="submit"
+          className="py-1 px-2 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+        >
+          Update
+        </button>
+        <button
+          className="py-1 px-2 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+          onClick={() => handleDelete(tag)}
+        >
+          Delete
+        </button>
+      </div>
     </form>
   );
 };
 
 export default TagEditForm;
+

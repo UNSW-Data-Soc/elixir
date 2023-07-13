@@ -65,13 +65,16 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag, onDelete }
 
   const popupStyle = {
     position: 'absolute',
-    top: 'calc(100% + 5px)', // Adjust the distance between the tag and the popup as needed
+    top: 'calc(100% + 5px)',
     left: '0',
     zIndex: '9999',
     backgroundColor: '#ffffff',
     padding: '10px',
     borderRadius: '4px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 
   return (
