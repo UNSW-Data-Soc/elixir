@@ -1,11 +1,16 @@
-"use client";
 import React, { useState } from "react";
+import { endpoints } from "../api/backend/endpoints";
 import Select from "react-select";
 import { Tag } from "../api/backend/tags";
 
-const TagEditForm = ({ tag, onSave }) => {
+interface TagEditFormProps {
+  tag: Tag;
+  onSave: (updatedTag: Tag) => void;
+}
+
+const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave }) => {
   const [name, setName] = useState(tag.name);
-  const [color, setColor] = useState(tag.color);
+  const [colour, setColour] = useState(tag.colour);
 
   const colorOptions = [
     { label: 'Dark Blue', value: '#159BD6' },
@@ -18,25 +23,36 @@ const TagEditForm = ({ tag, onSave }) => {
     { label: 'Pink', value: '#F2A5A9' },
     { label: 'Coral', value: '#F5B89E' },
     { label: 'Light', value: '#FBD896' },
-
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !color) {
+    if (!name || !colour) {
       return;
     }
 
-    const updatedTag = { ...tag, name, color };
+    const updatedTag: Tag = { ...tag, name, colour };
     onSave(updatedTag);
 
     setName("");
-    setColor("");
+    setColour("");
   };
 
-  const handleColorChange = (selectedOption) => {
-    setColor(selectedOption.value);
+  const handleColourChange = (selectedOption: { value: string }) => {
+    setColour(selectedOption.value);
+  };
+
+  const handleSave = async () => {
+    const updatedTag: Tag = { ...tag, name, colour };
+    try {
+      const response = await endpoints.tags.update(updatedTag);
+      console.log("Tag updated:", response);
+      // Handle the successful update
+    } catch (error) {
+      console.log("Error updating tag:", error);
+      // Handle the error
+    }
   };
 
   return (
@@ -51,20 +67,19 @@ const TagEditForm = ({ tag, onSave }) => {
         />
       </div>
       <div>
-        <label htmlFor="color">Color: </label>
+        <label htmlFor="colour">Colour: </label>
         <Select
           options={colorOptions}
           classNamePrefix="select"
           isSearchable={true}
-          id="color"
-          value={colorOptions.find((option) => option.value === color)}
-          onChange={handleColorChange}
+          id="colour"
+          value={colorOptions.find((option) => option.value === colour)}
+          onChange={handleColourChange}
         />
       </div>
-      <button type="submit">Save</button>
+      <button onClick={handleSave}>Update</button>
     </form>
   );
 };
-
 
 export default TagEditForm;
