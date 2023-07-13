@@ -4,7 +4,6 @@ import { Tag } from '../api/backend/tags';
 interface TagItemProps {
   tag: Tag;
 }
-
 const TagItem: React.FC<TagItemProps> = ({ tag }) => {
   const tagStyle = {
     backgroundColor: tag.colour,
@@ -15,13 +14,9 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
     display: 'inline-block',
     whiteSpace: 'nowrap',
     width: 'auto',
-  };
+    fontSize: '10px', 
 
-  return (
-    <div style={tagStyle}>
-      {tag.name}
-    </div>
-  );
+  return <div style={tagStyle}>{tag.name}</div>;
 };
 
 export default TagItem;
