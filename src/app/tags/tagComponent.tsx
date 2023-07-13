@@ -12,6 +12,11 @@ const TagsComponent = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [showTagForm, setShowTagForm] = useState(false);
   const session = useSession();
+  let isAdmin = false; 
+
+  if (session.status === "authenticated" && session.data.user.admin)  {
+    isAdmin = true; 
+  }
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -38,16 +43,17 @@ const TagsComponent = () => {
   return (
     <div>
       <h2 style={{ paddingLeft: '8px', marginTop: '8px' }}>Tags:</h2>
-      <div  style={{ display: "flex", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
         {tags.map((tag) => (
           <TagItem key={tag.id} tag={tag} />
         ))}
-          <button onClick={() => setShowTagForm(true)}
-          style={{ marginLeft: '8px' }}>
-          <FaPlus />
-        </button>
+        {isAdmin && (
+          <button onClick={() => setShowTagForm(true)} style={{ marginLeft: '8px' }}>
+            <FaPlus />
+          </button>
+        )}
       </div>
-      {showTagForm && <TagForm onSubmit={handleTagCreated}  onClose={handleTagFormClose}/>}
+      {showTagForm && <TagForm onSubmit={handleTagCreated} onClose={handleTagFormClose} />}
     </div>
   );
 };
