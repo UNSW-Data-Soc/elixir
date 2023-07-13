@@ -19,15 +19,20 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
     { label: 'Orange', value: 'orange' },
     { label: 'Purple', value: 'purple' },
   ];*/
+  
   const colorOptions = [
-    { label: 'Red', value: '#FF0000' },
-    { label: 'Blue', value: '#0000FF' },
-    { label: 'Green', value: '#00FF00' },
-    { label: 'Yellow', value: '#FFFF00' },
-    { label: 'Orange', value: '#FFA500' },
-    { label: 'Purple', value: '#800080' },
-  ];
+    { label: 'Dark Blue', value: '#159BD6' },
+    { label: 'Dark Purple', value: '#9E62A2' },
+    { label: 'Red', value: '#E04552' },
+    { label: 'Orange', value: '#EA6D38' },
+    { label: 'Yellow', value: '#F5B102' },
+    { label: 'Light Blue', value: '#98CEEA' },
+    { label: 'Lavender', value: '#D0B0D0' },
+    { label: 'Pink', value: '#F2A5A9' },
+    { label: 'Coral', value: '#F5B89E' },
+    { label: 'Light Yellow', value: '#FBD896' },
 
+  ];
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,8 +69,8 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
   }
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-12 rounded-xl relative">
+    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" style={{ zIndex: 9999 }}>
+    <div className="bg-white p-12 rounded-xl relative">
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
           onClick={handleClose}
