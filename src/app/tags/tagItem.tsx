@@ -4,15 +4,18 @@ import TagEditForm from './TagEditForm';
 
 interface TagItemProps {
   tag: Tag;
+  isAdmin: boolean;
   onUpdateTag: (updatedTag: Tag) => void; 
 }
 
-const TagItem: React.FC<TagItemProps> = ({ tag, onUpdateTag }) => {
+const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag }) => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedTag, setEditedTag] = useState(tag);
 
   const handleTagClick = () => {
-    setShowEditForm(true);
+    if (isAdmin) {
+      setShowEditForm(true);
+    }
   };
 
   const handleSave = (updatedTag: Tag) => {
