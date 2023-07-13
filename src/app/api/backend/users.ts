@@ -1,12 +1,13 @@
 import { callFetch } from "./endpoints";
 
+export type userLevels = "member" | "moderator" | "administrator";
 export interface User {
   email: string;
   name: string;
   photo_id: string | undefined;
   portfolio: boolean | undefined;
   id: string;
-  access_level: "member" | "moderator" | "administrator";
+  access_level: userLevels;
   about: string;
   retired: boolean;
   registration_time: "2023-06-16T10:59:09.059Z";

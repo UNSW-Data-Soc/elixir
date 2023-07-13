@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Select, { MultiValue } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { User } from '../api/backend/users';
+import { User, userLevels } from '../api/backend/users';
 import { endpoints } from '../api/backend/endpoints';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 export default function UserDialogueInfo(props: {user: User, closeModal: Function}) {
   const router = useRouter();
 
-  const [accessLevel, setAccessLevel] = useState<string>(props.user.access_level);
+  const [accessLevel, setAccessLevel] = useState<userLevels>(props.user.access_level);
   const [year, setYear] = useState<string>('');
   const [yearsActive, setYearsActive] = useState<MultiValue<{ label: number; value: number; }>>([]);
   
@@ -30,15 +30,15 @@ export default function UserDialogueInfo(props: {user: User, closeModal: Functio
         id: props.user.id,
         access_level: accessLevel
       });
-
+      
       if (!access_level_updated) {
         toast.error("Failed to update user permissions");
         return;
       }
     }
-
+    
     let updated_years_active_arr = yearsActive.map(mv => mv.value);
-
+    
     // if years active actually changed
     if(updated_years_active_arr.sort() !== props.user.years_active.sort()) {
       let updated_user = await endpoints.users.updateYearsActive(props.user.id, updated_years_active_arr);
@@ -47,6 +47,10 @@ export default function UserDialogueInfo(props: {user: User, closeModal: Functio
         return;
       }
     }
+    
+    // update parent component after successful change
+    props.user.access_level = accessLevel;
+    props.user.years_active = updated_years_active_arr;
     
     router.push("/users");
     toast.success("Updated user permissions");
