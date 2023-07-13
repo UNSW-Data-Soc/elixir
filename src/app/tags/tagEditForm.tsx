@@ -48,7 +48,7 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave }) => {
     try {
       const response = await endpoints.tags.update(updatedTag);
       console.log("Tag updated:", response);
-      // Handle the successful update
+      onSave(updatedTag); // Update the tag immediately
     } catch (error) {
       console.log("Error updating tag:", error);
       // Handle the error

@@ -4,9 +4,10 @@ import TagEditForm from './TagEditForm';
 
 interface TagItemProps {
   tag: Tag;
+  onUpdateTag: (updatedTag: Tag) => void; 
 }
 
-const TagItem: React.FC<TagItemProps> = ({ tag }) => {
+const TagItem: React.FC<TagItemProps> = ({ tag, onUpdateTag }) => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedTag, setEditedTag] = useState(tag);
 
@@ -17,6 +18,7 @@ const TagItem: React.FC<TagItemProps> = ({ tag }) => {
   const handleSave = (updatedTag: Tag) => {
     setEditedTag(updatedTag); // Update the edited tag
     setShowEditForm(false);
+    onUpdateTag(updatedTag);
   };
 
   const handleCancelEdit = () => {

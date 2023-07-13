@@ -40,12 +40,22 @@ const TagsComponent = () => {
     setShowTagForm(false);
   };
 
+  const handleUpdateTag = (updatedTag: Tag) => {
+    const updatedTags = tags.map((tag) => {
+      if (tag.id === updatedTag.id) {
+        return updatedTag; // Replace the original tag with the updated tag
+      }
+      return tag; // Keep the other tags unchanged
+    });
+    setTags(updatedTags);
+  };
+
   return (
     <div>
-      <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '12px'}}>Tags:</h2>
+      <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '1px'}}>Tags:</h2>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {tags.map((tag) => (
-          <TagItem key={tag.id} tag={tag} />
+      {tags.map((tag) => (
+        <TagItem key={tag.id} tag={tag} onUpdateTag={handleUpdateTag} />
         ))}
         {isAdmin && (
           <button onClick={() => setShowTagForm(true)} style={{ marginLeft: '8px' }}>
