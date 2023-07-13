@@ -102,13 +102,15 @@ const Navbar = () => {
               </button>
             </Link>
             }
-            <p className="p-5 flex flex-row gap-3">
-              <UserCircleIcon className="h-6 w-6" />
-              <span>
-                <span>Logged in as </span>
-                <span className="text-[#555] italic">{session.data?.user?.email}</span>
-              </span>
-            </p>
+            <Link href={`/profile/${session.data.user.id}`} className="">
+              <p className="p-5 flex flex-row gap-3">
+                <UserCircleIcon className="h-6 w-6" />
+                <span>
+                  <span>Logged in as </span>
+                  <span className="text-[#555] italic">{session.data?.user?.email}</span>
+                </span>
+              </p>
+            </Link>
             <button
               className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3 border-l-black border-l"
               onClick={logoutClick}

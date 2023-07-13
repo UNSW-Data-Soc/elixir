@@ -5,7 +5,7 @@ export interface User {
   email: string;
   name: string;
   photo_id: string | undefined;
-  portfolio: boolean | undefined;
+  portfolio: string;
   id: string;
   access_level: userLevels;
   about: string;
@@ -18,6 +18,15 @@ export interface AccessLevel {
   id: string;
   access_level: string;
 }
+
+
+async function get(user_id: string): Promise<User> {
+  return (await callFetch({
+    route: `/user/${user_id}`,
+    method: "GET",
+    authRequired: true,
+  })) as User;
+};
 
 const getAll: () => Promise<User[]> = async () => {
   return (await callFetch({
@@ -49,6 +58,7 @@ async function updateYearsActive(user_id: string, years_active: number[]): Promi
 };
 
 export const users = {
+  get,
   getAll,
   updateUserAccessLevel,
   updateYearsActive,
