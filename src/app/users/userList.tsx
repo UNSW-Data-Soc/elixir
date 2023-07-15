@@ -86,14 +86,6 @@ export default function UsersList() {
               <h3 className="text-xl font-bold">{user.name}</h3>
               <p className="">
                 <span className="italic">{user.email}</span>
-                { 
-                  (user.access_level === "moderator" || user.access_level === "administrator") &&
-                  <>
-                    <span className="mx-3">|</span>
-                    <span className="italic">{user.portfolio || "Exec"}</span>
-                  </>
-                }
-                <span>{user.portfolio}</span>
               </p>
             </div>
           </div> 

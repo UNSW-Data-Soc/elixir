@@ -5,7 +5,6 @@ export interface User {
   email: string;
   name: string;
   photo_id: string | undefined;
-  portfolio: string;
   id: string;
   access_level: userLevels;
   about: string;

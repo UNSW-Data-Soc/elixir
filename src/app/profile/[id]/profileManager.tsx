@@ -18,7 +18,6 @@ export default function ProfileManager(props: { user_id: string }) {
     const [user, setUser] = useState<User>();
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
-    const [portfolio, setPortfolio] = useState("");
     const [about, setAbout] = useState("");
 
     useEffect(() => {
@@ -32,7 +31,6 @@ export default function ProfileManager(props: { user_id: string }) {
         setUser(user);
         setEmail(user.email);
         setName(user.name);
-        setPortfolio(user.portfolio);
         setAbout(user.about);
         setLoading(false);
       });
@@ -76,14 +74,6 @@ export default function ProfileManager(props: { user_id: string }) {
                   placeholder="Your name..."
                   value={name}
                   onChange={(e) => {setName(e.target.value)}}
-              />
-              <p className="text-2xl font-semibold">Portfolio</p>
-              <input
-                  className="py-3 px-4 border-2 rounded-xl transition-all"
-                  type="text"
-                  placeholder="The portfolio you are a part of..."
-                  value={portfolio}
-                  onChange={(e) => {setPortfolio(e.target.value)}}
               />
               <p className="text-2xl font-semibold">About you</p>
               <input
