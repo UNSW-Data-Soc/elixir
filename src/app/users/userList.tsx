@@ -7,6 +7,7 @@ import { User } from "../api/backend/users";
 import { CSSProperties, use, useEffect, useState } from "react";
 import UserDialogueInfo from "./userPermissionsDialog";
 import toast from "react-hot-toast";
+import { Spinner } from "../utils";
 
 export default function UsersList() {
   const router = useRouter();
@@ -28,7 +29,6 @@ export default function UsersList() {
   if (session.status === "unauthenticated" || !session.data?.user.admin) return redirect("/");
   
   
-  if (isLoading) return <p>Loading...</p>
   if (!users) {
     toast.error("Failed to get users.");
     return <></>
@@ -62,6 +62,9 @@ export default function UsersList() {
 
   return (
     <>
+      {
+      isLoading ? <Spinner/> : (
+      
       <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
         {users.sort(sortUsers).map((user) => (
           <div key={user.id} className="border-[1px] border-black flex flex-col items-center w-4/12" style = {getUserBannerStyle(user)}>
@@ -91,14 +94,15 @@ export default function UsersList() {
         { showModal &&
           showModalUser &&
           <UserDialogueInfo
-            user={showModalUser}
-            closeModal={() => {
-              setShowModal(false);
-              setShowModalUser(null);
-            }}
+          user={showModalUser}
+          closeModal={() => {
+            setShowModal(false);
+            setShowModalUser(null);
+          }}
           />
         }
       </div>
+      )}
     </>
   );
 }
