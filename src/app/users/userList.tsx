@@ -12,13 +12,11 @@ export default function UsersList() {
   const router = useRouter();
   const session = useSession();
   const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [showModalUser, setShowModalUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   
   useEffect(() => {
-    setLoading(true);
-
     endpoints.users.getAll()
       .then((users) => {
         setUsers(users)

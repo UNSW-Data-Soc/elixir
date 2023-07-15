@@ -1,4 +1,4 @@
-import { callFetch } from "./endpoints";
+import { BACKEND_URL, callFetch } from "./endpoints";
 
 export type userLevels = "member" | "moderator" | "administrator";
 export interface User {
@@ -56,9 +56,44 @@ async function updateYearsActive(user_id: string, years_active: number[]): Promi
   })) as User;
 };
 
+async function updateProfile(user_id: string, email: string, name: string, about: string): Promise<User> {
+  return (await callFetch({
+    route: `/user`,
+    method: "PUT",
+    authRequired: true,
+    body: JSON.stringify({
+      id: user_id,
+      email,
+      name,
+      about
+    }),
+  })) as User;
+};
+
+
+async function uploadProfilePicture(user_id: string, photo: Blob): Promise<{id: string}> {
+  const formData = new FormData();
+  formData.append("user_id", user_id);
+  formData.append("photo", photo);
+
+  return await callFetch({
+    route: `/file/user`,
+    method: "POST",
+    authRequired: true,
+    body: formData
+  }, false) as {id: string};
+}
+
+function getUserProfilePicture(user_id: string): string {
+  return `${BACKEND_URL}/file/user?user_id=${user_id}`;
+}
+
 export const users = {
   get,
   getAll,
   updateUserAccessLevel,
   updateYearsActive,
+  updateProfile,
+  uploadProfilePicture,
+  getUserProfilePicture,
 };
