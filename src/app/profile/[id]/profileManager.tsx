@@ -21,6 +21,7 @@ export default function ProfileManager(props: { user_id: string }) {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [about, setAbout] = useState("");
+    const [profilePicURL, setProfilePicURL] = useState("");
 
     useEffect(() => {
       endpoints.users.get(props.user_id).then((user) => {
@@ -33,6 +34,7 @@ export default function ProfileManager(props: { user_id: string }) {
         setEmail(user.email);
         setName(user.name);
         setAbout(user.about);
+        setProfilePicURL(endpoints.users.getUserProfilePicture(user.id));
         setLoading(false);
       });
     }, []);
@@ -83,6 +85,8 @@ export default function ProfileManager(props: { user_id: string }) {
         }
 
         toast.success("Photo uploaded successfully");
+        // append timestamp to update displayed photo immediately and bypass cache policy
+        setProfilePicURL(endpoints.users.getUserProfilePicture(user.id) + `&timestamp${Date.now()}`);
       } else {
         toast.error("Please upload a valid file!")
       }
@@ -96,22 +100,27 @@ export default function ProfileManager(props: { user_id: string }) {
         {
           user && (
             <div className="container m-auto flex flex-col">
-              <div className="container m-auto flex flex-row justify-between gap-5 p-10 flex-wrap ">
+              <div className="container m-auto flex flex-row justify-between flex-wrap">
                 <div>
-                  <h1 className="text-5xl font-semibold">{user.name}</h1>
+                  <h1 className="py-3 text-5xl font-semibold">{user.name}</h1>
                   <div>
                     <p className="text-1xl opacity-50">Registered on {dayjs(Date.parse(user.registration_time)).toLocaleString()}</p>
                     <p className="text-1xl opacity-50">{user.access_level.toUpperCase()}</p>
                   </div>
                 </div>
-                <Image
-                  className="border-4 outline-double"
-                  src={endpoints.users.getUserProfilePicture(user.id)}
-                  alt="Profile picture"
-                  placeholder="empty"
-                  width={500}
-                  height={500}
-                />
+                <div className="flex flex-wrap justify-center">
+                  <div className="w-6/12">
+                    <Image
+                      src={profilePicURL}
+                      className="shadow rounded max-w-full h-auto align-middle border-none"
+                      alt="Profile picture"
+                      placeholder="empty"
+                      
+                      width={500}
+                      height={500}
+                    />
+                  </div>
+                </div>
               </div>
               <p className="py-5  text-2xl font-semibold">Email</p>
               <input
