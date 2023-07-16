@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { logout } from "./api/auth/[...nextauth]/auth";
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { logout } from './api/auth/[...nextauth]/auth';
 
 import {
   ArrowLeftOnRectangleIcon,
@@ -12,7 +12,7 @@ import {
   ChatBubbleBottomCenterIcon,
   HomeIcon,
   UserCircleIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline';
 
 const Navbar = () => {
   const router = useRouter();
@@ -24,88 +24,98 @@ const Navbar = () => {
     }
     const success = await logout();
     if (success) {
-      router.push("/");
+      router.push('/');
     }
   };
 
   return (
-    <nav className="w-full z-50 text-black relative shadow-xl transition-all bg-white flex flex-row justify-between">
-      <div className="flex">
-        <Link href="/" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
-            <HomeIcon className="h-6 w-6" />
+    <nav className='w-full z-50 text-black relative shadow-xl transition-all bg-white flex flex-row justify-between'>
+      <div className='flex'>
+        <Link href='/' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
+            <HomeIcon className='h-6 w-6' />
             <span>Home</span>
           </button>
         </Link>
-        <Link href="/sponsorships" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+        {/* TODO: Show only when user is authenticated */}
+        {/* {session.status === 'authenticated' && ( */}
+        <Link href='/companies' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
+            <span>Companies</span>
+          </button>
+        </Link>
+        {/* )} */}
+        <Link href='/sponsorships' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
+            {/* TOOD: Change to appropriate icons */}
+            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
             <span>Sponsors</span>
           </button>
         </Link>
-        <Link href="/events" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+        <Link href='/events' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
             <span>Events</span>
           </button>
         </Link>
-        <Link href="/jobs" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+        <Link href='/jobs' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
             <span>Jobs</span>
           </button>
         </Link>
-        <Link href="/blogs" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+        <Link href='/blogs' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
             <span>Blogs</span>
           </button>
         </Link>
-        <Link href="/resources" className="">
-          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+        <Link href='/resources' className=''>
+          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
             {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className="h-6 w-6" />
+            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
             <span>Resources</span>
           </button>
         </Link>
       </div>
-      <div className="flex flex-row">
-        {session.status === "unauthenticated" && (
+      <div className='flex flex-row'>
+        {session.status === 'unauthenticated' && (
           <>
-            <Link href="/auth/login" className="">
-              <button className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3">
-                <ArrowRightOnRectangleIcon className="h-6 w-6" />
+            <Link href='/auth/login' className=''>
+              <button className='hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3'>
+                <ArrowRightOnRectangleIcon className='h-6 w-6' />
                 <span>Login</span>
               </button>
             </Link>
-            <Link href="/auth/register" className="">
-              <button className="hover:bg-[#ddd] p-5 transition-all border-l border-l-black flex flex-row gap-3">
-                <BoltIcon className="h-6 w-6" />
+            <Link href='/auth/register' className=''>
+              <button className='hover:bg-[#ddd] p-5 transition-all border-l border-l-black flex flex-row gap-3'>
+                <BoltIcon className='h-6 w-6' />
                 <span>Register</span>
               </button>
             </Link>
           </>
         )}
-        {session.status === "authenticated" && (
+        {session.status === 'authenticated' && (
           <>
-            <p className="p-5 flex flex-row gap-3">
-              <UserCircleIcon className="h-6 w-6" />
+            <p className='p-5 flex flex-row gap-3'>
+              <UserCircleIcon className='h-6 w-6' />
               <span>
                 <span>Logged in as </span>
-                <span className="text-[#555] italic">
+                <span className='text-[#555] italic'>
                   {session.data?.user?.email}
                 </span>
               </span>
             </p>
             <button
-              className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3 border-l-black border-l"
+              className='hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3 border-l-black border-l'
               onClick={logoutClick}
             >
-              <ArrowLeftOnRectangleIcon className="h-6 w-6" />
+              <ArrowLeftOnRectangleIcon className='h-6 w-6' />
               <span>Logout</span>
             </button>
           </>
