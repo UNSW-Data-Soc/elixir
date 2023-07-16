@@ -9,14 +9,17 @@ const CompanyForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let form = new FormData();
+    // form.append("photo", photo);
+    form.append("name", name);
     const res = await fetch('/api/company', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         authRequired: true,
         accessToken: token,
       },
-      body: JSON.stringify({ name, icon, url, description }),
+      body: form,
     });
     const data = await res.json();
     console.log(data);
