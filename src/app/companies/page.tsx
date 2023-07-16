@@ -13,6 +13,8 @@ export default function Companies() {
 
   const session = useSession();
 
+  const BACKEND_URL = 'http://127.0.0.1:8000';
+
   const demoCompany = {
     id: 1,
     name: 'NAB',
@@ -32,7 +34,7 @@ export default function Companies() {
 
   const fetchCompanies = async () => {
     console.log('fetching companies');
-    const res = await fetch('api/company');
+    const res = await fetch(`${BACKEND_URL}/company`);
     const data = await res.json();
     console.log(data);
   };
@@ -40,6 +42,15 @@ export default function Companies() {
   useEffect(() => {
     fetchCompanies();
   }, []);
+
+  const deleteCompany = async (id) => {
+    console.log('deleting company');
+    const res = await fetch(`${BACKEND_URL}/company/${id}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    console.log(data);
+  };
 
   return (
     <main className='bg-white '>
@@ -85,7 +96,7 @@ export default function Companies() {
               <button
                 className='items-end'
                 onClick={() => {
-                  console.log('delete');
+                  deleteCompany(company.id);
                 }}
               >
                 <XMarkIcon className='h-6 w-6' />
