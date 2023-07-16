@@ -4,6 +4,34 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import BlogContentEditor from "../blogContentEditor";
 
+export const textBlockTypes = ["h1", "h2", "h3", "p", "quote"] as const;
+type TextBlockType = (typeof textBlockTypes)[number];
+
+export type BlogBlock = {
+  id: string;
+  order: number;
+} & (
+  | {
+      type: "image";
+      caption?: string;
+      imageId?: string;
+      url?: string;
+      width: number;
+      alignment: "left" | "center" | "right";
+    }
+  | {
+      type: TextBlockType;
+      content: string;
+    }
+  | {
+      type: "embed";
+      script: string;
+    }
+  | {
+      type: "divider";
+    }
+);
+
 export default function BlogsEditor({ params }: { params: { slug: string } }) {
   const blogSlug = params.slug;
   const router = useRouter();

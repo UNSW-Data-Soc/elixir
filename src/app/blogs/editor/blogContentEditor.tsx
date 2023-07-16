@@ -1,36 +1,11 @@
+"use client";
+
 import { createContext, useEffect } from "react";
 import toast from "react-hot-toast";
 import BlogBlockWrapper from "./blogBlockWrapper";
 import { useSessionStorage } from "usehooks-ts";
 import { endpoints } from "@/app/api/backend/endpoints";
-
-export const textBlockTypes = ["h1", "h2", "h3", "p", "quote"] as const;
-type TextBlockType = (typeof textBlockTypes)[number];
-
-export type BlogBlock = {
-  id: string;
-  order: number;
-} & (
-  | {
-      type: "image";
-      caption?: string;
-      imageId?: string;
-      url?: string;
-      width: number;
-      alignment: "left" | "center" | "right";
-    }
-  | {
-      type: TextBlockType;
-      content: string;
-    }
-  | {
-      type: "embed";
-      script: string;
-    }
-  | {
-      type: "divider";
-    }
-);
+import { BlogBlock } from "./[slug]/page";
 
 export type EditorContext = {
   getters: {

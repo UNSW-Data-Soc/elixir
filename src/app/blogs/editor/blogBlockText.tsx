@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { BlogBlock } from "./blogContentEditor";
+import { type BlogBlock } from "./[slug]/page";
 import ContentEditable from "react-contenteditable";
 import { EditorContext } from "./blogContentEditor";
 

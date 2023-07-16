@@ -27,6 +27,7 @@ export default function BlogCreate() {
       title: blogTitle.current,
       author: blogAuthor.current,
       body: JSON.stringify({}),
+      public: false,
     });
 
     if (!blog) {
@@ -34,7 +35,7 @@ export default function BlogCreate() {
       return;
     }
 
-    router.push(`/blogs/editor/${blog.id}`);
+    router.push(`/blogs/editor/${blog.slug}`);
   };
 
   return (

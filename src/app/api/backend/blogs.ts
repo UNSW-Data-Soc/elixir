@@ -8,7 +8,7 @@ export interface Blog {
   title: string;
   body: string;
   author: string;
-  public: true;
+  public: boolean;
   id: string;
   slug: string;
   created_time: "2023-06-16T10:59:09.059Z";
@@ -27,13 +27,14 @@ interface CreateBlog {
   title: string;
   author: string;
   body: string;
+  public: boolean;
 }
 const create: (blog: CreateBlog) => Promise<Blog> = async (blog: CreateBlog) => {
   return await callFetch({
     method: "POST",
     route: "/blog",
     authRequired: true,
-    body: JSON.stringify({ ...blog, public: true }),
+    body: JSON.stringify({ ...blog }),
   });
 };
 
@@ -49,6 +50,7 @@ const get = async ({ slug }: { slug: string }) => {
     body: z.string(),
     author: z.string(),
     public: z.boolean(),
+    slug: z.string(),
     id: z.string(),
     creator: z.string(),
     created_time: z.string(),

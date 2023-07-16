@@ -1,15 +1,17 @@
 import { endpoints } from "../api/backend/endpoints";
 import { type Blog } from "../api/backend/blogs";
 
+// import { convert as htmlToTextConvert } from "html-to-text";
+
 import BlogsAddCard from "./blogsAddCard";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-import { remark } from "remark";
-import strip from "strip-markdown";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
+// import { type BlogBlock, textBlockTypes } from "./editor/blogContentEditor";
 
 export default function Blog() {
   return (
@@ -30,10 +32,13 @@ export default function Blog() {
 }
 
 async function BlogsContainer() {
-  const blogs = await endpoints.blogs.getAll();
+  let blogs = await endpoints.blogs.getAll();
+  const session = await getServerSession();
+
+  if (!session) blogs = blogs.filter((blog) => blog.public);
 
   return (
-    <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
+    <div className="container m-auto flex gap-8 p-10 flex-wrap justify-center">
       <BlogsAddCard />
       {!!blogs && blogs.map((blog) => <BlogCard key={blog.id} {...blog} />)}
     </div>
@@ -44,11 +49,16 @@ async function BlogCard(blog: Blog) {
   const session = await getServerSession();
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
 
-  // const strippedBody = String(await remark().use(strip).process(blog.body));
+  // const strippedBody = htmlToTextConvert(
+  //   (Object.values(JSON.parse(blog.body)) as BlogBlock[])
+  //     .filter((b) => b.type in textBlockTypes)
+  //     .map((b) => b.content)
+  //     .join("\n")
+  // );
 
   return (
-    <div className="border-[1px] border-black flex flex-col items-center w-4/12">
-      <a href={`/blogs/${blog.slug}`}>
+    <div className="border-[1px] border-black flex flex-col items-center w-4/12 hover:scale-105 hover:shadow-xl transition-all">
+      <a href={`/blogs/${blog.slug}`} className="w-full">
         <div
           className="w-full relative h-[200px]"
           style={{
@@ -73,6 +83,8 @@ async function BlogCard(blog: Blog) {
               Edit
             </a>
           )}
+          {!blog.public && <p className="text-red-500">Publish</p>}
+          {!!session && !!blog.public && <p className="text-red-500">Unpublish</p>}
         </div>
       </a>
     </div>

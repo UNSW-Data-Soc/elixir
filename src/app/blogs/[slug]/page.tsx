@@ -3,13 +3,21 @@ import { endpoints } from "@/app/api/backend/endpoints";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import BlogContent from "./blogContent";
-import { BlogBlock } from "../editor/blogContentEditor";
+import { BlogBlock } from "../editor/[slug]/page";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 dayjs.extend(relativeTime);
 
 export default async function BlogPage({ params }: { params: { slug: string } }) {
+  const session = await getServerSession();
+
   const slug = params.slug;
 
   const blog = await endpoints.blogs.get({ slug });
+
+  if (!session && !blog.public) {
+    return redirect("/auth/login");
+  }
 
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
   const editedDate = dayjs(Date.parse(blog.last_edit_time)).fromNow();

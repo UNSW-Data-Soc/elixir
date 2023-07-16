@@ -1,6 +1,6 @@
 import sanitizeHtml from "sanitize-html";
 
-import { BlogBlock } from "../editor/blogContentEditor";
+import { BlogBlock } from "../editor/[slug]/page";
 import Image from "next/image";
 
 const filterBadContent = (content: BlogBlock[]) => {
