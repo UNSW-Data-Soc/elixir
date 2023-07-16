@@ -47,7 +47,7 @@ export default function BlogBlockImage({
 
   return (
     <div
-      className="w-full flex flex-row justify-between"
+      className="w-full flex flex-row justify-between relative"
       onMouseOver={() => setShowImageEditButton(true)}
       onMouseLeave={() => setShowImageEditButton(false)}
     >
@@ -56,17 +56,30 @@ export default function BlogBlockImage({
       </div> */}
       {!!imageInfo.url && (
         <div className="mx-auto" style={{ width: `${imageInfo.width}%` }}>
-          <img src={imageInfo.url} alt={imageInfo.caption ?? ""} />
-          {!!imageInfo.caption && <p className="mx-auto">{imageInfo.caption}</p>}
+          <img
+            src={imageInfo.url}
+            alt={imageInfo.caption ?? ""}
+            className={`mt-5 w-full ${imageInfo.caption ? "mb-1" : "mb-5"} text-${
+              imageInfo.alignment
+            }`}
+          />
+          {!!imageInfo.caption && <p className="text-[#555] italic mb-5">{imageInfo.caption}</p>}
         </div>
       )}
       {!!imageInfo.imageId && !imageInfo.url && (
         <>
           <p className="italic bg-[#eee]">Image Uploaded. See preview to view.</p>
-          {!!imageInfo.caption && <p className="mx-auto">{imageInfo.caption}</p>}
+          {!!imageInfo.caption && <p className="text-[#555] italic mb-5">{imageInfo.caption}</p>}
         </>
       )}
-      {!!showImageEditButton && <button onClick={() => setShowImageEditor(true)}>edit</button>}
+      <button
+        className={`uppercase tracking-wide text-xl absolute w-full h-full bg-[#eeec] transition-all ${
+          showImageEditButton ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={() => setShowImageEditor(true)}
+      >
+        edit
+      </button>
       {!!showImageEditor && <BlogBlockImageEditor id={id} setShow={setShowImageEditor} />}
     </div>
   );
@@ -88,6 +101,7 @@ const BlogBlockImageEditor = ({
   const [imageUrl, setImageUrl] = useState<string>(imageInfo.url ?? "");
   const [imageCaption, setImageCaption] = useState<string>(imageInfo.caption ?? "");
   const [imageWidth, setImageWidth] = useState<number>(imageInfo.width);
+  const [imageId, setImageId] = useState<string>(imageInfo.imageId ?? "");
 
   const clickAwayRef = useClickAway(() => setShow(false));
 
@@ -104,6 +118,7 @@ const BlogBlockImageEditor = ({
           url: imageUrl,
           caption: imageCaption,
           width: imageWidth,
+          imageId,
         },
       };
     });
@@ -119,6 +134,14 @@ const BlogBlockImageEditor = ({
       >
         <label htmlFor="url">Image Upload</label>
         <BlogBlockImageUploader id={id} />
+        <label htmlFor="url">(DEV USE ONLY) Image Id</label>
+        <input
+          type="text"
+          name="url"
+          value={imageId}
+          onChange={(e) => setImageId(e.target.value)}
+          className="p-2 border rounded-lg outline-none focus:border-[#333] transition-all"
+        />
         <p className="text-center"> --- OR --- </p>
         <label htmlFor="url">Image URL</label>
         <input
@@ -161,10 +184,11 @@ const BlogBlockImageUploader = ({ id }: { id: string }) => {
   const editorContext = useContext(EditorContext);
   if (!editorContext) throw new Error("EditorContext not found"); // make typescript happy
   const blogId = editorContext.getters.blogId;
-  const blockInfo = editorContext.getters.blockInfo;
+  const blockInfo = editorContext.getters.blockInfo[id];
+  if (!blockInfo || blockInfo.type !== "image") throw new Error("Block is not an image"); // make typescript happy
   const setBlockInfo = editorContext.setters.setBlockInfo;
 
-  const [imageId, setImageId] = useState<string>(blockInfo[id]?.id ?? "");
+  const [imageId, setImageId] = useState<string>(blockInfo.imageId ?? "");
 
   useEffect(() => {
     setBlockInfo((prev) => {

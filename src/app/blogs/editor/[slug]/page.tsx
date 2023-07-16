@@ -17,7 +17,8 @@ export default function BlogsEditor({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <main className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12">
+    // <main className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12">
+    <main className="p-12">
       <BlogContentEditor blogSlug={blogSlug} />
     </main>
   );

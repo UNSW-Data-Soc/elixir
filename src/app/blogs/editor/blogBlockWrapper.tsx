@@ -56,11 +56,13 @@ const BlogBlockWrapper = ({ id }: BlogBlockProps) => {
 
   return (
     <div
-      className="items-center relative flex flex-row gap-2"
+      className="items-center relative flex flex-row gap-2 w-full sm:ml-[10%] md:ml-[12.5%] lg:ml-[17.5%] xl:ml-[20%] 2xl:ml-[30%]"
       onMouseOver={() => setShowMenu(true)}
       onMouseLeave={() => setShowMenu(false)}
     >
-      {blockComponent}
+      <div className="sm:px-0 sm:w-[80%] md:w-[75%] lg:w-[65%] xl:w-[60%] 2xl:w-[40%]">
+        {blockComponent}
+      </div>
       <BlogBlockMenuToggle id={id} show={showMenu} />
     </div>
   );
@@ -76,7 +78,7 @@ const BlogBlockMenuToggle = ({ id, show }: { id: string; show: boolean }) => {
   const clickAwayRef = useClickAway(() => setShowMenu(false));
 
   return (
-    <div ref={clickAwayRef}>
+    <div ref={clickAwayRef} className="relative">
       <button
         onClick={() => setShowMenu((prev) => !prev)}
         className={`${
@@ -104,7 +106,41 @@ const BlogBlockMenu = ({ id }: { id: string }) => {
       return prev;
     });
   };
-  console.log(id);
+
+  const moveBlockUp = () => {
+    setBlockInfo((prev) => {
+      const blockOrder = prev[id].order;
+      const prevOrder = Math.max(
+        ...Object.values(prev)
+          .map((block) => block.order)
+          .filter((order) => order < blockOrder)
+      );
+      const prevId = Object.keys(prev).find((key) => prev[key].order === prevOrder);
+      if (!prevId) return prev;
+      const temp = prev[prevId].order;
+      prev[prevId].order = prev[id].order;
+      prev[id].order = temp;
+      return prev;
+    });
+  };
+
+  const moveBlockDown = () => {
+    setBlockInfo((prev) => {
+      const blockOrder = prev[id].order;
+      const nextOrder = Math.max(
+        ...Object.values(prev)
+          .map((block) => block.order)
+          .filter((order) => order > blockOrder)
+      );
+      const nextId = Object.keys(prev).find((key) => prev[key].order === nextOrder);
+      if (!nextId) return prev;
+      const temp = prev[nextId].order;
+      prev[nextId].order = prev[id].order;
+      prev[id].order = temp;
+      return prev;
+    });
+  };
+
   return (
     <div className="absolute left-[100%] top-[0%] ml-2 z-30 shadow-md border-[#ddd] bg-white border rounded-md overflow-hidden active:scale-95 transition-all">
       <button
@@ -113,11 +149,17 @@ const BlogBlockMenu = ({ id }: { id: string }) => {
       >
         delete
       </button>
-      <button className="bg-[#eee] hover:bg-[#e3e3e3] py-2 px-5 transition-all">
-        other action
+      <button
+        className="bg-[#eee] hover:bg-[#e3e3e3] py-2 px-5 transition-all"
+        onClick={moveBlockUp}
+      >
+        move up
       </button>
-      <button className="bg-[#eee] hover:bg-[#e3e3e3] py-2 px-5 transition-all">
-        other action
+      <button
+        className="bg-[#eee] hover:bg-[#e3e3e3] py-2 px-5 transition-all"
+        onClick={moveBlockDown}
+      >
+        move down
       </button>
     </div>
   );

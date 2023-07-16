@@ -36,9 +36,9 @@ const BlogBlockText = ({ id, type, initialContent = "" }: BlogBlockTextProps) =>
 
   return (
     <div
-      className="flex flex-row gap-2 flex-grow"
+      className="flex flex-row gap-2 flex-grow w-full"
       onMouseOver={() => setShowSwitchOption(true)}
-      onMouseLeave={() => setShowSwitchOption(false)}
+      // onMouseLeave={() => setShowSwitchOption(false)}
     >
       <ContentEditable
         html={content.current}

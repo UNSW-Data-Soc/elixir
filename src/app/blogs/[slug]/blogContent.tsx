@@ -3,8 +3,16 @@ import sanitizeHtml from "sanitize-html";
 import { BlogBlock } from "../editor/blogContentEditor";
 import Image from "next/image";
 
+const filterBadContent = (content: BlogBlock[]) => {
+  return content.filter((block) => {
+    if (!block) return false;
+    if (block.type === "image" && !block.url && !block.imageId) return false;
+    return true;
+  });
+};
+
 export default function BlogContent({ content }: { content: BlogBlock[] }) {
-  const contentJSX = content.map((block) => {
+  const contentJSX = filterBadContent(content).map((block) => {
     if (!block) return <></>;
 
     switch (block.type) {

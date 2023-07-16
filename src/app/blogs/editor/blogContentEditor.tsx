@@ -130,25 +130,27 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
 
   return (
     <EditorContext.Provider value={editorContext}>
-      <input
-        type="text"
-        placeholder="title"
-        onChange={(e) => setBlogTitle(e.target.value)}
-        className="text-4xl w-full border-b border-black py-3 outline-none mb-4"
-        value={blogTitle}
-      />
-      <input
-        type="text"
-        placeholder="author"
-        onChange={(e) => setBlogAuthor(e.target.value)}
-        className="text-xl w-full border-b border-black py-2 outline-none mb-4"
-        value={blogAuthor}
-      />
+      <div className="sm:px-0 sm:w-[80%] md:w-[75%] lg:w-[65%] xl:w-[60%] 2xl:w-[40%] mx-auto mb-10">
+        <input
+          type="text"
+          placeholder="title"
+          onChange={(e) => setBlogTitle(e.target.value)}
+          className="w-full text-6xl font-light tracking-tighter outline-none border border-transparent hover:border-[#eee] p-3 focus:border-[#aaa] transition-all"
+          value={blogTitle}
+        />
+        <input
+          type="text"
+          placeholder="author"
+          onChange={(e) => setBlogAuthor(e.target.value)}
+          className="w-full text-[#555] text-xl font-light p-3 outline-none border border-transparent hover:border-[#eee] focus:border-[#aaa] transition-all"
+          value={blogAuthor}
+        />
+      </div>
       <div className="flex flex-col gap-2">
         {Object.values(blockInfo)
           .sort((a, b) => a.order - b.order)
           .map((blog) => blogBlockToComponent(blog))}
-        <div className="flex gap-2">
+        <div className="flex gap-2 sm:px-0 sm:w-[80%] md:w-[75%] lg:w-[65%] xl:w-[60%] 2xl:w-[40%] mx-auto my-10">
           <button
             className="p-3 w-full border rounded-lg font-light text-[#ddd] hover:text-[#333] hover:border-[#333] transition-all text-2xl"
             onClick={addTextBlock}
