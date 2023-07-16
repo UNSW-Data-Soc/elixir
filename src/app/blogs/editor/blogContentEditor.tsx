@@ -13,24 +13,28 @@ export type BlogBlock = {
 } & (
   | {
       type: "image";
-      url?: string;
       caption?: string;
+      imageId?: string;
+      url?: string;
+      width: number;
     }
   | {
       type: TextBlockType;
       content: string;
     }
-  | ({
+  | {
       type: "embed";
       script: string;
-    } & {
+    }
+  | {
       type: "divider";
-    })
+    }
 );
 
 export type EditorContext = {
   getters: {
     blockInfo: { [key: string]: BlogBlock };
+    blogId: string;
   };
   setters: {
     setBlockInfo: React.Dispatch<React.SetStateAction<{ [key: string]: BlogBlock }>>;
@@ -64,19 +68,18 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
   // on change of content, send data to backend
   useEffect(() => {
     const updateDatabase = async () => {
-      setTimeout(() => {}, 3000);
-    };
-    console.log(blockInfo);
-    toast.loading("Saving...", { id: "saving" });
-
-    updateDatabase().then(async () => {
-      toast.dismiss("saving");
       await endpoints.blogs.update({
         id: blogId,
         body: JSON.stringify(blockInfo),
         author: blogAuthor,
         title: blogTitle,
       });
+    };
+    console.log(blockInfo);
+    toast.loading("Saving...", { id: "saving" });
+
+    updateDatabase().then(async () => {
+      toast.dismiss("saving");
     });
   }, [blogId, blockInfo, blogAuthor, blogTitle]);
 
@@ -84,6 +87,7 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
   const editorContext = {
     getters: {
       blockInfo,
+      blogId,
     },
     setters: {
       setBlockInfo,
@@ -98,7 +102,7 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
         [blockId]: {
           id: blockId,
           type: "p",
-          order: Math.max(...Object.values(blockInfo).map((b) => b.order)) + 1,
+          order: (Math.max(...Object.values(blockInfo).map((b) => b.order)) ?? 0) + 1,
           content: "",
         },
       };
@@ -113,7 +117,8 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
         [blockId]: {
           id: blockId,
           type: "image",
-          order: Math.max(...Object.values(blockInfo).map((b) => b.order)) + 1,
+          order: (Math.max(...Object.values(blockInfo).map((b) => b.order)) ?? 0) + 1,
+          width: 80, // default image width
         },
       };
     });
@@ -124,14 +129,16 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
       <input
         type="text"
         placeholder="title"
-        onBlur={(e) => setBlogTitle(e.target.value)}
+        onChange={(e) => setBlogTitle(e.target.value)}
         className="text-4xl w-full border-b border-black py-3 outline-none mb-4"
+        value={blogTitle}
       />
       <input
         type="text"
         placeholder="author"
-        onBlur={(e) => setBlogAuthor(e.target.value)}
+        onChange={(e) => setBlogAuthor(e.target.value)}
         className="text-xl w-full border-b border-black py-2 outline-none mb-4"
+        value={blogAuthor}
       />
       <div className="flex flex-col gap-2">
         {Object.values(blockInfo)
@@ -157,6 +164,7 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
 };
 
 const blogBlockToComponent = (block: BlogBlock) => {
+  console.log("AHHH", block);
   return <BlogBlockWrapper id={block.id} key={block.id} />;
 };
 

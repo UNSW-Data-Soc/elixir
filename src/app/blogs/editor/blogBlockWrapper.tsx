@@ -10,6 +10,7 @@ type BlogBlockProps = {
 };
 
 const BlogBlockWrapper = ({ id }: BlogBlockProps) => {
+  console.log("ALKSDJHNKASJD", id);
   // get necessary data from context
   const editorContext = useContext(EditorContext);
   if (!editorContext) throw new Error("editorContext is not defined"); // TODO: error to make typescript happy
@@ -18,25 +19,36 @@ const BlogBlockWrapper = ({ id }: BlogBlockProps) => {
   // states
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
-  let blockComponent = <>UNKNOWN BLOCK TYPE</>;
+  let blockComponent = <p>UNKNOWN BLOCK TYPE</p>;
+  if (!blockInfo) return <p>ERROR: UNDEFINED BLOCK</p>;
   switch (blockInfo.type) {
     case "h1":
-      blockComponent = <BlogBlockText id={id} type="h1" initialContent={blockInfo.content} />;
+      blockComponent = (
+        <BlogBlockText key={id} id={id} type="h1" initialContent={blockInfo.content} />
+      );
       break;
     case "h2":
-      blockComponent = <BlogBlockText id={id} type="h2" initialContent={blockInfo.content} />;
+      blockComponent = (
+        <BlogBlockText key={id} id={id} type="h2" initialContent={blockInfo.content} />
+      );
       break;
     case "h3":
-      blockComponent = <BlogBlockText id={id} type="h3" initialContent={blockInfo.content} />;
+      blockComponent = (
+        <BlogBlockText key={id} id={id} type="h3" initialContent={blockInfo.content} />
+      );
       break;
     case "p":
-      blockComponent = <BlogBlockText id={id} type="p" initialContent={blockInfo.content} />;
+      blockComponent = (
+        <BlogBlockText key={id} id={id} type="p" initialContent={blockInfo.content} />
+      );
       break;
     case "quote":
-      blockComponent = <BlogBlockText id={id} type="quote" initialContent={blockInfo.content} />;
+      blockComponent = (
+        <BlogBlockText key={id} id={id} type="quote" initialContent={blockInfo.content} />
+      );
       break;
     case "image":
-      blockComponent = <BlogBlockImage id={id} initialUrl={blockInfo.url} />;
+      blockComponent = <BlogBlockImage key={id} id={id} initialUrl={blockInfo.url} />;
       break;
     default:
       break;

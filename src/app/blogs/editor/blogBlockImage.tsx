@@ -4,6 +4,7 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { EditorContext } from "./blogContentEditor";
@@ -11,6 +12,7 @@ import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import useClickAway from "@/app/hooks/useClickAway";
 import { endpoints } from "@/app/api/backend/endpoints";
+import { image } from "@/app/api/backend/file";
 
 export default function BlogBlockImage({
   id,
@@ -27,7 +29,7 @@ export default function BlogBlockImage({
   const [showImageEditor, setShowImageEditor] = useState<boolean>(false);
   const [showImageEditButton, setShowImageEditButton] = useState<boolean>(false);
 
-  if (!imageInfo.url) {
+  if (!imageInfo.url && !imageInfo.imageId) {
     return (
       <>
         <button
@@ -42,6 +44,9 @@ export default function BlogBlockImage({
     );
   }
 
+  if (imageInfo.imageId && imageInfo.imageId.length > 0) {
+  }
+
   return (
     <div
       className="w-full flex flex-row justify-between"
@@ -51,7 +56,17 @@ export default function BlogBlockImage({
       {/* <div className="w-full p-2">
         url is {imageInfo.url} and caption is {imageInfo.caption}
       </div> */}
-      <img src={imageInfo.url} className="w-[80%]" alt={imageInfo.caption ?? ""} />
+      {!!imageInfo.url && (
+        <img
+          src={imageInfo.url}
+          className="mx-auto"
+          alt={imageInfo.caption ?? ""}
+          style={{ width: `${imageInfo.width}%` }}
+        />
+      )}
+      {!!imageInfo.imageId && !imageInfo.url && (
+        <p className="italic bg-[#eee]">Image Uploaded. See preview to view.</p>
+      )}
       {!!showImageEditButton && <button onClick={() => setShowImageEditor(true)}>edit</button>}
       {!!showImageEditor && <BlogBlockImageEditor id={id} setShow={setShowImageEditor} />}
     </div>
@@ -75,6 +90,8 @@ const BlogBlockImageEditor = ({
   const [imageCaption, setImageCaption] = useState<string>(imageInfo.caption ?? "");
 
   const clickAwayRef = useClickAway(() => setShow(false));
+
+  console.log("IMAGE BLOCK ID IS", id);
 
   const updateImage: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -100,7 +117,7 @@ const BlogBlockImageEditor = ({
         ref={clickAwayRef}
       >
         <label htmlFor="url">Image Upload</label>
-        <BlogBlockImageUploader />
+        <BlogBlockImageUploader id={id} />
         <p className="text-center"> --- OR --- </p>
         <label htmlFor="url">Image URL</label>
         <input
@@ -131,15 +148,36 @@ const BlogBlockImageEditor = ({
   );
 };
 
-const BlogBlockImageUploader = () => {
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    // Do something with the files
-    const imageRes = await endpoints.blogs.image.upload({
-      blogId: "TODO: CHANGE THIS",
-      file: acceptedFiles[0],
+const BlogBlockImageUploader = ({ id }: { id: string }) => {
+  const editorContext = useContext(EditorContext);
+  if (!editorContext) throw new Error("EditorContext not found"); // make typescript happy
+  const blogId = editorContext.getters.blogId;
+  const blockInfo = editorContext.getters.blockInfo;
+  const setBlockInfo = editorContext.setters.setBlockInfo;
+
+  const [imageId, setImageId] = useState<string>(blockInfo[id]?.id ?? "");
+
+  useEffect(() => {
+    setBlockInfo((prev) => {
+      return {
+        ...prev,
+        [id]: { ...prev[id], imageId },
+      };
     });
-    console.log(imageRes);
-  }, []);
+  }, [id, imageId, setBlockInfo]);
+
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      // Do something with the files
+      const imageRes = await endpoints.blogs.image.upload({
+        blogId,
+        file: acceptedFiles[0],
+      });
+      console.log(imageRes);
+      setImageId(imageRes.id);
+    },
+    [blogId]
+  );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (

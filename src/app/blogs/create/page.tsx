@@ -34,8 +34,6 @@ export default function BlogCreate() {
       return;
     }
 
-    alert(blog.id);
-
     router.push(`/blogs/editor/${blog.id}`);
   };
 

@@ -2,7 +2,6 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 import BlogContentEditor from "../blogContentEditor";
 
 export default function BlogsEditor({ params }: { params: { id: string } }) {

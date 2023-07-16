@@ -9,6 +9,7 @@ dayjs.extend(relativeTime);
 
 import { remark } from "remark";
 import strip from "strip-markdown";
+import { getServerSession } from "next-auth";
 
 export default function Blog() {
   return (
@@ -34,39 +35,46 @@ async function BlogsContainer() {
   return (
     <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
       <BlogsAddCard />
-      {blogs.map((blog) => (
-        <BlogCard key={blog.id} {...blog} />
-      ))}
+      {!!blogs && blogs.map((blog) => <BlogCard key={blog.id} {...blog} />)}
     </div>
   );
 }
 
 async function BlogCard(blog: Blog) {
+  const session = await getServerSession();
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
 
-  const strippedBody = String(await remark().use(strip).process(blog.body));
+  // const strippedBody = String(await remark().use(strip).process(blog.body));
 
   return (
     <div className="border-[1px] border-black flex flex-col items-center w-4/12">
-      <div
-        className="w-full relative h-[200px]"
-        style={{
-          backgroundImage: "url(/adrian.jpeg)",
-          backgroundOrigin: "content-box",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-        }}
-      ></div>
-      <div className="flex flex-col gap-3 p-5 items-center">
-        <h3 className="text-xl font-bold">{blog.title}</h3>
-        <p className="">
-          <span className="italic">{blog.author}</span>
-          <span className="mx-3">|</span>
-          <span>{createdDate}</span>
-        </p>
-        <p className="text-[#555]">{strippedBody.substring(0, 200)}...</p>
-      </div>
+      <a href={`/blogs/${blog.id}`}>
+        <div
+          className="w-full relative h-[200px]"
+          style={{
+            backgroundImage: "url(/adrian.jpeg)",
+            backgroundOrigin: "content-box",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        ></div>
+        <div className="flex flex-col gap-3 p-5 items-center">
+          <h3 className="text-xl font-bold">{blog.title}</h3>
+          <p className="">
+            <span className="italic">{blog.author}</span>
+            <span className="mx-3">|</span>
+            <span>{createdDate}</span>
+          </p>
+          {/* <p className="text-[#555]">{strippedBody.substring(0, 200)}...</p> */}
+
+          {!!session && (
+            <a href={`/blogs/editor/${blog.id}`} className="text-blue-500 hover:underline">
+              Edit
+            </a>
+          )}
+        </div>
+      </a>
     </div>
   );
 }
