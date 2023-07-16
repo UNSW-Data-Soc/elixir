@@ -2,7 +2,8 @@ import { auth } from "./auth";
 import { blogs } from "./blogs";
 import { getSession } from "next-auth/react";
 
-const BACKEND_URL = "http://127.0.0.1:8000";
+export const BACKEND_URL = "http://127.0.0.1:8000";
+// export const BACKEND_URL = process.env.BACKEND_URL;
 
 interface FetchArguments {
   route: string;

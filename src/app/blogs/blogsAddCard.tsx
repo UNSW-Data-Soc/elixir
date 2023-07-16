@@ -13,7 +13,7 @@ export default function BlogsAddCard() {
     return (
       <button
         className="border-[1px] border-black p-5 flex justify-center items-center sm:w-4/12"
-        onClick={() => router.push("/blogs/post")}
+        onClick={() => router.push("/blogs/create")}
       >
         <PlusIcon className="h-8 w-8" />
       </button>
