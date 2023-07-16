@@ -44,7 +44,7 @@ const BlogBlockText = ({ id, type, initialContent = "" }: BlogBlockTextProps) =>
         html={content.current}
         onChange={(e) => (content.current = e.target.value)}
         onBlur={contentUnblur}
-        className={`outline-none w-full focus:bg-[#f5f5f5] p-2 rounded-lg transition-all ${blogBlockTextStyle(
+        className={`text-justify outline-none w-full focus:bg-[#f5f5f5] p-2 rounded-lg transition-all ${blogBlockTextStyle(
           type
         )}`}
       />

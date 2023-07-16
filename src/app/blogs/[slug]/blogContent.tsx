@@ -63,7 +63,7 @@ export default function BlogContent({ content }: { content: BlogBlock[] }) {
               key={block.id}
               src={block.url ?? ""} // TODO: fix this
               alt={block.caption ?? ""}
-              className={`mt-5 w-full ${block.caption ? "mb-1" : "mb-5"}`}
+              className={`mt-5 w-full ${block.caption ? "mb-1" : "mb-5"} text-${block.alignment}`}
             />
             {!!block.caption && <p className="text-[#555] italic mb-5">{block.caption}</p>}
           </div>

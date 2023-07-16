@@ -10,6 +10,7 @@ export interface Blog {
   author: string;
   public: true;
   id: string;
+  slug: string;
   created_time: "2023-06-16T10:59:09.059Z";
   last_edit_time: "2023-06-16T10:59:09.059Z";
 }
@@ -36,9 +37,9 @@ const create: (blog: CreateBlog) => Promise<Blog> = async (blog: CreateBlog) => 
   });
 };
 
-const get = async ({ blogId }: { blogId: string }) => {
+const get = async ({ slug }: { slug: string }) => {
   const res = await callFetch({
-    route: `/blog?id=${blogId}`,
+    route: `/blog?slug=${slug}`,
     method: "GET",
     authRequired: false,
   });

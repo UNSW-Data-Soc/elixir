@@ -6,10 +6,10 @@ import BlogContent from "./blogContent";
 import { BlogBlock } from "../editor/blogContentEditor";
 dayjs.extend(relativeTime);
 
-export default async function BlogPage({ params }: { params: { id: string } }) {
-  const blogId = params.id;
+export default async function BlogPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug;
 
-  const blog = await endpoints.blogs.get({ blogId });
+  const blog = await endpoints.blogs.get({ slug });
 
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
   const editedDate = dayjs(Date.parse(blog.last_edit_time)).fromNow();

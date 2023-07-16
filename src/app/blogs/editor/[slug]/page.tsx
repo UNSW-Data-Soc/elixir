@@ -4,8 +4,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import BlogContentEditor from "../blogContentEditor";
 
-export default function BlogsEditor({ params }: { params: { id: string } }) {
-  const blogId = params.id;
+export default function BlogsEditor({ params }: { params: { slug: string } }) {
+  const blogSlug = params.slug;
   const router = useRouter();
   const session = useSession();
 
@@ -18,7 +18,7 @@ export default function BlogsEditor({ params }: { params: { id: string } }) {
 
   return (
     <main className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12">
-      <BlogContentEditor blogId={blogId} />
+      <BlogContentEditor blogSlug={blogSlug} />
     </main>
   );
 }

@@ -87,6 +87,7 @@ const BlogBlockImageEditor = ({
 
   const [imageUrl, setImageUrl] = useState<string>(imageInfo.url ?? "");
   const [imageCaption, setImageCaption] = useState<string>(imageInfo.caption ?? "");
+  const [imageWidth, setImageWidth] = useState<number>(imageInfo.width);
 
   const clickAwayRef = useClickAway(() => setShow(false));
 
@@ -102,6 +103,7 @@ const BlogBlockImageEditor = ({
           ...prev[id],
           url: imageUrl,
           caption: imageCaption,
+          width: imageWidth,
         },
       };
     });
@@ -122,7 +124,6 @@ const BlogBlockImageEditor = ({
         <input
           type="text"
           name="url"
-          id="url"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
           className="p-2 border rounded-lg outline-none focus:border-[#333] transition-all"
@@ -132,9 +133,18 @@ const BlogBlockImageEditor = ({
         <input
           type="text"
           name="url"
-          id="url"
           value={imageCaption}
           onChange={(e) => setImageCaption(e.target.value)}
+          className="p-2 border rounded-lg outline-none focus:border-[#333] transition-all"
+          placeholder="image caption (optional)"
+        />
+        <hr className="my-5" />
+        <label htmlFor="url">Image Width (%)</label>
+        <input
+          type="number"
+          name="width"
+          value={imageWidth.toString()}
+          onChange={(e) => setImageWidth(parseInt(e.target.value))}
           className="p-2 border rounded-lg outline-none focus:border-[#333] transition-all"
           placeholder="image caption (optional)"
         />

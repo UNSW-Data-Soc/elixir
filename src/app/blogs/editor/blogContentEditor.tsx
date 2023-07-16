@@ -17,6 +17,7 @@ export type BlogBlock = {
       imageId?: string;
       url?: string;
       width: number;
+      alignment: "left" | "center" | "right";
     }
   | {
       type: TextBlockType;
@@ -43,27 +44,29 @@ export type EditorContext = {
 
 export const EditorContext = createContext<EditorContext | null>(null);
 
-const BlogContentEditor = ({ blogId }: { blogId: string }) => {
+const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
   const [blockInfo, setBlockInfo] = useSessionStorage<{ [key: string]: BlogBlock }>(
-    `blog-content-${blogId}`,
+    `blog-content-${blogSlug}`,
     {}
   );
 
-  const [blogTitle, setBlogTitle] = useSessionStorage<string>(`blog-title-${blogId}`, "");
-  const [blogAuthor, setBlogAuthor] = useSessionStorage<string>(`blog-author-${blogId}`, "");
+  const [blogId, setBlogId] = useSessionStorage<string>(`blog-id-${blogSlug}`, "");
+  const [blogTitle, setBlogTitle] = useSessionStorage<string>(`blog-title-${blogSlug}`, "");
+  const [blogAuthor, setBlogAuthor] = useSessionStorage<string>(`blog-author-${blogSlug}`, "");
 
   useEffect(() => {
     const getBlog = async () => {
-      const blog = await endpoints.blogs.get({ blogId });
+      const blog = await endpoints.blogs.get({ slug: blogSlug });
       return blog;
     };
 
     getBlog().then((blog) => {
+      setBlogId(blog.id);
       setBlogTitle(blog.title);
       setBlogAuthor(blog.author);
       setBlockInfo(JSON.parse(blog.body));
     });
-  }, [blogId, setBlockInfo, setBlogAuthor, setBlogTitle]);
+  }, [blogId, blogSlug, setBlockInfo, setBlogAuthor, setBlogId, setBlogTitle]);
 
   // on change of content, send data to backend
   useEffect(() => {
@@ -118,7 +121,8 @@ const BlogContentEditor = ({ blogId }: { blogId: string }) => {
           id: blockId,
           type: "image",
           order: (Math.max(...Object.values(blockInfo).map((b) => b.order)) ?? 0) + 1,
-          width: 80, // default image width
+          width: 100, // default image width as a percentage
+          alignment: "center",
         },
       };
     });

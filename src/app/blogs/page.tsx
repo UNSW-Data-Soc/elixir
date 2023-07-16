@@ -48,7 +48,7 @@ async function BlogCard(blog: Blog) {
 
   return (
     <div className="border-[1px] border-black flex flex-col items-center w-4/12">
-      <a href={`/blogs/${blog.id}`}>
+      <a href={`/blogs/${blog.slug}`}>
         <div
           className="w-full relative h-[200px]"
           style={{
@@ -69,7 +69,7 @@ async function BlogCard(blog: Blog) {
           {/* <p className="text-[#555]">{strippedBody.substring(0, 200)}...</p> */}
 
           {!!session && (
-            <a href={`/blogs/editor/${blog.id}`} className="text-blue-500 hover:underline">
+            <a href={`/blogs/editor/${blog.slug}`} className="text-blue-500 hover:underline">
               Edit
             </a>
           )}
