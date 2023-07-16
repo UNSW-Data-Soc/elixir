@@ -31,18 +31,17 @@ export default function Sponsorships() {
             <a href='mailto:external@unswdata.com'>external@unswdata.com</a>
           </strong>
         </p>
+        {session.status === 'authenticated' && (
+          <div className='w-full flex flex-row gap-6 content-evenly'>
+            <button
+              onClick={() => setShowSponsorModal(true)}
+              className='text-black py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 transition-all flex gap-3 flex-row'
+            >
+              <BanknotesIcon className='h-6 w-6' /> <span>Add Sponsorship</span>
+            </button>
+          </div>
+        )}
       </header>
-
-      {session.status === 'authenticated' && (
-        <div className='w-full flex flex-row gap-6 content-evenly'>
-          <button
-            onClick={() => setShowSponsorModal(true)}
-            className='py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 transition-all flex gap-3 flex-row'
-          >
-            <BanknotesIcon className='h-6 w-6' /> <span>Add Sponsorship</span>
-          </button>
-        </div>
-      )}
 
       {showSponsorModal && (
         <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>

@@ -13,6 +13,8 @@ const CompanyForm = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        authRequired: true,
+        accessToken: token,
       },
       body: JSON.stringify({ name, icon, url, description }),
     });

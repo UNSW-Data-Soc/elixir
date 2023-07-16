@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
+import Select from 'react-select';
+
 const SponsorForm = () => {
   return (
     <div>

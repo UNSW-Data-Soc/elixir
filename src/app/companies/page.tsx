@@ -6,46 +6,32 @@ import {
 } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import CompanyForm from '../companies/companyForm';
+import { useSession } from 'next-auth/react';
 
 export default function Companies() {
   const [showCompanyModal, setShowCompanyModal] = useState(false);
 
+  const session = useSession();
+
   const demoCompany = {
     id: 1,
-    name: 'Google',
-    icon: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-    url: 'https://www.google.com',
+    name: 'NAB',
+    icon: 'https://logos-world.net/wp-content/uploads/2021/02/NAB-Logo.png',
+    url: 'https://www.nab.com.au/',
     description:
-      'Google is a multinational technology company that specializes in Internet-related services and products, which include online advertising technologies, a search engine, cloud computing, software, and hardware.',
-  };
-
-  const demoCompany2 = {
-    id: 2,
-    name: 'Facebook',
-    icon: 'https://www.facebook.com/images/fb_icon_325x325.png',
-    url: 'https://www.facebook.com',
-    description:
-      'Facebook is an American online social media and social networking service based in Menlo Park, California, and a flagship service of the namesake company Facebook, Inc.',
-  };
-
-  const demoCompany3 = {
-    id: 3,
-    name: 'Microsoft',
-    icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/1024px-Microsoft_logo.svg.png',
-    url: 'https://www.microsoft.com',
-    description:
-      'Microsoft Corporation is an American multinational technology company with headquarters in Redmond, Washington. It develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.',
+      'National Australia Bank is one of the four largest financial institutions in Australia in terms of market capitalisation, earnings and customers.',
   };
 
   const companies = [
     demoCompany,
-    demoCompany2,
-    demoCompany3,
+    demoCompany,
+    demoCompany,
     demoCompany,
     demoCompany,
   ];
 
   const fetchCompanies = async () => {
+    console.log('fetching companies');
     const res = await fetch('api/company');
     const data = await res.json();
     console.log(data);
@@ -60,12 +46,17 @@ export default function Companies() {
       <header className='text-white p-12 bg-[#4799d1] flex flex-col gap-4'>
         <h1 className='text-3xl font-semibold'>Companies</h1>
         <p>Here are the companies DataSoc has collaborated with in the past</p>
-        <button
-          onClick={() => setShowCompanyModal(true)}
-          className='text-black py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 transition-all flex gap-3 flex-row'
-        >
-          <BuildingOfficeIcon className='h-6 w-6' /> <span>Add Company</span>
-        </button>
+        {session.status === 'authenticated' && (
+          <div className='w-full flex flex-row gap-6 content-evenly'>
+            <button
+              onClick={() => setShowCompanyModal(true)}
+              className='text-black py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 transition-all flex gap-3 flex-row'
+            >
+              <BuildingOfficeIcon className='h-6 w-6' />{' '}
+              <span>Add Company</span>
+            </button>
+          </div>
+        )}
       </header>
 
       {showCompanyModal && (
