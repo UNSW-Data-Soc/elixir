@@ -7,17 +7,24 @@ const CompanyForm = () => {
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
 
-  // // send data to backend using callFetch
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  // };
-  //   console.log(data);
-  // };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await fetch('/api/company', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, icon, url, description }),
+    });
+    const data = await res.json();
+    console.log(data);
+  };
 
   return (
     <div>
       <form
         onSubmit={() => {
-          console.log('clicked');
+          handleSubmit;
         }}
         noValidate
       >

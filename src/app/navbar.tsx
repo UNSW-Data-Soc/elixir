@@ -37,16 +37,15 @@ const Navbar = () => {
             <span>Home</span>
           </button>
         </Link>
-        {/* TODO: Show only when user is authenticated */}
-        {/* {session.status === 'authenticated' && ( */}
-        <Link href='/companies' className=''>
-          <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
-            {/* TOOD: Change to appropriate icons */}
-            <ChatBubbleBottomCenterIcon className='h-6 w-6' />
-            <span>Companies</span>
-          </button>
-        </Link>
-        {/* )} */}
+        {session.status === 'authenticated' && (
+          <Link href='/companies' className=''>
+            <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
+              {/* TOOD: Change to appropriate icons */}
+              <ChatBubbleBottomCenterIcon className='h-6 w-6' />
+              <span>Companies</span>
+            </button>
+          </Link>
+        )}
         <Link href='/sponsorships' className=''>
           <button className='hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row'>
             {/* TOOD: Change to appropriate icons */}
