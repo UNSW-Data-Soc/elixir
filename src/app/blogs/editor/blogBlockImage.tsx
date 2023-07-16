@@ -8,11 +8,9 @@ import {
   useState,
 } from "react";
 import { EditorContext } from "./blogContentEditor";
-import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import useClickAway from "@/app/hooks/useClickAway";
 import { endpoints } from "@/app/api/backend/endpoints";
-import { image } from "@/app/api/backend/file";
 
 export default function BlogBlockImage({
   id,
@@ -57,15 +55,16 @@ export default function BlogBlockImage({
         url is {imageInfo.url} and caption is {imageInfo.caption}
       </div> */}
       {!!imageInfo.url && (
-        <img
-          src={imageInfo.url}
-          className="mx-auto"
-          alt={imageInfo.caption ?? ""}
-          style={{ width: `${imageInfo.width}%` }}
-        />
+        <div className="mx-auto" style={{ width: `${imageInfo.width}%` }}>
+          <img src={imageInfo.url} alt={imageInfo.caption ?? ""} />
+          {!!imageInfo.caption && <p className="mx-auto">{imageInfo.caption}</p>}
+        </div>
       )}
       {!!imageInfo.imageId && !imageInfo.url && (
-        <p className="italic bg-[#eee]">Image Uploaded. See preview to view.</p>
+        <>
+          <p className="italic bg-[#eee]">Image Uploaded. See preview to view.</p>
+          {!!imageInfo.caption && <p className="mx-auto">{imageInfo.caption}</p>}
+        </>
       )}
       {!!showImageEditButton && <button onClick={() => setShowImageEditor(true)}>edit</button>}
       {!!showImageEditor && <BlogBlockImageEditor id={id} setShow={setShowImageEditor} />}
