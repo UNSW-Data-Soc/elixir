@@ -5,7 +5,7 @@ export const IMAGE_FILE_TYPES = ["image/png", "image/jpg", "image/gif", "image/j
 
 export function Spinner() {
     return (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center">
+        <div className="z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center">
             <span className="loader" />
         </div>
     );

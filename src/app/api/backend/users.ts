@@ -13,6 +13,18 @@ export interface User {
   years_active: number[];
 }
 
+interface UserUpdate {
+  email?: string;
+  name?: string;
+  photo_id?: string | undefined;
+  id: string;
+  access_level?: userLevels;
+  about?: string;
+  retired?: boolean;
+  registration_time?: "2023-06-16T10:59:09.059Z";
+  years_active?: number[];
+}
+
 export interface AccessLevel {
   id: string;
   access_level: string;
@@ -35,25 +47,13 @@ const getAll: () => Promise<User[]> = async () => {
   })) as User[];
 };
 
-const updateUserAccessLevel: (update: AccessLevel) => Promise<AccessLevel[]> = async (update: AccessLevel) => {
-  return (await callFetch({
-    route: "/access",
-    method: "PUT",
-    authRequired: true,
-    body: JSON.stringify(update),
-  })) as AccessLevel[];
-};
-
-async function updateYearsActive(user_id: string, years_active: number[]): Promise<User> {
+async function updateUser(update: UserUpdate) {
   return (await callFetch({
     route: "/user",
     method: "PUT",
     authRequired: true,
-    body: JSON.stringify({
-      id: user_id,
-      years_active: years_active,
-    }),
-  })) as User;
+    body: JSON.stringify(update),
+  })) as User[];
 };
 
 async function updateProfile(user_id: string, email: string, name: string, about: string): Promise<User> {
@@ -71,7 +71,7 @@ async function updateProfile(user_id: string, email: string, name: string, about
 };
 
 
-async function uploadProfilePicture(user_id: string, photo: Blob): Promise<{id: string}> {
+async function uploadProfilePicture(user_id: string, photo: Blob): Promise<{ id: string }> {
   const formData = new FormData();
   formData.append("user_id", user_id);
   formData.append("photo", photo);
@@ -81,7 +81,7 @@ async function uploadProfilePicture(user_id: string, photo: Blob): Promise<{id: 
     method: "POST",
     authRequired: true,
     body: formData
-  }, false) as {id: string};
+  }, false) as { id: string };
 }
 
 function getUserProfilePicture(user_id: string): string {
@@ -91,8 +91,7 @@ function getUserProfilePicture(user_id: string): string {
 export const users = {
   get,
   getAll,
-  updateUserAccessLevel,
-  updateYearsActive,
+  updateUser,
   updateProfile,
   uploadProfilePicture,
   getUserProfilePicture,
