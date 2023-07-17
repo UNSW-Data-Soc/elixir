@@ -3,13 +3,13 @@ import { blogs } from "./blogs";
 import { users } from "./users";
 import { getSession } from "next-auth/react";
 
-const BACKEND_URL = "http://127.0.0.1:8000";
+export const BACKEND_URL = "http://127.0.0.1:8000";
 
 interface FetchArguments {
   route: string;
   method?: "GET" | "POST" | "DELETE" | "PUT";
   contentType?: string;
-  body?: string | null;
+  body?: string | FormData | null;
   authRequired?: boolean;
 }
 
@@ -19,10 +19,10 @@ export const callFetch = async ({
   contentType = "application/json",
   body = null,
   authRequired = false,
-}: FetchArguments) => {
+}: FetchArguments, setContentType=true) => {
   const session = await getSession();
 
-  const headers: HeadersInit = { "Content-Type": contentType };
+  const headers: HeadersInit = setContentType ? { "Content-Type": contentType } : {};
   if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
 
   try {
