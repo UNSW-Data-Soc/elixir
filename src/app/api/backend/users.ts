@@ -4,7 +4,7 @@ export type userLevels = "member" | "moderator" | "administrator";
 export interface User {
   email: string;
   name: string;
-  photo_id: string | undefined;
+  photo: boolean;
   id: string;
   access_level: userLevels;
   about: string;
@@ -14,10 +14,10 @@ export interface User {
 }
 
 interface UserUpdate {
+  id: string;
   email?: string;
   name?: string;
-  photo_id?: string | undefined;
-  id: string;
+  photo?: boolean;
   access_level?: userLevels;
   about?: string;
   retired?: boolean;

@@ -7,6 +7,7 @@ import { User } from "../api/backend/users";
 import { CSSProperties, use, useEffect, useState } from "react";
 import UserDialogueInfo from "./userPermissionsDialog";
 import toast from "react-hot-toast";
+import Image from "next/image";
 import { Spinner } from "../utils";
 
 export default function UsersList() {
@@ -78,6 +79,17 @@ export default function UsersList() {
         setUsers(new_users);
     }
 
+    function getUserCardStyle(user: User): CSSProperties {
+        return {
+            backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
+            backgroundOrigin: "content-box",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            cursor: "pointer",
+        };
+    }
+
     return (
         <>
             {isLoading ? (
@@ -92,20 +104,23 @@ export default function UsersList() {
                         >
                             <div
                                 className="w-full relative h-[200px]"
-                                style={{
-                                    backgroundImage:
-                                        "url(/logo_greyscale.jpeg)",
-                                    backgroundOrigin: "content-box",
-                                    backgroundSize: "cover",
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    cursor: "pointer",
-                                }}
+                                style={getUserCardStyle(user)}
                                 onClick={() => {
                                     setShowModal(true);
                                     setShowModalUser(user);
                                 }}
-                            ></div>
+                            >
+                                {user.photo && (
+                                    <Image
+                                        fill
+                                        src={endpoints.users.getUserProfilePicture(
+                                            user.id
+                                        )}
+                                        alt="Profile picture"
+                                        sizes="100vw"
+                                    />
+                                )}
+                            </div>
                             <div className="flex flex-col gap-3 p-5 items-center">
                                 <h3 className="text-xl font-bold">
                                     {user.name}
