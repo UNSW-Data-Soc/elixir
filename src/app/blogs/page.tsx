@@ -36,7 +36,10 @@ async function BlogsContainer() {
   return (
     <div className="container m-auto flex gap-8 p-10 flex-wrap justify-center">
       <BlogsAddCard />
-      {!!blogs && blogs.map((blog) => <BlogCard key={blog.id} {...blog} />)}
+      {!!blogs &&
+        blogs
+          .sort((a, b) => b.created_time.localeCompare(a.created_time))
+          .map((blog) => <BlogCard key={blog.id} {...blog} />)}
     </div>
   );
 }
