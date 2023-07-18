@@ -28,6 +28,7 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
   const [blogId, setBlogId] = useSessionStorage<string>(`blog-id-${blogSlug}`, "");
   const [blogTitle, setBlogTitle] = useSessionStorage<string>(`blog-title-${blogSlug}`, "");
   const [blogAuthor, setBlogAuthor] = useSessionStorage<string>(`blog-author-${blogSlug}`, "");
+  const [blogPublic, setBlogPublic] = useSessionStorage<boolean>(`blog-public-${blogSlug}`, false);
 
   useEffect(() => {
     const getBlog = async () => {
@@ -40,8 +41,9 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
       setBlogTitle(blog.title);
       setBlogAuthor(blog.author);
       setBlockInfo(JSON.parse(blog.body));
+      setBlogPublic(blog.public);
     });
-  }, [blogId, blogSlug, setBlockInfo, setBlogAuthor, setBlogId, setBlogTitle]);
+  }, [blogId, blogSlug, setBlockInfo, setBlogAuthor, setBlogId, setBlogPublic, setBlogTitle]);
 
   // on change of content, send data to backend
   useEffect(() => {
@@ -51,15 +53,18 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
         body: JSON.stringify(blockInfo),
         author: blogAuthor,
         title: blogTitle,
+        blogPublic,
       });
     };
     console.log(blockInfo);
     toast.loading("Saving...", { id: "saving" });
 
-    updateDatabase().then(async () => {
-      toast.dismiss("saving");
+    updateDatabase().then(() => {
+      setTimeout(() => {
+        toast.dismiss("saving");
+      }, 500);
     });
-  }, [blogId, blockInfo, blogAuthor, blogTitle]);
+  }, [blogId, blockInfo, blogAuthor, blogTitle, blogPublic]);
 
   // create editor context
   const editorContext = {
