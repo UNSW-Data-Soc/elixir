@@ -19,9 +19,9 @@ export default function Blog() {
           data science in the real world, they&apos;re here for you!
         </p>
       </header>
-      <p>
+      {/* <p>
         TODO: Dialog for <b>tags</b> go here!
-      </p>
+      </p> */}
       <BlogsContainer />
     </main>
   );

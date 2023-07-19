@@ -1,23 +1,31 @@
-import { getServerSession } from "next-auth";
-
 import { Blog } from "../api/backend/blogs";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import BlogCardActions from "./blogCardActions";
 import Link from "next/link";
+import { BlogBlock } from "./editor/[slug]/page";
 dayjs.extend(relativeTime);
 
+import { convert } from "html-to-text";
+
 export default async function BlogCard(blog: Blog) {
-  const session = await getServerSession();
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
 
-  // const strippedBody = htmlToTextConvert(
-  //   (Object.values(JSON.parse(blog.body)) as BlogBlock[])
-  //     .filter((b) => b.type in textBlockTypes)
-  //     .map((b) => b.content)
-  //     .join("\n")
-  // );
+  // get excerpt
+  const content = JSON.parse(blog.body) as BlogBlock[];
+  const paragraphBlocks = Object.values(content)
+    .sort((a, b) => a.order - b.order)
+    .map((b) => {
+      if (b.type === "p") return b.content;
+      else return "";
+    })
+    .join(" ");
+  const blogExcerpt = convert(paragraphBlocks, {}).split(new RegExp(/\s/)).splice(0, 40).join(" ");
+
+  // get image
+  const image = Object.values(content).find((b) => b.type === "image" && b.url);
+  const imageUrl = image ? image.url : "/kentosoc.jpeg";
 
   return (
     <div className="border-[1px] border-black flex flex-col items-center w-4/12 hover:scale-105 hover:shadow-xl transition-all">
@@ -25,7 +33,7 @@ export default async function BlogCard(blog: Blog) {
         <div
           className="w-full relative h-[200px]"
           style={{
-            backgroundImage: "url(/adrian.jpeg)",
+            backgroundImage: `url(${imageUrl})`,
             backgroundOrigin: "content-box",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
@@ -39,7 +47,7 @@ export default async function BlogCard(blog: Blog) {
             <span className="mx-3">|</span>
             <span>{createdDate}</span>
           </p>
-          {/* <p className="text-[#555]">{strippedBody.substring(0, 200)}...</p> */}
+          <p className="text-[#555]">{blogExcerpt}...</p>
           <BlogCardActions {...blog} />
 
           {/* {!!session && (
