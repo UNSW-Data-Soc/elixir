@@ -19,6 +19,7 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "html-to-text": "^9.0.5",
+    "imgbox-js": "^1.0.35",
     "install": "^0.13.0",
     "next": "13.4.2",
     "next-auth": "^4.22.1",

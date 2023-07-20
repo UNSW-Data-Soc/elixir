@@ -199,18 +199,29 @@ const BlogBlockImageUploader = ({ id }: { id: string }) => {
     });
   }, [id, imageId, setBlockInfo]);
 
-  const onDrop = useCallback(
-    async (acceptedFiles: File[]) => {
-      // Do something with the files
-      const imageRes = await endpoints.blogs.image.upload({
-        blogId,
-        file: acceptedFiles[0],
-      });
-      console.log(imageRes);
-      setImageId(imageRes.id);
-    },
-    [blogId]
-  );
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    // upload images
+    // console.log(acceptedFiles.map((f) => f.name));
+    // imgbox(acceptedFiles., {
+    //   // auth_cookie: "",
+    //   content_type: "safe",
+    //   comments_enabled: false,
+    // });
+    // const imageRes = await endpoints.blogs.image.upload({
+    //   blogId,
+    //   file: acceptedFiles[0],
+    // });
+    const res = await fetch("/api/blog/upload", {
+      method: "POST",
+      body: JSON.stringify({
+        fileName: acceptedFiles[0].name,
+        filePath: URL.createObjectURL(acceptedFiles[0]),
+      }),
+    });
+    console.log(res);
+    // console.log(imageRes);
+    // setImageId(imageRes.id);
+  }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
