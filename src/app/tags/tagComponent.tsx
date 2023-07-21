@@ -4,8 +4,8 @@ import Select from 'react-select';
 import { FaPlus } from 'react-icons/fa';
 import { endpoints } from "../api/backend/endpoints";
 import { Tag } from "../api/backend/tags";
-import TagForm from "./TagForm";
-import TagItem from "./TagItem";
+import TagForm from "./tagForm";
+import TagItem from "./tagItem";
 import { useSession } from "next-auth/react";
 
 const TagsComponent = () => {
