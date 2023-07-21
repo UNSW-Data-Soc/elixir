@@ -12,7 +12,6 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
   const [showPopup, setShowPopup] = useState(true);
 
 
-  
   const colorOptions = [
     { label: 'Dark Blue', value: '#159BD6' },
     { label: 'Dark Purple', value: '#9E62A2' },
@@ -36,10 +35,11 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
 
     console.log('hi');
     const tag = await endpoints.tags.create({ name, colour });
-    console.log('createdtag'+ tag);
+    
+   /* console.log('createdtag'+ tag);
     console.log('tag id' + tag.id); 
     console.log('tag name' + tag.name); 
-    console.log('tag colour' + tag.colour); 
+    console.log('tag colour' + tag.colour); */
 
 
     if (!tag) {

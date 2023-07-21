@@ -63,7 +63,7 @@ const TagsComponent = () => {
     <div style={{ display: 'flex', alignItems: 'baseline' }}>
       <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '14px' }}>Tags:</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {tags.map((tag) => (
+      {tags && tags.map((tag) => (
           <TagItem
             key={tag.id}
             tag={tag}
