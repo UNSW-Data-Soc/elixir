@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { Tag } from "../api/backend/tags";
+import chroma from 'chroma-js';
 
 interface TagEditFormProps {
   tag: Tag;
@@ -24,6 +25,58 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave, onDelete }) => {
     { label: 'Coral', value: '#F5B89E' },
     { label: 'Light Yellow', value: '#FBD896' },
   ];
+
+  const dot = (color = 'transparent') => ({
+    alignItems: 'center',
+    display: 'flex',
+  
+    ':before': {
+      backgroundColor: color,
+      borderRadius: 10,
+      content: '" "',
+      display: 'block',
+      marginRight: 8,
+      height: 10,
+      width: 10,
+    },
+  });
+
+  const colourStyles: StylesConfig<OptionTypeBase> = {
+    control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      return {
+        ...styles,
+        backgroundColor: isDisabled
+          ? undefined
+          : isSelected
+          ? data.value
+          : isFocused
+          ? data.value
+          : undefined,
+        color: isDisabled
+          ? '#ccc'
+          : isSelected
+          ? chroma.contrast(data.value, 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.value,
+        cursor: isDisabled ? 'not-allowed' : 'default',
+  
+        ':active': {
+          ...styles[':active'],
+          backgroundColor: !isDisabled ? data.value : undefined,
+        },
+      };
+    },
+    input: (styles) => ({ ...styles, ...dot() }),
+    placeholder: (styles) => ({ ...styles, ...dot('#ccc') }),
+    singleValue: (styles, { data }) => {
+      return {
+        ...styles,
+        ...dot(data.value), // Display the dot with the selected color
+      };
+    },
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +151,7 @@ const TagEditForm: React.FC<TagEditFormProps> = ({ tag, onSave, onDelete }) => {
               ...provided,
               fontSize: '12px', // Adjust the font size as needed
             }),
+            ...colourStyles, // Add the colourStyles here
           }}
         />
       </div>

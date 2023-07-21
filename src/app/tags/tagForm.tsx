@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import Select from 'react-select';
+import Select, { StylesConfig } from 'react-select';
 import { Tag } from "../api/backend/tags";
 import { endpoints } from "../api/backend/endpoints";
 import { toast } from "react-hot-toast";
+import chroma from 'chroma-js';
 
 
 const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose: () => void }) => {
@@ -25,6 +26,58 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
     { label: 'Light Yellow', value: '#FBD896' },
 
   ];
+
+  const dot = (color = 'transparent') => ({
+    alignItems: 'center',
+    display: 'flex',
+  
+    ':before': {
+      backgroundColor: color,
+      borderRadius: 10,
+      content: '" "',
+      display: 'block',
+      marginRight: 8,
+      height: 10,
+      width: 10,
+    },
+  });
+
+  const colourStyles: StylesConfig<OptionTypeBase> = {
+    control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      return {
+        ...styles,
+        backgroundColor: isDisabled
+          ? undefined
+          : isSelected
+          ? data.value
+          : isFocused
+          ? data.value
+          : undefined,
+        color: isDisabled
+          ? '#ccc'
+          : isSelected
+          ? chroma.contrast(data.value, 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.value,
+        cursor: isDisabled ? 'not-allowed' : 'default',
+  
+        ':active': {
+          ...styles[':active'],
+          backgroundColor: !isDisabled ? data.value : undefined,
+        },
+      };
+    },
+    input: (styles) => ({ ...styles, ...dot() }),
+    placeholder: (styles) => ({ ...styles, ...dot('#ccc') }),
+    singleValue: (styles, { data }) => {
+      return {
+        ...styles,
+        ...dot(data.value), // Display the dot with the selected color
+      };
+    },
+  };
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +141,7 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
               classNamePrefix="select"
               isSearchable={true}
               name="colour"
+              styles={colourStyles}
               value={colorOptions.find((option) => option.value === colour)}
               onChange={(selectedOption) => setColour(selectedOption?.value || "")}
             />
