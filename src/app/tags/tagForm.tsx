@@ -132,7 +132,17 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-2 pb-3">
             <label htmlFor="name">Name:</label>
-            <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
+            <input 
+              type="text" 
+              id="name" 
+              value={name} onChange={(e) => setName(e.target.value)} 
+              style={{
+                fontSize: '12px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                padding: '5px',
+              }}
+              />
           </div>
           <div className="flex flex-col gap-2 pb-3">
             <label htmlFor="colour">Colour:</label>
