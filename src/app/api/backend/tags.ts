@@ -59,11 +59,29 @@ const deleteTag = async (tagId: string): Promise<void> => {
   console.log("response status" + response.status); 
 };
 
+export interface Attachment {
+  tag_id: string;
+  resource_id: string;
+  resource_type: string; 
+}
+
+const attach: (attachment: Attachment) => Promise<Tag> = async (
+  attachment: Attachment
+) => {
+  return await callFetch({
+    method: "POST",
+    route: "/tag/attach",
+    authRequired: true,
+    body: JSON.stringify(attachment), // Pass the attachment object with resourceType to the backend
+  });
+};
+
 export const tags = {
   getAll,
   create,
   update,
-  deleteTag
+  deleteTag,
+  attach
 };
 
 

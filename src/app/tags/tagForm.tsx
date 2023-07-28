@@ -87,7 +87,10 @@ const TagForm = ({ onSubmit, onClose }: { onSubmit: (tag: Tag) => void, onClose:
     }
 
     console.log('hi');
+
+    //1: Create the new tag
     const tag = await endpoints.tags.create({ name, colour });
+    
     
    /* console.log('createdtag'+ tag);
     console.log('tag id' + tag.id); 
