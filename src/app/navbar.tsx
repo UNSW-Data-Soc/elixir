@@ -12,7 +12,8 @@ import {
   ChatBubbleBottomCenterIcon,
   HomeIcon,
   UserCircleIcon,
-  UsersIcon
+  UsersIcon,
+  FaceSmileIcon
 } from "@heroicons/react/24/outline";
 
 const Navbar = () => {
@@ -37,6 +38,12 @@ const Navbar = () => {
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
             <HomeIcon className="h-6 w-6" />
             <span>Home</span>
+          </button>
+        </Link>
+        <Link href="/about/team" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            <FaceSmileIcon className="h-6 w-6" />
+            <span>Our Team</span>
           </button>
         </Link>
         <Link href="/sponsorships" className="">
