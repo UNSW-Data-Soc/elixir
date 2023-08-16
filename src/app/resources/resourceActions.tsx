@@ -1,0 +1,138 @@
+"use client";
+
+import { useState } from "react";
+import { endpoints } from "../api/backend/endpoints";
+import { Resource } from "../api/backend/resources";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
+
+
+export default function ResourceActions(props: {resource: Resource}) {
+    const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
+    const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
+    const session = useSession();
+    const router = useRouter();
+
+    if (session.status !== "authenticated" || !session.data.user.admin) {
+        return <></>;
+    }
+    
+    async function handleResourceDeletion() {
+        await endpoints.resources.remove(props.resource.id)
+            .then(() => {
+                toast.success("Resource deleted successfully!");
+            })
+            .catch(() => {
+                toast.error("Failed to delete resource");
+            })
+            .finally(() => {
+                setShowDeletionDialogue(false);
+                router.refresh();
+                return;
+            });
+    }
+
+    async function handleResourcePublication() {
+        let actionPubUnpub = props.resource.public ? "unpublished" : "published";
+        let actionPubUnpubPresent = props.resource.public ? "unpublish" : "publish";
+
+        await endpoints.resources.updateVisibility(props.resource.id, !props.resource.public)
+            .then(() => {
+                toast.success(`Resource ${actionPubUnpub} successfully!`);
+            })
+            .catch(() => {
+                toast.error(`Failed to ${actionPubUnpubPresent} resource`);
+            })
+            .finally(() => {
+                setShowVisibilityDialogue(false);
+                router.refresh();
+                return;
+            });
+    }
+
+    return(
+        <>
+            {
+                showDeletionDialogue &&
+                <ConfirmationDialogue
+                    heading="Are you sure?"
+                    subHeading="This action is permanent and irreversible!"
+                    resource={props.resource}
+                    confirmation={handleResourceDeletion}
+                    hideDialogue={() => {setShowDeletionDialogue(false)}}
+                />
+            }
+
+            {
+                showVisibilityDialogue &&
+                <ConfirmationDialogue
+                    heading="Are you sure?"
+                    subHeading="This action is permanent and irreversible!"
+                    resource={props.resource}
+                    confirmation={handleResourcePublication}
+                    hideDialogue={() => {setShowVisibilityDialogue(false)}}
+                />
+            }
+
+            <div
+                className="flex gap-5 m-3"
+            >
+                {
+                    props.resource.public ?
+                    <button
+                        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                        onClick={() => {setShowVisibilityDialogue(true)}}
+                    >
+                        Unpublish
+                    </button> :
+                    <button
+                        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                        onClick={() => {setShowVisibilityDialogue(true)}}
+                    >
+                        Publish
+                    </button>
+                }
+                <button
+                    className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                    onClick={() => {setShowDeletionDialogue(true)}}>
+                    Delete
+                </button>
+            </div>
+        </>
+    );
+}
+
+
+function ConfirmationDialogue(props: {
+    heading: string,
+    subHeading: string,
+    resource: Resource,
+    confirmation: () => void
+    hideDialogue: () => void
+}) {
+    return (
+        <>
+            <div className="z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="flex flex-col justify-center align-baseline items-center bg-white p-10">
+                        <p className="text-[black] text-xl">{props.heading}</p>
+                        <p className="text-[red] italic">{props.subHeading}</p>
+                        <div>
+                            <button
+                                className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                                onClick={props.confirmation}
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                                onClick={props.hideDialogue}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+            </div>
+        </>
+    );
+}
