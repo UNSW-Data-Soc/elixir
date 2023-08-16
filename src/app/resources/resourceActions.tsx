@@ -68,7 +68,7 @@ export default function ResourceActions(props: {resource: Resource}) {
                 showVisibilityDialogue &&
                 <ConfirmationDialogue
                     heading="Are you sure?"
-                    subHeading="This action is permanent and irreversible!"
+                    subHeading={props.resource.public ? "This will remove the resource from public view" : "This will make the resource publicly available"}
                     resource={props.resource}
                     confirmation={handleResourcePublication}
                     hideDialogue={() => {setShowVisibilityDialogue(false)}}

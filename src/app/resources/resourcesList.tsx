@@ -14,6 +14,7 @@ import { toast } from "react-hot-toast";
 dayjs.extend(relativeTime);
 
 const RESOURCE_NON_PUBLIC_OPACITY = 0.3;
+const MAX_DESCRIPTION_CHAR = 75;
 
 export default function ResourcesList(props: { resources: Resource[] }) {
     const session = useSession();
@@ -87,11 +88,11 @@ function ResourcesCard(resource: Resource) {
             >
                 <div className="flex flex-col gap-3 p-5 items-center">
                     <h3 className="text-xl font-bold">{resource.title}</h3>
-                    <p className="">
-                        <span className="italic">{resource.description}</span>
-                        <span className="mx-3">|</span>
+                    <div className="flex flex-col items-center align-baseline justify-center">
+                        <span className="italic mb-1">{resource.description.substring(0, MAX_DESCRIPTION_CHAR)}...</span>
+                        <hr className="w-full mt-1"/>
                         <span>{createdDate}</span>
-                    </p>
+                    </div>
                 </div>
             </div>
             <ResourceActions resource={resource} />

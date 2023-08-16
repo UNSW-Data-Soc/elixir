@@ -13,10 +13,11 @@ export interface Resource {
 }
 
 
-interface CreateResource {
+export interface CreateResource {
   title: string;
-  author: string;
-  body: string;
+  description: string;
+  link: string | null;
+  visibility: boolean;
 }
 
 const getInternalResource: (id: string) => Promise<string> = async (id: string) => {
@@ -32,13 +33,28 @@ const getAll: () => Promise<Resource[]> = async () => {
 };
 
 
-const create: (resource: CreateResource) => Promise<Resource> = async (resource: CreateResource) => {
+async function create(resource: CreateResource, file: Blob | null): Promise<Resource> {
+  const formData = new FormData();
+
+  formData.append("title", resource.title);
+  formData.append("description", resource.description);
+  formData.append("public", resource.visibility ? "true" : "false");
+
+  if(file) {
+    formData.append("file", file);
+  } else if(resource.link) {
+    formData.append("link", resource.link);
+  } else {
+    throw new Error("Link nor file found");
+  }
+
   return await callFetch({
+    route: `/resource`,
     method: "POST",
-    route: "/resource",
     authRequired: true,
-    body: JSON.stringify({ ...resource, public: true }),
-  });
+    body: formData
+  }, false);
+
 };
 
 const remove: (id: string) => Promise<Resource> = async (id: string) => {
