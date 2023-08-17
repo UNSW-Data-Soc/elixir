@@ -88,6 +88,23 @@ function getUserProfilePicture(user_id: string): string {
   return `${BACKEND_URL}/file/user?user_id=${user_id}`;
 }
 
+async function getYears(): Promise<Number[]> {
+  return (await callFetch({
+    route: `/users/years`,
+    method: "GET",
+    authRequired: true,
+  })) as Number[];
+};
+
+async function getUsersByYears(year: Number): Promise<User[]> {
+  return (await callFetch({
+    route: `/users/year/${year}`,
+    method: "GET",
+    authRequired: true,
+  })) as User[];
+};
+
+
 export const users = {
   get,
   getAll,
@@ -95,4 +112,6 @@ export const users = {
   updateProfile,
   uploadProfilePicture,
   getUserProfilePicture,
+  getYears,
+  getUsersByYears,
 };
