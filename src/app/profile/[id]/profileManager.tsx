@@ -30,7 +30,7 @@ export default function ProfileManager(props: { user_id: string }) {
     const [photoInCropper, setPhotoInCropper] = useState("");
 
     useEffect(() => {
-        endpoints.users.get(props.user_id).then((user) => {
+        endpoints.users.getInfo(props.user_id).then((user) => {
             if (!user) {
                 toast.error("Failed to retrieve profile");
                 router.push("/");

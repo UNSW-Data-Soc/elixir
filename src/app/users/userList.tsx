@@ -19,9 +19,12 @@ export default function UsersList() {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        endpoints.users.getAll().then((users) => {
+        endpoints.users.getAllInfo().then((users) => {
             setUsers(users);
             setLoading(false);
+        }).catch(() => {
+            toast.error("You do not have permission to view this page");
+            router.push("/");
         });
     }, []);
 

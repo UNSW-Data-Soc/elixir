@@ -13,6 +13,15 @@ export interface User {
   years_active: number[];
 }
 
+export interface UserPublic {
+  name: string;
+  photo: boolean;
+  id: string;
+  about: string;
+  retired: boolean;
+  years_active: number[];
+}
+
 interface UserUpdate {
   id: string;
   email?: string;
@@ -31,17 +40,33 @@ export interface AccessLevel {
 }
 
 
-async function get(user_id: string): Promise<User> {
+async function get(user_id: string): Promise<UserPublic> {
   return (await callFetch({
     route: `/user/${user_id}`,
+    method: "GET",
+    authRequired: true,
+  })) as UserPublic;
+};
+
+async function getInfo(user_id: string): Promise<User> {
+  return (await callFetch({
+    route: `/user/info/${user_id}`,
     method: "GET",
     authRequired: true,
   })) as User;
 };
 
-const getAll: () => Promise<User[]> = async () => {
+const getAll: () => Promise<UserPublic[]> = async () => {
   return (await callFetch({
     route: "/users",
+    method: "GET",
+    authRequired: true,
+  })) as UserPublic[];
+};
+
+const getAllInfo: () => Promise<User[]> = async () => {
+  return (await callFetch({
+    route: "/users/info",
     method: "GET",
     authRequired: true,
   })) as User[];
@@ -96,7 +121,7 @@ async function getYears(): Promise<Number[]> {
   })) as Number[];
 };
 
-async function getUsersByYears(year: Number): Promise<User[]> {
+async function getUsersByYears(year: Number): Promise<UserPublic[]> {
   return (await callFetch({
     route: `/users/year/${year}`,
     method: "GET",
@@ -107,7 +132,9 @@ async function getUsersByYears(year: Number): Promise<User[]> {
 
 export const users = {
   get,
+  getInfo,
   getAll,
+  getAllInfo,
   updateUser,
   updateProfile,
   uploadProfilePicture,
