@@ -65,15 +65,16 @@ const LoginForm = () => {
           value={password}
         />
       </div>
-      <p className="text-[#6a6a6a]">
-        New here?{" "}
+      <div className="flex mt-5 justify-between">
+        <Link href="/reset/password" className="text-[#3b7bca] underline">
+          Forgot password
+        </Link>
         <Link href="/auth/register" className="text-[#3b7bca] underline">
           Register
-        </Link>{" "}
-        to create a new account.
-      </p>
+        </Link>
+      </div>
       <input
-        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+        className="py-2 px-4 bg-[#f0f0f0] mt-12 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
         type="submit"
         value="Login"
       />

@@ -39,8 +39,28 @@ const logout = async () => {
   });
 };
 
+async function resetPasswordRequest(email: string) {
+  return await callFetch({
+    route: `/reset/password?email=${email}`,
+    method: "POST",
+    authRequired: false,
+  });
+}
+
+async function resetPasswordFromToken(token: string, new_password: string) {
+  return await callFetch({
+    route: `/reset/password/${token}`,
+    method: "POST",
+    authRequired: false,
+    body: JSON.stringify({password: new_password})
+  });
+}
+
+
 export const auth = {
   register,
   login,
   logout,
+  resetPasswordRequest,
+  resetPasswordFromToken
 };
