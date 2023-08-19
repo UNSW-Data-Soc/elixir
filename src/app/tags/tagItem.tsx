@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tag } from '../api/backend/tags';
 import { endpoints } from "../api/backend/endpoints";
 import { FaTimes } from "react-icons/fa";
-import TagEditForm from './TagEditForm';
+import TagEditForm from './tagEditForm';
 
 interface TagItemProps {
   tag: Tag;
