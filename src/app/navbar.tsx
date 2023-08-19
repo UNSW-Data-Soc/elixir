@@ -12,6 +12,8 @@ import {
   ChatBubbleBottomCenterIcon,
   HomeIcon,
   UserCircleIcon,
+  UsersIcon,
+  FaceSmileIcon
 } from "@heroicons/react/24/outline";
 
 const Navbar = () => {
@@ -36,6 +38,12 @@ const Navbar = () => {
           <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
             <HomeIcon className="h-6 w-6" />
             <span>Home</span>
+          </button>
+        </Link>
+        <Link href="/about/team" className="">
+          <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+            <FaceSmileIcon className="h-6 w-6" />
+            <span>Our Team</span>
           </button>
         </Link>
         <Link href="/sponsorships" className="">
@@ -93,13 +101,23 @@ const Navbar = () => {
         )}
         {session.status === "authenticated" && (
           <>
-            <p className="p-5 flex flex-row gap-3">
-              <UserCircleIcon className="h-6 w-6" />
-              <span>
-                <span>Logged in as </span>
-                <span className="text-[#555] italic">{session.data?.user?.email}</span>
-              </span>
-            </p>
+            {session.data.user.admin && 
+            <Link href="/users" className="">
+              <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
+                <UsersIcon className="h-6 w-6" />
+                <span>User Management</span>
+              </button>
+            </Link>
+            }
+            <Link href={`/profile/${session.data.user.id}`} className="">
+              <p className="p-5 flex flex-row gap-3">
+                <UserCircleIcon className="h-6 w-6" />
+                <span>
+                  <span>Logged in as </span>
+                  <span className="text-[#555] italic">{session.data?.user?.email}</span>
+                </span>
+              </p>
+            </Link>
             <button
               className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3 border-l-black border-l"
               onClick={logoutClick}

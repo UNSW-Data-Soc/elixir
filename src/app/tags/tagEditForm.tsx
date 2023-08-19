@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { Tag } from "../api/backend/tags";
 import chroma from 'chroma-js';
+import { endpoints } from "../api/backend/endpoints";
 
 interface TagEditFormProps {
   tag: Tag;
