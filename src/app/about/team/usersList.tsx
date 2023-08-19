@@ -1,14 +1,14 @@
 "use client";
 
 import { endpoints } from "../../api/backend/endpoints";
-import { User } from "../../api/backend/users";
+import { User, UserPublic } from "../../api/backend/users";
 import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { Spinner } from "../../utils";
 
 export default function UsersList() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<UserPublic[]>([]);
     const [isLoading, setLoading] = useState(true);
     const [years, setYears] = useState<Number[]>([]);
 
@@ -30,38 +30,12 @@ export default function UsersList() {
         return <></>;
     }
 
-    function getUserBannerStyle(user: User): CSSProperties {
-        let bgColour = "lightgreen";
-        let opacity = 1;
-
-        if (user.access_level == "moderator") {
-            bgColour = "lightblue";
-        } else if (user.access_level == "administrator") {
-            bgColour = "lightsalmon";
-        }
-
-        if (user.retired) {
-            opacity = 0.5;
-        }
-
-        return {
-            backgroundColor: bgColour,
-            opacity: opacity,
-        };
-    }
-
     // TODO: sort by portfolio
-    function sortUsers(a: User, b: User): number {
-        const order = { administrator: 0, moderator: 1, member: 2 };
-
-        if (a.access_level != b.access_level) {
-            return order[a.access_level] - order[b.access_level];
-        }
-
+    function sortUsers(a: UserPublic, b: UserPublic): number {
         return a.name.localeCompare(b.name);
     }
 
-    function getUserCardStyle(user: User): CSSProperties {
+    function getUserCardStyle(user: UserPublic): CSSProperties {
         return {
             backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
             backgroundOrigin: "content-box",
@@ -89,10 +63,11 @@ export default function UsersList() {
                     <div className="flex gap-5 justify-center">
                         {years.map((year) => {
                             return (
-                                <div className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all cursor-pointer">
-                                    <button
-                                        onClick={() => handleYearChange(year)}
-                                    >
+                                <div
+                                    className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all cursor-pointer"
+                                    onClick={() => handleYearChange(year)}
+                                >
+                                    <button>
                                         {`${year}`}
                                     </button>
                                 </div>
@@ -104,7 +79,6 @@ export default function UsersList() {
                             <div
                                 key={user.id}
                                 className="border-[1px] border-black flex flex-col items-center w-4/12"
-                                style={getUserBannerStyle(user)}
                             >
                                 <div
                                     className="w-full relative h-[200px]"
