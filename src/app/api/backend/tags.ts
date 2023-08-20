@@ -1,10 +1,29 @@
-import { randomUUID } from "crypto";
 import { callFetch } from "./endpoints";
 
 export interface Tag {
   id: string;
   name: string;
   colour: string    //hexcode 
+}
+
+export type Bearer = "blog" | "event" | "resource" | "sponsorship" | "job" | "portfolio";
+export interface Attachment {
+  attach_to: Bearer;
+  bearer_id: string; 
+  tag_id: string;
+}
+
+export interface Detachment {
+  detach_from: Bearer;
+  attachment_id: string; 
+}
+
+export interface AttachmentInfo {
+  attachment_id: string,
+  bearer_id: string,
+  tag_id: string,
+  name: string, // tag name
+  colour: string, // tag colour
 }
 
 const getAll: () => Promise<Tag[]> = async () => {
@@ -59,20 +78,32 @@ const deleteTag = async (tagId: string): Promise<void> => {
   console.log("response status" + response.status); 
 };
 
-export interface Attachment {
-  tag_id: string;
-  resource_id: string;
-  resource_type: string; 
-}
+const attachments: (bearer: Bearer) => Promise<AttachmentInfo[]> = async (bearer: Bearer) => {
+  return await callFetch({
+    method: "GET",
+    route: `/tag/attachments?bearer=${bearer}`,
+  });
+};
 
-const attach: (attachment: Attachment) => Promise<Tag> = async (
+const attach: (attachment: Attachment) => Promise<AttachmentInfo> = async (
   attachment: Attachment
 ) => {
   return await callFetch({
     method: "POST",
     route: "/tag/attach",
     authRequired: true,
-    body: JSON.stringify(attachment), // Pass the attachment object with resourceType to the backend
+    body: JSON.stringify(attachment),
+  });
+};
+
+const detach: (detachment: Detachment) => Promise<{id: string}> = async (
+  detachment: Detachment
+) => {
+  return await callFetch({
+    method: "DELETE",
+    route: "/tag/detach",
+    authRequired: true,
+    body: JSON.stringify(detachment),
   });
 };
 
@@ -81,8 +112,7 @@ export const tags = {
   create,
   update,
   deleteTag,
-  attach
+  attachments,
+  attach,
+  detach
 };
-
-
-

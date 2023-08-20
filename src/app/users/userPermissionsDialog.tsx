@@ -8,9 +8,12 @@ import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../utils";
+import { AttachmentInfo, Tag } from "../api/backend/tags";
+import ModifyBearerTags from "../modifyBearerTags";
 
 export default function UserDialogueInfo(props: {
     user: User;
+    tags: Tag[],
     updateUser: (user: User) => void;
     closeModal: Function;
 }) {
@@ -27,11 +30,15 @@ export default function UserDialogueInfo(props: {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        let newYearsActive = [];
-        for (let y of props.user.years_active) {
-            newYearsActive.push(createOption(y));
+        async function getUserDetails() {
+            let newYearsActive = [];
+            for (let y of props.user.years_active) {
+                newYearsActive.push(createYearOption(y));
+            }
+            setYearsActive(newYearsActive);
         }
-        setYearsActive(newYearsActive);
+
+        getUserDetails();
     }, [props.user]);
 
     async function handleConfirm() {
@@ -64,7 +71,7 @@ export default function UserDialogueInfo(props: {
         setLoading(false);
     }
 
-    const createOption = (label: number) => ({
+    const createYearOption = (label: number) => ({
         label,
         value: label,
     });
@@ -83,7 +90,7 @@ export default function UserDialogueInfo(props: {
                     toast.error("Year already exists");
                     return;
                 }
-                let new_years = [...yearsActive, createOption(+year)];
+                let new_years = [...yearsActive, createYearOption(+year)];
                 setYearsActive(new_years);
                 setYear("");
                 event.preventDefault();
@@ -194,6 +201,13 @@ export default function UserDialogueInfo(props: {
                                     label: retired ? "Yes" : "No",
                                     isDisabled: false,
                                 }}
+                            />
+                            <p className="text-2xl font-semibold py-5">Portfolios</p>
+                            <ModifyBearerTags
+                                bearer="portfolio"
+                                bearer_id={props.user.id}
+                                allTags={props.tags}
+                                initialOptionsFilter={ai => ai.bearer_id === props.user.id}
                             />
                         </div>
                     </div>
