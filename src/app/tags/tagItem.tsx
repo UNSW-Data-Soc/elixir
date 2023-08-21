@@ -7,11 +7,13 @@ import TagEditForm from './tagEditForm';
 interface TagItemProps {
   tag: Tag;
   isAdmin: boolean;
+  allowEditing: boolean;
   onUpdateTag: (updatedTag: Tag) => void;
   onDelete: (tagId: string) => void;
 }
 
-const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag, onDelete }) => {
+const TagItem: React.FC<TagItemProps> = ({ isAdmin, allowEditing, tag, onUpdateTag, onDelete }) => {
+
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedTag, setEditedTag] = useState(tag);
 
@@ -82,7 +84,7 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, tag, onUpdateTag, onDelete }
       <div style={tagStyle} onClick={handleTagClick}>
         {tag.name}
       </div>
-      {showEditForm && (
+      {allowEditing && showEditForm && (
         <div style={popupStyle}>
           <TagEditForm tag={tag} onSave={handleSave} onDelete={handleDelete} />
           <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"

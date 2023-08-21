@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { User } from "./api/backend/users";
 import { Attachment, AttachmentInfo, Bearer, Detachment, Tag } from "./api/backend/tags";
 import { endpoints } from "./api/backend/endpoints";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface OptionTag {
     value: Tag;
@@ -14,7 +14,7 @@ interface OptionTag {
 export default function ModifyBearerTags(props: {
     bearer_id: string,
     bearer: Bearer,
-    allTags: Tag[],
+    tagLimit?: number,
     initialOptionsFilter?: (a: AttachmentInfo) => boolean,
     updateCallback?: (updated_tags: Tag[]) => void,
 }) {
@@ -22,6 +22,7 @@ export default function ModifyBearerTags(props: {
     const [allTagOptions, setAllTagOptions] = useState<OptionTag[]>([]);
     const [optionsSelected, setOptionsSelected] = useState<OptionTag[]>([]);
     const [attachedDetails, setAttachedDetails] = useState<AttachmentInfo[]>([]);
+
     const [isLoading, setIsLoading] = useState(true);
     
     
@@ -30,7 +31,7 @@ export default function ModifyBearerTags(props: {
         return attachments;
     }
     
-    async function setInitialOptions(bearers: AttachmentInfo[]) {
+    async function setInitialOptions(tags: Tag[], bearers: AttachmentInfo[]) {
         let options: OptionTag[] = [];
         for(let p of bearers) {
             options.push({
@@ -47,7 +48,7 @@ export default function ModifyBearerTags(props: {
         setOptionsSelected(options);
         
         let allTagOptions: OptionTag[] = [];
-        for(let t of props.allTags) {
+        for(let t of tags) {
 
             // prevent tag from appearing both in pre-selected list as well as dropdown
             let exists = false;
@@ -69,13 +70,13 @@ export default function ModifyBearerTags(props: {
     
     useEffect(() => {
         async function getDetails() {
-            let bearers = await getExistingBearers();
+            let [tags, bearers] = await Promise.all([endpoints.tags.getAll(), getExistingBearers()]);
 
             if(props.initialOptionsFilter) {
                 bearers = bearers.filter(props.initialOptionsFilter)
             }
-
-            setInitialOptions(bearers);
+            
+            setInitialOptions(tags, bearers);
             setAttachedDetails(bearers);
         }
         setIsLoading(true);
@@ -106,6 +107,12 @@ export default function ModifyBearerTags(props: {
                     
                     let to_attach: Attachment[] = [];
                     let to_detach: Detachment[] = [];
+
+                    if(props.tagLimit && updatedOptions.length > props.tagLimit) {
+                        setIsLoading(false);
+                        toast.error(`Only ${props.tagLimit} tag(s) allowed`);
+                        return;
+                    }
 
                     for(let ad of attachedDetails) {
                         let exists = false;

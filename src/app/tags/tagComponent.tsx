@@ -8,11 +8,16 @@ import TagForm from "./tagForm";
 import TagItem from "./tagItem";
 import { useSession } from "next-auth/react";
 
-const TagsComponent = () => {
+const TagsComponent = (props: {
+  tags?: Tag[],
+  allowEditing: boolean,
+  filterPredicate?: (t: Tag) => boolean
+}) => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [showTagForm, setShowTagForm] = useState(false);
+
   const session = useSession();
-  let isAdmin = false; 
+  let isAdmin = false;
 
   if (session.status === "authenticated" && session.data.user.admin)  {
     isAdmin = true; 
@@ -21,7 +26,16 @@ const TagsComponent = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const tagsData = await endpoints.tags.getAll();
+        let tagsData: Tag[] = [];
+        if(props.tags) {
+          tagsData = props.tags;
+        } else {
+          tagsData = await endpoints.tags.getAll();
+          if(props.filterPredicate) {
+            tagsData = tagsData.filter(props.filterPredicate);
+          }
+        }
+
         setTags(tagsData);
       } catch (error) {
         console.error('Error fetching tags:', error);
@@ -61,24 +75,24 @@ const TagsComponent = () => {
 
   return (
     <div style={{ display: 'flex', alignItems: 'baseline' }}>
-      <h2 style={{ paddingLeft: '8px', marginTop: '8px', fontSize: '14px' }}>Tags:</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {tags && tags.map((tag) => (
           <TagItem
             key={tag.id}
             tag={tag}
+            allowEditing={props.allowEditing}
             isAdmin={isAdmin}
             onUpdateTag={handleUpdateTag}
             onDelete={handleDelete}
           />
         ))}
-        {isAdmin && (
+        {isAdmin && props.allowEditing && (
           <button onClick={() => setShowTagForm(true)} style={{ marginLeft: '8px' }}>
             <FaPlus />
           </button>
         )}
       </div>
-      {showTagForm && <TagForm onSubmit={handleTagCreated} onClose={handleTagFormClose} />}
+      {showTagForm && props.allowEditing && <TagForm onSubmit={handleTagCreated} onClose={handleTagFormClose} />}
     </div>
   );
 };

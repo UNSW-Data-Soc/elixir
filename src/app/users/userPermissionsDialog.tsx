@@ -202,11 +202,11 @@ export default function UserDialogueInfo(props: {
                                     isDisabled: false,
                                 }}
                             />
-                            <p className="text-2xl font-semibold py-5">Portfolios</p>
+                            <p className="text-2xl font-semibold py-5">Portfolio</p>
                             <ModifyBearerTags
                                 bearer="portfolio"
                                 bearer_id={props.user.id}
-                                allTags={props.tags}
+                                tagLimit={1}
                                 initialOptionsFilter={ai => ai.bearer_id === props.user.id}
                             />
                         </div>

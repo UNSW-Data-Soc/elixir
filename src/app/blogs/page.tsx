@@ -21,7 +21,7 @@ export default function Blog() {
           data science in the real world, they&apos;re here for you!
         </p>
       </header>
-      <Tags/>
+      <Tags allowEditing={true}/>
       <BlogsContainer />
     </main>
   );
