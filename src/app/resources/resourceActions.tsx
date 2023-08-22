@@ -7,9 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import ModifyBearerTags from "../modifyBearerTags";
-import { AttachmentInfo } from "../api/backend/tags";
-import { Button } from "@nextui-org/react";
-
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 
 export default function ResourceActions(props: {resource: Resource}) {
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
@@ -58,54 +56,84 @@ export default function ResourceActions(props: {resource: Resource}) {
 
     return(
         <>
-            {
-                showDeletionDialogue &&
-                <ConfirmationDialogue
-                    heading="Are you sure?"
-                    subHeading="This action is permanent and irreversible!"
-                    resource={props.resource}
-                    confirmation={handleResourceDeletion}
-                    hideDialogue={() => {setShowDeletionDialogue(false)}}
-                />
-            }
+            <Modal isOpen={showDeletionDialogue} onOpenChange={() => setShowDeletionDialogue(false)}>
+                <ModalContent>
+                {(onClose) => (
+                    <>
+                    <ModalHeader className="flex flex-col gap-1">
+                        Are you sure?
+                        <small className="text-default-500">This action is permanent and irreversible!</small>
+                    </ModalHeader>
+                    <ModalBody>
+                        <p>This action will delete '{props.resource.title}'</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" variant="light" onPress={onClose}>
+                        Cancel
+                        </Button>
+                        <Button color="danger" variant="light" onPress={handleResourceDeletion}>
+                        Confirm
+                        </Button>
+                    </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
 
-            {
-                showVisibilityDialogue &&
-                <ConfirmationDialogue
-                    heading="Are you sure?"
-                    subHeading={props.resource.public ? "This will remove the resource from public view" : "This will make the resource publicly available"}
-                    resource={props.resource}
-                    confirmation={handleResourcePublication}
-                    hideDialogue={() => {setShowVisibilityDialogue(false)}}
-                />
-            }
-            {
-                showModifyTagsDialogue &&
-                <>
-                    <div className="z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="flex flex-col justify-center align-baseline items-center bg-white p-10">
-                        <p className="text-2xl font-semibold">Edit tags</p>
-                        <div className="p-20 flex flex-col justify-center align-baseline items-center bg-white gap-5">
-                            <div className="w-full m-5">
-                                <ModifyBearerTags
-                                    bearer="resource"
-                                    bearer_id={props.resource.id}
-                                    initialOptionsFilter={ai => ai.bearer_id === props.resource.id}
-                                />
-                            </div>
-                            <div>
-                                <button
-                                    className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                                    onClick={() => setShowModifyTagsDialogue(false)}
-                                >
-                                    Done
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </>
-            }
+            <Modal isOpen={showVisibilityDialogue} onOpenChange={() => setShowVisibilityDialogue(false)}>
+                <ModalContent>
+                {(onClose) => (
+                    <>
+                    <ModalHeader className="flex flex-col gap-1">
+                        Are you sure?
+                        <small className="text-default-500">{props.resource.public ? "You can always publish again!" : "You can always unpublish later"}</small>
+                    </ModalHeader>
+                    <ModalBody>
+                        <p>
+                            {
+                            props.resource.public ?
+                            `This action will remove the '${props.resource.title}' resource from public view` :
+                            `This will make the resource '${props.resource.title}' publicly available`
+                            }
+                        </p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" variant="light" onPress={onClose}>
+                        Cancel
+                        </Button>
+                        <Button color="danger" variant="light" onPress={handleResourcePublication}>
+                        Confirm
+                        </Button>
+                    </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
+
+            <Modal isOpen={showModifyTagsDialogue} onOpenChange={() => setShowModifyTagsDialogue(false)}>
+                <ModalContent>
+                {(onClose) => (
+                    <>
+                    <ModalHeader className="flex flex-col gap-1">
+                        Edit tags
+                        <small className="text-default-500">Add or remove tags from this resource</small>
+                    </ModalHeader>
+                    <ModalBody>
+                        <ModifyBearerTags
+                            bearer="resource"
+                            bearer_id={props.resource.id}
+                            initialOptionsFilter={ai => ai.bearer_id === props.resource.id}
+                        />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" variant="light" onPress={onClose}>
+                        Done
+                        </Button>
+                    </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
 
             <div
                 className="flex gap-5 m-3 items-center justify-between align-baseline"
@@ -115,6 +143,7 @@ export default function ResourceActions(props: {resource: Resource}) {
                     <Button
                         color="secondary"
                         radius="full"
+                        variant="light"
                         onClick={() => {setShowVisibilityDialogue(true)}}
                     >
                         Unpublish
@@ -122,6 +151,7 @@ export default function ResourceActions(props: {resource: Resource}) {
                     <Button
                         color="secondary"
                         radius="full"
+                        variant="light"
                         onClick={() => {setShowVisibilityDialogue(true)}}
                     >
                         Publish
@@ -130,49 +160,17 @@ export default function ResourceActions(props: {resource: Resource}) {
                 <Button
                     color="danger"
                     radius="full"
+                    variant="light"
                     onClick={() => {setShowDeletionDialogue(true)}}>
                     Delete
                 </Button>
                 <Button
                     color="warning"
                     radius="full"
+                    variant="light"
                     onClick={() => {setShowModifyTagsDialogue(true)}}>
                     Edit Tags
                 </Button>
-            </div>
-        </>
-    );
-}
-
-
-function ConfirmationDialogue(props: {
-    heading: string,
-    subHeading: string,
-    resource: Resource,
-    confirmation: () => void
-    hideDialogue: () => void
-}) {
-    return (
-        <>
-            <div className="z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="flex flex-col justify-center align-baseline items-center bg-white p-10">
-                        <p className="text-[black] text-xl">{props.heading}</p>
-                        <p className="text-[red] italic">{props.subHeading}</p>
-                        <div>
-                            <button
-                                className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                                onClick={props.confirmation}
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                                onClick={props.hideDialogue}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
             </div>
         </>
     );

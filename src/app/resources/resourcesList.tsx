@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
 import ResourceActions from "./resourceActions";
 import { Resource } from "../api/backend/resources";
 import dayjs from "dayjs";
@@ -12,7 +12,7 @@ import { endpoints } from "../api/backend/endpoints";
 import { toast } from "react-hot-toast";
 import { AttachmentInfo } from "../api/backend/tags";
 import TagsComponent from "../tags/tagComponent";
-import { Card, CardBody, CardFooter, CardHeader, Divider, Link, Image, Button } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, CardHeader, Divider, Link, Image, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 
 dayjs.extend(relativeTime);
 
@@ -40,6 +40,8 @@ export default function ResourcesList(props: { attachments: AttachmentInfo[], re
 }
 
 function ResourcesCard(props: {attachments: AttachmentInfo[], resource: Resource}) {
+    const [showResourceDescription, setShowResourceDescription] = useState(false);
+
     const createdDate = dayjs(Date.parse(props.resource.created_time)).fromNow();
     
     
@@ -58,41 +60,78 @@ function ResourcesCard(props: {attachments: AttachmentInfo[], resource: Resource
         }
     }
     return (
-        <Card className="max-w-[400px]" style={{ opacity: props.resource.public ? 1: RESOURCE_NON_PUBLIC_OPACITY}}>
-            <CardHeader className="flex gap-3">
-                <div className="flex flex-col">
-                    <p className="text-lg">{props.resource.title}</p>
-                    <p className="text-small text-default-500">{createdDate}</p>
-                </div>
-            </CardHeader>
-            <Divider/>
-            <CardBody>
-                <p className="text-medium">{props.resource.description.substring(0, MAX_DESCRIPTION_CHAR)}...</p>
-            </CardBody>
-            <Divider/>
-            <CardFooter>
-                <Link
-                    isExternal
-                    showAnchorIcon
-                    onClick={handleResourceClick}
-                    style={{cursor: "pointer"}}
+        <>
+            <Card
+                className="max-w-[400px]"
+                style={{ opacity: props.resource.public ? 1: RESOURCE_NON_PUBLIC_OPACITY}}
+                // isPressable
                 >
-                    View resource
-                </Link>
-                <TagsComponent
-                    allowEditing={false}
-                    tags={
-                        props.attachments.filter(a => a.bearer_id === props.resource.id).map(a => {
-                            return {
-                                id: a.tag_id,
-                                name: a.name,
-                                colour: a.colour,
-                            }
-                        })
-                    }
-                />
-            </CardFooter>
-            <ResourceActions resource={props.resource} />
-      </Card>
+                <CardHeader className="flex gap-3">
+                    <div className="flex flex-col">
+                        <p className="text-lg">{props.resource.title}</p>
+                        <p className="text-small text-default-500">{createdDate}</p>
+                    </div>
+                </CardHeader>
+                <Divider/>
+                <CardBody onClick={() => setShowResourceDescription(true)}>
+                    <p className="text-medium">{props.resource.description.substring(0, MAX_DESCRIPTION_CHAR)}...</p>
+                </CardBody>
+                <Divider/>
+                <CardFooter>
+                    <Link
+                        isExternal
+                        showAnchorIcon
+                        onClick={handleResourceClick}
+                        style={{cursor: "pointer"}}
+                    >
+                        View resource
+                    </Link>
+                    <TagsComponent
+                        allowEditing={false}
+                        tags={
+                            props.attachments.filter(a => a.bearer_id === props.resource.id).map(a => {
+                                return {
+                                    id: a.tag_id,
+                                    name: a.name,
+                                    colour: a.colour,
+                                }
+                            })
+                        }
+                    />
+                </CardFooter>
+                <ResourceActions resource={props.resource} />
+                {showResourceDescription && <ResourceDescription resource={props.resource} onOpenChange={() => setShowResourceDescription(false)}/>}
+            </Card>
+        
+        </>
+    );
+}
+
+function ResourceDescription(props: {resource: Resource, onOpenChange: () => void}) {
+    const createdDate = dayjs(Date.parse(props.resource.created_time)).fromNow();
+    
+    return (
+        <Modal isOpen={true} onOpenChange={props.onOpenChange}>
+            <ModalContent>
+            {(onClose) => (
+                <>
+                <ModalHeader className="flex flex-col gap-1">
+                    {props.resource.title}
+                    <small className="text-default-500">{createdDate}</small>
+                </ModalHeader>
+                <ModalBody>
+                    <p> 
+                    {props.resource.description}
+                    </p>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                    </Button>
+                </ModalFooter>
+                </>
+            )}
+            </ModalContent>
+        </Modal>
     );
 }
