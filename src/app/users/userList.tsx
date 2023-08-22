@@ -9,8 +9,9 @@ import UserDialogueInfo from "./userPermissionsDialog";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { Spinner } from "../utils";
+import { Tag, tags } from "../api/backend/tags";
 
-export default function UsersList() {
+export default function UsersList(props: {tags: Tag[]}) {
     const router = useRouter();
     const session = useSession();
     const [users, setUsers] = useState<User[]>([]);
@@ -137,6 +138,7 @@ export default function UsersList() {
                     {showModal && showModalUser && (
                         <UserDialogueInfo
                             user={{ ...showModalUser }}
+                            tags={props.tags}
                             closeModal={() => {
                                 setShowModal(false);
                                 setShowModalUser(null);

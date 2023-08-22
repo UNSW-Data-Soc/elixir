@@ -6,11 +6,15 @@ import { Resource } from "../api/backend/resources";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import ModifyBearerTags from "../modifyBearerTags";
+import { AttachmentInfo } from "../api/backend/tags";
 
 
 export default function ResourceActions(props: {resource: Resource}) {
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
     const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
+    const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
+    
     const session = useSession();
     const router = useRouter();
 
@@ -74,6 +78,33 @@ export default function ResourceActions(props: {resource: Resource}) {
                     hideDialogue={() => {setShowVisibilityDialogue(false)}}
                 />
             }
+            {
+                showModifyTagsDialogue &&
+                <>
+                    <div className="z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="flex flex-col justify-center align-baseline items-center bg-white p-10">
+                        <p className="text-2xl font-semibold">Edit tags</p>
+                        <div className="p-20 flex flex-col justify-center align-baseline items-center bg-white gap-5">
+                            <div className="w-full m-5">
+                                <ModifyBearerTags
+                                    bearer="resource"
+                                    bearer_id={props.resource.id}
+                                    initialOptionsFilter={ai => ai.bearer_id === props.resource.id}
+                                />
+                            </div>
+                            <div>
+                                <button
+                                    className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                                    onClick={() => setShowModifyTagsDialogue(false)}
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </>
+            }
 
             <div
                 className="flex gap-5 m-3"
@@ -97,6 +128,11 @@ export default function ResourceActions(props: {resource: Resource}) {
                     className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
                     onClick={() => {setShowDeletionDialogue(true)}}>
                     Delete
+                </button>
+                <button
+                    className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                    onClick={() => {setShowModifyTagsDialogue(true)}}>
+                    Edit Tags
                 </button>
             </div>
         </>

@@ -1,3 +1,6 @@
+
+import Tags from "../tags/tagComponent";
+
 export default function Events() {
   return (
     <main className="bg-white ">
@@ -15,7 +18,7 @@ export default function Events() {
             if (session) return redirect("/");
         */}
       </button>
-      <p>TODO: Dialog for <b>tags</b> go here!</p>
+      <Tags/>
     </main>
   );
 }

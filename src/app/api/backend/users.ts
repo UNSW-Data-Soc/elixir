@@ -113,12 +113,12 @@ function getUserProfilePicture(user_id: string): string {
   return `${BACKEND_URL}/file/user?user_id=${user_id}`;
 }
 
-async function getYears(): Promise<Number[]> {
+async function getYears(): Promise<number[]> {
   return (await callFetch({
     route: `/users/years`,
     method: "GET",
     authRequired: true,
-  })) as Number[];
+  })) as number[];
 };
 
 async function getUsersByYears(year: Number): Promise<UserPublic[]> {

@@ -1,5 +1,6 @@
 import { auth } from "./auth";
 import { blogs } from "./blogs";
+import {tags} from "./tags"
 import { users } from "./users";
 import { resources } from "./resources";
 import { getSession } from "next-auth/react";
@@ -39,6 +40,7 @@ export const callFetch = async ({
 export const endpoints = {
   auth,
   blogs,
+  tags,
   users,
   resources,
 };

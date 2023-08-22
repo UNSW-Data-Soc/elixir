@@ -6,11 +6,14 @@ import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { Spinner } from "../../utils";
+import { AttachmentInfo } from "@/app/api/backend/tags";
+import TagsComponent from "@/app/tags/tagComponent";
 
 export default function UsersList() {
     const [users, setUsers] = useState<UserPublic[]>([]);
     const [isLoading, setLoading] = useState(true);
     const [years, setYears] = useState<Number[]>([]);
+    const [portfolioTags, setPortfolioTags] = useState<AttachmentInfo[]>([]);
 
     useEffect(() => {
         const getData = async () => {
@@ -20,6 +23,9 @@ export default function UsersList() {
             setYears(yearsData);
             setUsers(usersData);
             setLoading(false);
+
+            let tags = await endpoints.tags.attachments('portfolio');
+            setPortfolioTags(tags);
         };
 
         getData();
@@ -99,9 +105,18 @@ export default function UsersList() {
                                     <h3 className="text-xl font-bold">
                                         {user.name}
                                     </h3>
-                                    {
-                                        // TODO: add portfolio
-                                    }
+                                    <TagsComponent
+                                        allowEditing={false}
+                                        tags={
+                                            portfolioTags.filter(a => a.bearer_id === user.id)?.map(a => {
+                                                return {
+                                                    id: a.tag_id,
+                                                    name: a.name,
+                                                    colour: a.colour,
+                                                }
+                                            })
+                                        }
+                                    />
                                 </div>
                             </div>
                         ))}
