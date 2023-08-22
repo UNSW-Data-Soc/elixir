@@ -7,9 +7,9 @@ import { User } from "../api/backend/users";
 import { CSSProperties, use, useEffect, useState } from "react";
 import UserDialogueInfo from "./userPermissionsDialog";
 import toast from "react-hot-toast";
-import Image from "next/image";
 import { Spinner } from "../utils";
-import { Tag, tags } from "../api/backend/tags";
+import { Tag } from "../api/backend/tags";
+import { Card, CardBody, CardHeader, Image} from "@nextui-org/react";
 
 export default function UsersList(props: {tags: Tag[]}) {
     const router = useRouter();
@@ -38,26 +38,6 @@ export default function UsersList(props: {tags: Tag[]}) {
         return <></>;
     }
 
-    function getUserBannerStyle(user: User): CSSProperties {
-        let bgColour = "lightgreen";
-        let opacity = 1;
-
-        if (user.access_level == "moderator") {
-            bgColour = "lightblue";
-        } else if (user.access_level == "administrator") {
-            bgColour = "lightsalmon";
-        }
-
-        if (user.retired) {
-            opacity = 0.5;
-        }
-
-        return {
-            backgroundColor: bgColour,
-            opacity: opacity,
-        };
-    }
-
     // user ordering: admin, mods, members
     // with ties broken alphabetically
     function sortUsers(a: User, b: User): number {
@@ -84,13 +64,18 @@ export default function UsersList(props: {tags: Tag[]}) {
     }
 
     function getUserCardStyle(user: User): CSSProperties {
+        let bgColour = "#DDFFBB";
+        let opacity = 1;
+        if(user.access_level === "moderator") {bgColour = "salmon"}
+        else if(user.access_level === "administrator") {bgColour = "#B4E4FF"}
+
+        if (user.retired) {
+            opacity = 0.6;
+        }
+
         return {
-            backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
-            backgroundOrigin: "content-box",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            cursor: "pointer",
+            backgroundColor: bgColour,
+            opacity: opacity,
         };
     }
 
@@ -101,53 +86,78 @@ export default function UsersList(props: {tags: Tag[]}) {
             ) : (
                 <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
                     {users.sort(sortUsers).map((user) => (
-                        <div
-                            key={user.id}
-                            className="border-[1px] border-black flex flex-col items-center w-4/12"
-                            style={getUserBannerStyle(user)}
-                        >
-                            <div
-                                className="w-full relative h-[200px]"
-                                style={getUserCardStyle(user)}
-                                onClick={() => {
-                                    setShowModal(true);
-                                    setShowModalUser(user);
-                                }}
-                            >
-                                {user.photo && (
-                                    <Image
-                                        fill
-                                        src={endpoints.users.getUserProfilePicture(
-                                            user.id
-                                        )}
-                                        alt="Profile picture"
-                                        sizes="100vw"
-                                    />
-                                )}
-                            </div>
-                            <div className="flex flex-col gap-3 p-5 items-center">
-                                <h3 className="text-xl font-bold">
-                                    {user.name}
-                                </h3>
-                                <p className="">
-                                    <span className="italic">{user.email}</span>
-                                </p>
-                            </div>
-                        </div>
+                        <Card style={getUserCardStyle(user)} isBlurred isPressable radius="lg" className="border-none" onPress={() =>{ setShowModal(true); setShowModalUser(user);}}>
+                                    <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                                        <small className="text-default-500">{}</small>
+                                        <h4 className="font-bold text-large">{user.name}</h4>
+                                    </CardHeader>
+                                    <CardBody className="overflow-visible py-2">
+                                        <Image
+                                            src={endpoints.users.getUserProfilePicture(
+                                                user.id
+                                            )}
+                                            alt="Profile picture"
+                                            className="object-cover rounded-xl"
+                                            height={300}
+                                            width={300}
+                                        />
+                                    </CardBody>
+                                </Card>
                     ))}
-                    {showModal && showModalUser && (
-                        <UserDialogueInfo
-                            user={{ ...showModalUser }}
-                            tags={props.tags}
-                            closeModal={() => {
-                                setShowModal(false);
-                                setShowModalUser(null);
-                            }}
-                            updateUser={updateUser}
-                        />
-                    )}
+                    {showModal && showModalUser && <UserDialogueInfo
+                        isModalOpen={showModal}
+                        user={{ ...showModalUser }}
+                        tags={props.tags}
+                        closeModal={() => {
+                            setShowModal(false);
+                            setShowModalUser(null);
+                        }}
+                        updateUser={updateUser}
+                    />}
                 </div>
             )}
         </>
     );
 }
+
+
+// function DisplayModal(props: {user: User, isOpen: boolean, onOpenChange: () => void, tags: Tag[]}) {
+//     return (
+//         <>
+//             <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
+//                 <ModalContent>
+//                 {(onClose) => (
+//                     <>
+//                     <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+//                     <UserAvatar
+//                         name={props.user.name}
+//                         description={props.user.email}
+//                         avatarProps={{
+//                             isBordered: true,
+//                             src: endpoints.users.getUserProfilePicture(props.user.id),
+//                             size: "lg",
+//                             color: "success",
+//                             showFallback: true,
+//                         }}
+//                     />
+//                     <ModalBody>
+//                         <UserDialogueInfo
+//                                 user={{ ...props.user }}
+//                                 tags={props.tags}
+//                                 updateUser={() => {}}
+//                                 closeModal={() => {}}
+//                             />
+
+//                     </ModalBody>
+//                     <ModalFooter>
+//                         <Button color="warning" variant="light" onPress={onClose}>
+//                         Close
+//                         </Button>
+//                     </ModalFooter>
+//                     </>
+//                 )}
+//                 </ModalContent>
+//             </Modal>
+//         </>
+//     );
+// }

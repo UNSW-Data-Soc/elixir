@@ -8,14 +8,16 @@ import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../utils";
-import { AttachmentInfo, Tag } from "../api/backend/tags";
+import { Tag } from "../api/backend/tags";
 import ModifyBearerTags from "../modifyBearerTags";
+import { Modal, ModalContent, ModalHeader, User as UserAvatar, Image, ModalBody, Divider, ModalFooter, Button } from "@nextui-org/react";
 
 export default function UserDialogueInfo(props: {
+    isModalOpen: boolean,
     user: User;
     tags: Tag[],
     updateUser: (user: User) => void;
-    closeModal: Function;
+    closeModal: () => void;
 }) {
     const router = useRouter();
 
@@ -139,96 +141,104 @@ export default function UserDialogueInfo(props: {
     return (
         <>
             {loading && <Spinner />}
-            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                <div className="bg-white p-12 rounded-xl">
-                    <p className="text-2xl font-semibold">{props.user.name}</p>
-                    <p className="text-1xl font">{props.user.email}</p>
-                    <hr />
-                    <br></br>
-                    <div>
-                        <div className="flex flex-col gap-2 pb-3">
-                            <p className="text-2xl font-semibold py-5">
-                                Access permissions
-                            </p>
-                            <Select
-                                options={permissionsOptions}
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                name="accessLevel"
-                                onChange={(value) => {
-                                    if (value) {
-                                        setAccessLevel(value.value);
-                                    }
-                                }}
-                                defaultValue={{
-                                    value: accessLevel,
-                                    label:
-                                        accessLevel.charAt(0).toUpperCase() +
-                                        accessLevel.slice(1),
-                                    isDisabled: true,
+            <Modal isOpen={props.isModalOpen} onOpenChange={() => props.closeModal()}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+                            <UserAvatar
+                                name={props.user.name}
+                                description={props.user.email}
+                                avatarProps={{
+                                    isBordered: true,
+                                    src: endpoints.users.getUserProfilePicture(props.user.id),
+                                    size: "lg",
+                                    color: "success",
+                                    showFallback: true,
                                 }}
                             />
-                            <p className="text-2xl font-semibold py-5">
-                                Years active
-                            </p>
-                            <CreatableSelect
-                                components={{ DropdownIndicator: null }}
-                                inputValue={year.toString()}
-                                isClearable
-                                isMulti
-                                menuIsOpen={false}
-                                onChange={(newVal) => setYearsActive(newVal)}
-                                onInputChange={(newVal) => setYear(newVal)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Enter a year and press enter..."
-                                value={yearsActive}
-                            />
-                            <p className="text-2xl font-semibold py-5">
-                                Retired
-                            </p>
-                            <Select
-                                options={retired_options}
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                name="retired"
-                                onChange={(value) => {
-                                    if (value) {
-                                        setRetired(value.value);
-                                    }
-                                }}
-                                defaultValue={{
-                                    value: retired,
-                                    label: retired ? "Yes" : "No",
-                                    isDisabled: false,
-                                }}
-                            />
-                            <p className="text-2xl font-semibold py-5">Portfolio</p>
-                            <ModifyBearerTags
-                                bearer="portfolio"
-                                bearer_id={props.user.id}
-                                tagLimit={1}
-                                initialOptionsFilter={ai => ai.bearer_id === props.user.id}
-                            />
-                        </div>
-                    </div>
 
-                    <button
-                        className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                        onClick={() => {
-                            handleConfirm();
-                            props.closeModal();
-                        }}
-                    >
-                        Confirm
-                    </button>
-                    <button
-                        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                        onClick={() => props.closeModal()}
-                    >
-                        Cancel
-                    </button>
-                </div>
-            </div>
+                            <ModalBody>
+                                <Divider/>
+                                <div>
+                                    <div className="flex flex-col gap-2 pb-3">
+                                        <p className="text-2xl font-semibold py-5">
+                                            Access permissions
+                                        </p>
+                                        <Select
+                                            options={permissionsOptions}
+                                            classNamePrefix="select"
+                                            isSearchable={true}
+                                            name="accessLevel"
+                                            onChange={(value) => {
+                                                if (value) {
+                                                    setAccessLevel(value.value);
+                                                }
+                                            }}
+                                            defaultValue={{
+                                                value: accessLevel,
+                                                label:
+                                                    accessLevel.charAt(0).toUpperCase() +
+                                                    accessLevel.slice(1),
+                                                isDisabled: true,
+                                            }}
+                                        />
+                                        <p className="text-2xl font-semibold py-5">
+                                            Years active
+                                        </p>
+                                        <CreatableSelect
+                                            components={{ DropdownIndicator: null }}
+                                            inputValue={year.toString()}
+                                            isClearable
+                                            isMulti
+                                            menuIsOpen={false}
+                                            onChange={(newVal) => setYearsActive(newVal)}
+                                            onInputChange={(newVal) => setYear(newVal)}
+                                            onKeyDown={handleKeyDown}
+                                            placeholder="Enter a year and press enter..."
+                                            value={yearsActive}
+                                        />
+                                        <p className="text-2xl font-semibold py-5">
+                                            Retired
+                                        </p>
+                                        <Select
+                                            options={retired_options}
+                                            classNamePrefix="select"
+                                            isSearchable={true}
+                                            name="retired"
+                                            onChange={(value) => {
+                                                if (value) {
+                                                    setRetired(value.value);
+                                                }
+                                            }}
+                                            defaultValue={{
+                                                value: retired,
+                                                label: retired ? "Yes" : "No",
+                                                isDisabled: false,
+                                            }}
+                                        />
+                                        <p className="text-2xl font-semibold py-5">Portfolio</p>
+                                        <ModifyBearerTags
+                                            bearer="portfolio"
+                                            bearer_id={props.user.id}
+                                            tagLimit={1}
+                                            initialOptionsFilter={ai => ai.bearer_id === props.user.id}
+                                        />
+                                    </div>
+                                </div>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onPress={props.closeModal}>
+                                    Cancel
+                                </Button>
+                                <Button color="primary" variant="light" onPress={() => {handleConfirm(); props.closeModal()}}>
+                                    Confirm
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </>
     );
 }
