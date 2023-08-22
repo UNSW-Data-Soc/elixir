@@ -29,13 +29,15 @@ const TagsComponent = (props: {
         let tagsData: Tag[] = [];
         if(props.tags) {
           tagsData = props.tags;
+          console.log("provided")
         } else {
           tagsData = await endpoints.tags.getAll();
           if(props.filterPredicate) {
             tagsData = tagsData.filter(props.filterPredicate);
           }
         }
-
+        console.log("wtf")
+        console.log(tagsData)
         setTags(tagsData);
       } catch (error) {
         console.error('Error fetching tags:', error);
@@ -43,7 +45,7 @@ const TagsComponent = (props: {
     };
 
     fetchTags();
-  }, []);
+  }, [props.tags]);
 
   const handleTagCreated = (tag: Tag) => {
     setTags([...tags, tag]);

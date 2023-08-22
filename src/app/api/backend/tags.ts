@@ -26,6 +26,19 @@ export interface AttachmentInfo {
   colour: string, // tag colour
 }
 
+export type TagReferenceInfo = [string, string];
+export interface TagReferences {
+  tags_id: string,
+  tags_name: string,
+  tags_colour: string,
+  portfolio: TagReferenceInfo[],
+  blog: TagReferenceInfo[],
+  event: TagReferenceInfo[],
+  resource: TagReferenceInfo[],
+  sponsorship: TagReferenceInfo[],
+  job: TagReferenceInfo[],
+}
+
 const getAll: () => Promise<Tag[]> = async () => {
   return (await callFetch({
     route: "/tags",
@@ -98,14 +111,22 @@ const attach: (attachment: Attachment) => Promise<AttachmentInfo> = async (
 
 const detach: (detachment: Detachment) => Promise<{id: string}> = async (
   detachment: Detachment
-) => {
-  return await callFetch({
-    method: "DELETE",
-    route: "/tag/detach",
-    authRequired: true,
-    body: JSON.stringify(detachment),
-  });
-};
+  ) => {
+    return await callFetch({
+      method: "DELETE",
+      route: "/tag/detach",
+      authRequired: true,
+      body: JSON.stringify(detachment),
+    });
+  };
+  
+  const references: () => Promise<TagReferences[]> = async () => {
+    return await callFetch({
+      method: "GET",
+      route: "/tag/references",
+      authRequired: false,
+    });
+  };
 
 export const tags = {
   getAll,
@@ -113,6 +134,7 @@ export const tags = {
   update,
   deleteTag,
   attachments,
+  references,
   attach,
   detach
 };

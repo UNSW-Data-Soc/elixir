@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { Tag } from '../api/backend/tags';
 import { endpoints } from "../api/backend/endpoints";
 import { FaTimes } from "react-icons/fa";
 import TagEditForm from './tagEditForm';
+import { useRouter } from 'next/navigation';
 
 interface TagItemProps {
   tag: Tag;
@@ -13,12 +14,14 @@ interface TagItemProps {
 }
 
 const TagItem: React.FC<TagItemProps> = ({ isAdmin, allowEditing, tag, onUpdateTag, onDelete }) => {
-
+  const router = useRouter();
   const [showEditForm, setShowEditForm] = useState(false);
   const [editedTag, setEditedTag] = useState(tag);
 
   const handleTagClick = () => {
-    if (isAdmin) {
+    if(!allowEditing) {
+      router.push(`/tags/references/${tag.id}`);
+    } else if (isAdmin) {
       setShowEditForm(true);
     }
   };
@@ -49,7 +52,7 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, allowEditing, tag, onUpdateT
 
   };*/
   
-  const tagStyle = {
+  const tagStyle: CSSProperties = {
     backgroundColor: tag.colour,
     color: '#ffffff',
     padding: '5px 10px',
@@ -65,7 +68,7 @@ const TagItem: React.FC<TagItemProps> = ({ isAdmin, allowEditing, tag, onUpdateT
     background: tag.colour,
   };
 
-  const popupStyle = {
+  const popupStyle: CSSProperties = {
     position: 'absolute',
     top: 'calc(100% + 5px)',
     left: '0',
