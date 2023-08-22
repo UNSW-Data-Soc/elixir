@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import ModifyBearerTags from "../modifyBearerTags";
 import { AttachmentInfo } from "../api/backend/tags";
+import { Button } from "@nextui-org/react";
 
 
 export default function ResourceActions(props: {resource: Resource}) {
@@ -107,33 +108,37 @@ export default function ResourceActions(props: {resource: Resource}) {
             }
 
             <div
-                className="flex gap-5 m-3"
+                className="flex gap-5 m-3 items-center justify-between align-baseline"
             >
                 {
                     props.resource.public ?
-                    <button
-                        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                    <Button
+                        color="secondary"
+                        radius="full"
                         onClick={() => {setShowVisibilityDialogue(true)}}
                     >
                         Unpublish
-                    </button> :
-                    <button
-                        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                    </Button> :
+                    <Button
+                        color="secondary"
+                        radius="full"
                         onClick={() => {setShowVisibilityDialogue(true)}}
                     >
                         Publish
-                    </button>
+                    </Button>
                 }
-                <button
-                    className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                <Button
+                    color="danger"
+                    radius="full"
                     onClick={() => {setShowDeletionDialogue(true)}}>
                     Delete
-                </button>
-                <button
-                    className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+                </Button>
+                <Button
+                    color="warning"
+                    radius="full"
                     onClick={() => {setShowModifyTagsDialogue(true)}}>
                     Edit Tags
-                </button>
+                </Button>
             </div>
         </>
     );
