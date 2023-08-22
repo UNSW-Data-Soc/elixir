@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 export const ALL_IMAGE_FILE_TYPES = "image/png, image/jpg, image/gif, image/jpeg, image/webp";
 export const IMAGE_FILE_TYPES = ["image/png", "image/jpg", "image/gif", "image/jpeg", "image/webp"];
-
+export const ZERO_WIDTH_SPACE = <span> &#8203; </span>;
 export function Spinner() {
     return (
         <div className="z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center">

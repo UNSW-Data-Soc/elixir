@@ -2,7 +2,7 @@
 
 import { endpoints } from "@/app/api/backend/endpoints";
 import { Bearer, TagReferences } from "@/app/api/backend/tags";
-import {Tabs, Tab, Card, CardBody} from "@nextui-org/react";
+import {Tabs, Tab, Card, CardBody, Button} from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
