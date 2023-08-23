@@ -43,7 +43,7 @@ export default function ProfileManager(props: { user_id: string }) {
             setProfilePicURL(endpoints.users.getUserProfilePicture(user.id));
             setLoading(false);
         });
-    }, []);
+    }, [props.user_id]);
 
     if (session.status == "loading") return <></>;
     if (

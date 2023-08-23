@@ -5,7 +5,7 @@ export interface Blog {
   creator: string;
   title: string;
   body: string;
-  tags: List<String>; // list of tag ids,
+  tags: String[]; // list of tag ids,
   author: string;
   public: true;
   id: string;

@@ -83,7 +83,7 @@ export default function ModifyBearerTags(props: {
         setIsLoading(true);
         getDetails();
         setIsLoading(false);
-    }, []);
+    }, [getExistingBearers, props.initialOptionsFilter]);
 
     return (
         <>

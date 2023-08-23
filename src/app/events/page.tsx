@@ -10,7 +10,7 @@ export default function Events() {
         </p>
       </header>
       <button style={{ backgroundColor: "red" }}>
-        Add Event (TODO: change this button to a clickable "+" card, only visible to mods/admins)
+        Add Event (TODO: change this button to a clickable + card, only visible to mods/admins)
         {/* 
           HINT: To only show the button when user is a mod/admin:
             const session = await getServerSession();

@@ -72,7 +72,7 @@ export default function ResourceActions(props: {
                         <small className="text-default-500">This action is permanent and irreversible!</small>
                     </ModalHeader>
                     <ModalBody>
-                        <p>This action will delete '{props.resource.title}'</p>
+                        <p>This action will delete &apos;{props.resource.title}&apos;</p>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" variant="light" onPress={onClose}>
@@ -99,8 +99,8 @@ export default function ResourceActions(props: {
                         <p>
                             {
                             props.resource.public ?
-                            `This action will remove the '${props.resource.title}' resource from public view` :
-                            `This will make the resource '${props.resource.title}' publicly available`
+                            `This action will remove the &apos;${props.resource.title}&apos; resource from public view` :
+                            `This will make the resource &apos;${props.resource.title}&apos; publicly available`
                             }
                         </p>
                     </ModalBody>

@@ -177,7 +177,7 @@ function TagInfoModal(props: {
                                 <div className="flex flex-row m-3 gap-3">
                                     {
                                         activeTab && props.reference[activeTab].map(r =>
-                                            <Button color="default" onPress={() => {}}>
+                                            <Button key={r[0]} color="default" onPress={() => {}}>
                                                 {r[1]}
                                             </Button>
                                         )

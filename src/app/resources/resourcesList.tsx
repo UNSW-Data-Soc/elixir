@@ -42,7 +42,7 @@ export default function ResourcesList(props: { attachments: AttachmentInfo[], re
         }
 
         getTagReferences();
-    }, []);
+    }, [props.resources, props.attachments]);
 
     async function updateResource(updatedResource: Resource, remove: boolean) {
         let updatedResources: Resource[] = [];
