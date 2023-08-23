@@ -8,7 +8,7 @@ export default function Sponsorships() {
         </p>
       </header>
       <button style={{ backgroundColor: "red" }}>
-        Add Sponsor (TODO: change this button to a clickable "+" card, only visible to mods/admins)
+        Add Sponsor (TODO: change this button to a clickable + card, only visible to mods/admins)
         {/* 
           HINT: To only show the button when user is a mod/admin:
             const session = await getServerSession();

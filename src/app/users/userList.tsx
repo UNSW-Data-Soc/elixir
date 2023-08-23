@@ -86,7 +86,7 @@ export default function UsersList(props: {tags: Tag[]}) {
             ) : (
                 <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
                     {users.sort(sortUsers).map((user) => (
-                        <Card style={getUserCardStyle(user)} isBlurred isPressable radius="lg" className="border-none" onPress={() =>{ setShowModal(true); setShowModalUser(user);}}>
+                        <Card key={user.id} style={getUserCardStyle(user)} isBlurred isPressable radius="lg" className="border-none" onPress={() =>{ setShowModal(true); setShowModalUser(user);}}>
                                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                                         <small className="text-default-500">{}</small>
                                         <h4 className="font-bold text-large">{user.name}</h4>

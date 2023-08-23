@@ -79,7 +79,7 @@ export const logout: () => Promise<boolean> = async () => {
   }
 
   try {
-    const res = await endpoints.auth.logout({ token: session.user.token });
+    const res = await endpoints.auth.logout();
 
     if (!res.ok) {
       const err = await res.text();
