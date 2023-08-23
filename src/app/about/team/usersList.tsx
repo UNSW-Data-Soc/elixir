@@ -1,13 +1,12 @@
 "use client";
 
 import { endpoints } from "../../api/backend/endpoints";
-import { User, UserPublic } from "../../api/backend/users";
+import { UserPublic } from "../../api/backend/users";
 import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
 import { AttachmentInfo } from "@/app/api/backend/tags";
-import TagsComponent from "@/app/tags/tagComponent";
-import { Image, Button, Card, CardBody, CardFooter, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar} from "@nextui-org/react";
+import { Image, Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar} from "@nextui-org/react";
 
 const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 
@@ -82,24 +81,6 @@ export default function UsersList() {
     function getUserPortfolio(user: UserPublic) {
         return portfolioTags.find(a => a.bearer_id === user.id)?.name;
     }
-
-    let tabs = [
-        {
-          id: "photos",
-          label: "Photos",
-          content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-        },
-        {
-          id: "music",
-          label: "Music",
-          content: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        },
-        {
-          id: "videos",
-          label: "Videos",
-          content: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        }
-      ];
 
     return (
         <>

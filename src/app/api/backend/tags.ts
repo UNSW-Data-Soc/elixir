@@ -50,24 +50,19 @@ const getAll: () => Promise<Tag[]> = async () => {
 
 interface CreateTag {
   name: string;
-  colour: string    //hexcode \
+  colour: string
 }
+
 const create: (tag: CreateTag) => Promise<Tag> = async (tag: CreateTag) => {
   return await callFetch({
     method: "POST",
     route: "/tag",
     authRequired: true,
-    body: JSON.stringify({ ...tag, public: true }),
+    body: JSON.stringify({ ...tag}),
   });
 };
 
-interface UpdateTag {
- // id: string;
-  name?: string;
-  color?: string;
-}
-
-const update: (updateData: Partial<UpdateTag>) => Promise<Tag> = async (updateData: Partial<UpdateTag>) => {
+const update: (updateData: Tag) => Promise<Tag> = async (updateData: Tag) => {
   return await callFetch({
     method: "PUT",
     route: "/tag",
@@ -77,18 +72,11 @@ const update: (updateData: Partial<UpdateTag>) => Promise<Tag> = async (updateDa
 };
 
 const deleteTag = async (tagId: string): Promise<void> => {
-
-  if (!tagId) {
-    throw new Error('Invalid tag ID');
-  }
-
   const response = await callFetch({
     method: "DELETE",
     route: `/tag?id=${tagId}`, 
     authRequired: true,
   });
-
-  console.log("response status" + response.status); 
 };
 
 const attachments: (bearer: Bearer) => Promise<AttachmentInfo[]> = async (bearer: Bearer) => {

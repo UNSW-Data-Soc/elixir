@@ -8,8 +8,13 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import ModifyBearerTags from "../modifyBearerTags";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { AttachmentInfo } from "../api/backend/tags";
 
-export default function ResourceActions(props: {resource: Resource}) {
+export default function ResourceActions(props: {
+    resource: Resource,
+    updateResource: (updatedResources: Resource, remove: boolean) => void
+    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void
+}) {
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
     const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
     const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
@@ -31,7 +36,7 @@ export default function ResourceActions(props: {resource: Resource}) {
             })
             .finally(() => {
                 setShowDeletionDialogue(false);
-                router.refresh();
+                props.updateResource(props.resource, true);
                 return;
             });
     }
@@ -49,7 +54,9 @@ export default function ResourceActions(props: {resource: Resource}) {
             })
             .finally(() => {
                 setShowVisibilityDialogue(false);
-                router.refresh();
+                let updatedResource = props.resource;
+                updatedResource.public = !props.resource.public;
+                props.updateResource(updatedResource, false);
                 return;
             });
     }
@@ -123,6 +130,7 @@ export default function ResourceActions(props: {resource: Resource}) {
                             bearer="resource"
                             bearer_id={props.resource.id}
                             initialOptionsFilter={ai => ai.bearer_id === props.resource.id}
+                            updateAttachments={props.updateAttachments}
                         />
                     </ModalBody>
                     <ModalFooter>
@@ -138,6 +146,13 @@ export default function ResourceActions(props: {resource: Resource}) {
             <div
                 className="flex gap-5 m-3 items-center justify-between align-baseline"
             >
+                <Button
+                    color="danger"
+                    radius="full"
+                    variant="light"
+                    onClick={() => {setShowDeletionDialogue(true)}}>
+                    Delete
+                </Button>
                 {
                     props.resource.public ?
                     <Button
@@ -157,13 +172,6 @@ export default function ResourceActions(props: {resource: Resource}) {
                         Publish
                     </Button>
                 }
-                <Button
-                    color="danger"
-                    radius="full"
-                    variant="light"
-                    onClick={() => {setShowDeletionDialogue(true)}}>
-                    Delete
-                </Button>
                 <Button
                     color="warning"
                     radius="full"

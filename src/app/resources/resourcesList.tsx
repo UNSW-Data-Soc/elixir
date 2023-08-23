@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import ResourceActions from "./resourceActions";
 import { Resource } from "../api/backend/resources";
 import dayjs from "dayjs";
@@ -10,9 +10,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { endpoints } from "../api/backend/endpoints";
 import { toast } from "react-hot-toast";
-import { AttachmentInfo } from "../api/backend/tags";
-import TagsComponent from "../tags/tagComponent";
+import { AttachmentInfo, TagReferences } from "../api/backend/tags";
 import { Card, CardBody, CardFooter, CardHeader, Divider, Link, Image, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
+import TagReferencesList from "../tags/references/tagReferencesList";
 
 dayjs.extend(relativeTime);
 
@@ -22,24 +22,73 @@ const MAX_DESCRIPTION_CHAR = 250;
 export default function ResourcesList(props: { attachments: AttachmentInfo[], resources: Resource[] }) {
     const session = useSession();
     const router = useRouter();
+    const [attachments, setAttachments] = useState<AttachmentInfo[]>(props.attachments);
+    const [resources, setResources] = useState<Resource[]>(props.resources);
+    const [tagReferences, setTagReferences] = useState<TagReferences[]>([]);
 
-    let resources = props.resources;
+    useEffect(() => {
+        async function getTagReferences() {
+            if (session.status !== "authenticated") {
+                // only show unpublished resources
+                setResources(resources.filter((r) => r.public));
+            }
+            
+            let refs = await endpoints.tags.references();
+            if(!refs) {
+                toast.error("Failed to load tag references");
+                return;
+            }
+            setTagReferences(refs);
+        }
 
-    if (session.status !== "authenticated") {
-        // only show unpublished resources
-        resources = resources.filter((r) => r.public);
+        getTagReferences();
+    }, []);
+
+    async function updateResource(updatedResource: Resource, remove: boolean) {
+        let updatedResources: Resource[] = [];
+        if(remove) {
+            updatedResources = resources.filter(r => r.id !== updatedResource.id);
+        } else {
+            for(let r of resources) {
+                if(r.id === updatedResource.id) {
+                    updatedResources.push(updatedResource);
+                    continue;
+                }
+
+                updatedResources.push(r);
+            }
+        }
+
+        setResources(updatedResources);
+    }
+
+    async function updateAttachments(updatedAttachment: AttachmentInfo[]) {
+        setAttachments(updatedAttachment);
     }
 
     return (
         <>
             {resources.map((resource) => (
-                <ResourcesCard key={resource.id} attachments={props.attachments} resource={resource} />
+                <ResourcesCard
+                    key={resource.id}
+                    attachments={attachments}
+                    resource={resource}
+                    updateResource={updateResource}
+                    updateAttachments={updateAttachments}
+                    tagReferences={tagReferences}
+                />
             ))}
         </>
     );
 }
 
-function ResourcesCard(props: {attachments: AttachmentInfo[], resource: Resource}) {
+function ResourcesCard(props: {
+    attachments: AttachmentInfo[],
+    resource: Resource,
+    tagReferences: TagReferences[],
+    updateResource: (updatedResources: Resource, remove: boolean) => void
+    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void
+}) {
     const [showResourceDescription, setShowResourceDescription] = useState(false);
 
     const createdDate = dayjs(Date.parse(props.resource.created_time)).fromNow();
@@ -86,20 +135,28 @@ function ResourcesCard(props: {attachments: AttachmentInfo[], resource: Resource
                     >
                         View resource
                     </Link>
-                    <TagsComponent
-                        allowEditing={false}
-                        tags={
-                            props.attachments.filter(a => a.bearer_id === props.resource.id).map(a => {
-                                return {
-                                    id: a.tag_id,
-                                    name: a.name,
-                                    colour: a.colour,
+                    <TagReferencesList
+                        styleLarge={false}
+                        showEditingTools={false}
+                        // pass in to prevent multiple fetch calls
+                        tagReferences={
+                            // only show tags related to this particular resource
+                            props.tagReferences.filter(r => {
+                                for(let i of r.resource) {
+                                    if(i[0] === props.resource.id) {
+                                        return true;
+                                    }
                                 }
+                                return false;
                             })
                         }
                     />
                 </CardFooter>
-                <ResourceActions resource={props.resource} />
+                <ResourceActions
+                    resource={props.resource}
+                    updateResource={props.updateResource}
+                    updateAttachments={props.updateAttachments}
+                />
                 {showResourceDescription && <ResourceDescription resource={props.resource} onOpenChange={() => setShowResourceDescription(false)}/>}
             </Card>
         
