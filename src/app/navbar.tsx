@@ -13,8 +13,15 @@ import {
   HomeIcon,
   UserCircleIcon,
   UsersIcon,
-  FaceSmileIcon
+  UserIcon,
+  FaceSmileIcon,
+  Cog6ToothIcon,
+  TagIcon
 } from "@heroicons/react/24/outline";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/dropdown";
+import { Button } from "@nextui-org/button";
+import { Avatar } from "@nextui-org/avatar";
+import { endpoints } from "./api/backend/endpoints";
 
 const Navbar = () => {
   const router = useRouter();
@@ -82,7 +89,7 @@ const Navbar = () => {
           </button>
         </Link>
       </div>
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-3">
         {session.status === "unauthenticated" && (
           <>
             <Link href="/auth/login" className="">
@@ -101,23 +108,9 @@ const Navbar = () => {
         )}
         {session.status === "authenticated" && (
           <>
-            {session.data.user.admin && 
-            <Link href="/users" className="">
-              <button className="hover:bg-[#ddd] p-5 transition-all flex gap-3 flex-row">
-                <UsersIcon className="h-6 w-6" />
-                <span>User Management</span>
-              </button>
-            </Link>
+            {
+              <SettingsDropdown is_admin={session.data.user.admin} user_id={session.data.user.id}/>
             }
-            <Link href={`/profile/${session.data.user.id}`} className="">
-              <p className="p-5 flex flex-row gap-3">
-                <UserCircleIcon className="h-6 w-6" />
-                <span>
-                  <span>Logged in as </span>
-                  <span className="text-[#555] italic">{session.data?.user?.email}</span>
-                </span>
-              </p>
-            </Link>
             <button
               className="hover:bg-[#ddd] p-5 transition-all flex flex-row gap-3 border-l-black border-l"
               onClick={logoutClick}
@@ -131,5 +124,72 @@ const Navbar = () => {
     </nav>
   );
 };
+
+function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
+    const router = useRouter();
+    interface ItemDropdown {
+        key: string;
+        label: string;
+        startContent: JSX.Element;
+        link: string;
+    }
+
+    let items: ItemDropdown[] = [];
+
+    if (props.is_admin) {
+        items = [
+            {
+                key: "users",
+                label: "Users",
+                startContent: <UsersIcon className="h-6 w-6" />,
+                link: "/users",
+            },
+            {
+                key: "tags",
+                label: "Tags",
+                startContent: <TagIcon className="h-6 w-6" />,
+                link: "/tags/references",
+            },
+        ];
+    }
+
+    items.push({
+        key: "profile",
+        label: "Profile",
+        startContent: <UserIcon className="h-6 w-6" />,
+        link: `/profile/${props.user_id}`,
+    });
+
+    return (
+        <div className="flex items-center justify-center align-baseline">
+            <Dropdown backdrop="blur">
+                <DropdownTrigger>
+                    <Avatar
+                      isBordered
+                      showFallback
+                      as="button"
+                      src={endpoints.users.getUserProfilePicture(props.user_id)}
+                    />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Dynamic Actions" items={items}>
+                    {(item) => {
+                        let i = item as ItemDropdown;
+                        return (
+                            <DropdownItem
+                                key={i.key}
+                                startContent={i.startContent}
+                                onClick={() => {
+                                    router.push(i.link);
+                                }}
+                            >
+                                {i.label}
+                            </DropdownItem>
+                        );
+                    }}
+                </DropdownMenu>
+            </Dropdown>
+        </div>
+    );
+}
 
 export default Navbar;
