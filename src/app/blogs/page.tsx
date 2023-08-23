@@ -2,7 +2,6 @@ import { endpoints } from "../api/backend/endpoints";
 import { type Blog } from "../api/backend/blogs";
 
 import BlogsAddCard from "./blogsAddCard";
-import Tags from "../tags/tagComponent";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -21,7 +20,6 @@ export default function Blog() {
           data science in the real world, they&apos;re here for you!
         </p>
       </header>
-      <Tags allowEditing={true}/>
       <BlogsContainer />
     </main>
   );

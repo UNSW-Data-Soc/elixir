@@ -1,13 +1,12 @@
 "use client";
 
 import { endpoints } from "../../api/backend/endpoints";
-import { User, UserPublic } from "../../api/backend/users";
+import { UserPublic } from "../../api/backend/users";
 import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
 import { AttachmentInfo } from "@/app/api/backend/tags";
-import TagsComponent from "@/app/tags/tagComponent";
-import { Image, Button, Card, CardBody, CardFooter, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar} from "@nextui-org/react";
+import { Image, Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar} from "@nextui-org/react";
 
 const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 

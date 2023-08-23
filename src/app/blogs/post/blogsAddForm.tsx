@@ -7,8 +7,6 @@ import { endpoints } from "@/app/api/backend/endpoints";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-import Tags from "../../tags/tagComponent";
-
 export function BlogsAddForm() {
   const router = useRouter();
 
@@ -98,7 +96,6 @@ export function BlogsAddForm() {
           </label>
         </div>
       </div>
-      <Tags/>
       <input
         type="submit"
         value="All done!"

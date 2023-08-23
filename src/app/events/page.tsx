@@ -1,5 +1,4 @@
 
-import Tags from "../tags/tagComponent";
 
 export default function Events() {
   return (
@@ -18,7 +17,6 @@ export default function Events() {
             if (session) return redirect("/");
         */}
       </button>
-      <Tags/>
     </main>
   );
 }
