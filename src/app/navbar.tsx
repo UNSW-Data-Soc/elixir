@@ -16,6 +16,7 @@ import {
     FaceSmileIcon,
     Cog6ToothIcon,
     TagIcon,
+    PhotoIcon,
 } from "@heroicons/react/24/outline";
 import {
     Dropdown,
@@ -178,6 +179,12 @@ function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
                 label: "Tags",
                 startContent: <TagIcon className="h-6 w-6" />,
                 link: "/tags/references",
+            },
+            {
+                key: "coverphoto",
+                label: "Cover Photo",
+                startContent: <PhotoIcon className="h-6 w-6" />,
+                link: "/settings/coverphoto",
             },
         ];
     }

@@ -8,12 +8,12 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import ModifyBearerTags from "../modifyBearerTags";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
-import { AttachmentInfo } from "../api/backend/tags";
+import { AttachmentInfo, TagReferences } from "../api/backend/tags";
 
 export default function ResourceActions(props: {
     resource: Resource,
     updateResource: (updatedResources: Resource, remove: boolean) => void
-    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void
+    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void,
 }) {
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
     const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
@@ -99,8 +99,8 @@ export default function ResourceActions(props: {
                         <p>
                             {
                             props.resource.public ?
-                            `This action will remove the &apos;${props.resource.title}&apos; resource from public view` :
-                            `This will make the resource &apos;${props.resource.title}&apos; publicly available`
+                            `This action will remove the '${props.resource.title}' resource from public view` :
+                            `This will make the resource '${props.resource.title}' publicly available`
                             }
                         </p>
                     </ModalBody>

@@ -79,10 +79,11 @@ const deleteTag = async (tagId: string): Promise<void> => {
   });
 };
 
-const attachments: (bearer: Bearer) => Promise<AttachmentInfo[]> = async (bearer: Bearer) => {
+const attachments: (bearer: Bearer, authRequired: boolean) => Promise<AttachmentInfo[]> = async (bearer: Bearer, authRequired: boolean) => {
   return await callFetch({
     method: "GET",
     route: `/tag/attachments?bearer=${bearer}`,
+    authRequired: authRequired,
   });
 };
 
@@ -108,11 +109,11 @@ const detach: (detachment: Detachment) => Promise<{id: string}> = async (
     });
   };
   
-  const references: () => Promise<TagReferences[]> = async () => {
+  const references: (authRequired: boolean) => Promise<TagReferences[]> = async (authRequired: boolean) => {
     return await callFetch({
       method: "GET",
       route: "/tag/references",
-      authRequired: false,
+      authRequired: authRequired,
     });
   };
 

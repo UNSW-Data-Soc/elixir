@@ -8,6 +8,7 @@ import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import TagActions from "./tagActions";
 import TagAddCard from "../tagAddCard";
+import { useSession } from "next-auth/react";
 
 interface Tab {
     id: Bearer,
@@ -19,6 +20,7 @@ export default function TagReferencesList(props: {
     showEditingTools: boolean,
     tagReferences?: TagReferences[],
 }) {
+    const session = useSession();
     const [references, setReferences] = useState<TagReferences[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [openRef, setOpenRef] = useState<TagReferences>();
@@ -30,7 +32,11 @@ export default function TagReferencesList(props: {
             if(props.tagReferences) {
                 refs = props.tagReferences;
             } else {
-                refs = await endpoints.tags.references();
+                if(session.status === "authenticated") {
+                    refs = await endpoints.tags.references(true);
+                } else {
+                    refs = await endpoints.tags.references(false);
+                }
                 if(!refs) {
                     toast.error("Failed to load tag references");
                     return;
@@ -41,7 +47,7 @@ export default function TagReferencesList(props: {
         }
         
         getReferences();
-    }, [props.tagReferences]);
+    }, [session.status, props.tagReferences]);
     
     async function handleTagUpdate(updatedTagReference: TagReferences) {
         let updatedReferences = [];
@@ -103,6 +109,7 @@ export default function TagReferencesList(props: {
                         return (
                             props.styleLarge ?
                             <Card
+                                key={r.tags_id}
                                 isBlurred
                                 isPressable
                                 radius="lg"
@@ -119,7 +126,7 @@ export default function TagReferencesList(props: {
                             </Card>
                             :
                             <>
-                                <div style={{ position: 'relative' }}>
+                                <div key={r.tags_id} style={{ position: 'relative' }}>
                                     <div style={getSmallTagStyle(r.tags_colour)} onClick={() => handleTagClick(r)}>
                                         {r.tags_name}
                                     </div>

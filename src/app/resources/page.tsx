@@ -19,16 +19,10 @@ export default function Resources() {
 }
 
 async function ResourcesContainer() {
-    const resources = await endpoints.resources.getAll();
-    const attachments = await endpoints.tags.attachments('resource');
-
     return (
         <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
             <ResourceAddCard />
-            <ResourcesList
-                attachments={attachments}
-                resources={resources}
-            />
+            <ResourcesList/>
         </div>
     );
 }

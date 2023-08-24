@@ -19,30 +19,46 @@ dayjs.extend(relativeTime);
 const RESOURCE_NON_PUBLIC_OPACITY = 0.6;
 const MAX_DESCRIPTION_CHAR = 250;
 
-export default function ResourcesList(props: { attachments: AttachmentInfo[], resources: Resource[] }) {
+export default function ResourcesList() {
     const session = useSession();
     const router = useRouter();
-    const [attachments, setAttachments] = useState<AttachmentInfo[]>(props.attachments);
-    const [resources, setResources] = useState<Resource[]>(props.resources);
+    const [attachments, setAttachments] = useState<AttachmentInfo[]>([]);
+    const [resources, setResources] = useState<Resource[]>([]);
     const [tagReferences, setTagReferences] = useState<TagReferences[]>([]);
 
     useEffect(() => {
         async function getTagReferences() {
+            let references_all: TagReferences[] = [];
+            let resources_all: Resource[] = [];
+            let attachments_all: AttachmentInfo[] = [];
+
             if (session.status !== "authenticated") {
-                // only show unpublished resources
-                setResources(resources.filter((r) => r.public));
+                [resources_all, references_all, attachments_all] = await Promise.all([
+                    endpoints.resources.getAll(false),
+                    endpoints.tags.references(false),
+                    endpoints.tags.attachments('resource', false),
+                ]
+                );
+            } else {
+                [resources_all, references_all, attachments_all] = await Promise.all([
+                    endpoints.resources.getAll(true),
+                    endpoints.tags.references(true),
+                    endpoints.tags.attachments('resource', true),
+                ]
+                );
             }
             
-            let refs = await endpoints.tags.references();
-            if(!refs) {
+            if(!references_all) {
                 toast.error("Failed to load tag references");
                 return;
             }
-            setTagReferences(refs);
+            setResources(resources_all);
+            setTagReferences(references_all);
+            setAttachments(attachments_all);
         }
 
         getTagReferences();
-    }, [props.resources, props.attachments]);
+    }, [session.status]);
 
     async function updateResource(updatedResource: Resource, remove: boolean) {
         let updatedResources: Resource[] = [];
@@ -62,8 +78,45 @@ export default function ResourcesList(props: { attachments: AttachmentInfo[], re
         setResources(updatedResources);
     }
 
-    async function updateAttachments(updatedAttachment: AttachmentInfo[]) {
-        setAttachments(updatedAttachment);
+    async function updateAttachments(updatedAttachments: AttachmentInfo[]) {
+        setAttachments(updatedAttachments);
+
+        // doesn't modify actual references, only *removes* from reference list
+        let updatedTagReferences: TagReferences[] = [];
+        for(let t of tagReferences) {
+            for(let a of updatedAttachments) {
+                if(t.tags_id === a.tag_id) {
+                    updatedTagReferences.push(t);
+                    break;
+                }
+            }
+        }
+        
+        // doesn't modify actual references, only *adds* to reference list
+        for(let a of updatedAttachments) {
+            let found = false;
+            for(let t of updatedTagReferences) {
+                if(t.tags_id === a.tag_id) {
+                    found = true;
+                }
+            }
+            
+            if(!found) {
+                updatedTagReferences.push({
+                    tags_id: a.tag_id,
+                    tags_name: a.name,
+                    tags_colour: a.colour,
+                    portfolio: [],
+                    blog: [],
+                    event: [],
+                    resource: [[a.bearer_id, resources.find(r => r.id === a.bearer_id)?.title || ""]],
+                    sponsorship: [],
+                    job: []
+                })
+            }
+        }
+
+        setTagReferences(updatedTagReferences);
     }
 
     return (
@@ -86,8 +139,8 @@ function ResourcesCard(props: {
     attachments: AttachmentInfo[],
     resource: Resource,
     tagReferences: TagReferences[],
-    updateResource: (updatedResources: Resource, remove: boolean) => void
-    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void
+    updateResource: (updatedResources: Resource, remove: boolean) => void,
+    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void,
 }) {
     const [showResourceDescription, setShowResourceDescription] = useState(false);
 

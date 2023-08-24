@@ -13,11 +13,11 @@ export interface Blog {
   last_edit_time: "2023-06-16T10:59:09.059Z";
 }
 
-const getAll: () => Promise<Blog[]> = async () => {
+const getAll: (authRequired: boolean) => Promise<Blog[]> = async (authRequired: boolean) => {
   return (await callFetch({
     route: "/blogs",
     method: "GET",
-    authRequired: false,
+    authRequired: authRequired,
   })) as Blog[];
 };
 
