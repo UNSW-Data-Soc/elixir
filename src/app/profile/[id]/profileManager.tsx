@@ -82,6 +82,7 @@ export default function ProfileManager(props: { user_id: string }) {
     }
 
     async function uploadCroppedPhoto(crop: Crop) {
+        setLoading(true);
         if (!user)
             return toast.error("You do not have persmission to view this page");
 
@@ -105,7 +106,7 @@ export default function ProfileManager(props: { user_id: string }) {
         setShowCropper(false);
         window.URL.revokeObjectURL(photoInCropper);
         setPhotoInCropper("");
-
+        setLoading(false);
         toast.success("Photo uploaded successfully");
         // append timestamp to update displayed photo immediately and bypass cache policy
         setProfilePicURL(
@@ -218,10 +219,10 @@ export default function ProfileManager(props: { user_id: string }) {
                             cancelUploadingCroppedPhoto={
                                 cancelUploadingCroppedPhoto
                             }
-                            user_id={user.id}
                             photo={photoInCropper}
-                            xPixels={500}
-                            yPixels={500}
+                            aspect={1}
+                            xPixels={PROFILE_PIC_X_PXL}
+                            yPixels={PROFILE_PIC_Y_PXL}
                         />
                     )}
 
