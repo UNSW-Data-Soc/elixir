@@ -16,7 +16,6 @@ export default function ModifyBearerTags(props: {
     bearer: Bearer,
     tagLimit?: number,
     initialOptionsFilter?: (a: AttachmentInfo) => boolean,
-    updateCallback?: (updated_tags: Tag[]) => void,
     updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void
 }) {
     const router = useRouter();
@@ -28,7 +27,7 @@ export default function ModifyBearerTags(props: {
     
     
     async function getExistingBearers(): Promise<AttachmentInfo[]> {
-        let attachments = await endpoints.tags.attachments(props.bearer)
+        let attachments = await endpoints.tags.attachments(props.bearer, true);
         return attachments;
     }
     
@@ -83,7 +82,7 @@ export default function ModifyBearerTags(props: {
         setIsLoading(true);
         getDetails();
         setIsLoading(false);
-    }, [getExistingBearers, props.initialOptionsFilter]);
+    }, []);
 
     return (
         <>

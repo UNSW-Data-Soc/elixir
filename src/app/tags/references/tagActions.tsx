@@ -22,8 +22,7 @@ export default function TagActions(props: {
     }
     
     async function handleDeletion() {
-        await 
-        endpoints.tags.deleteTag(props.tagReference.tags_id)
+        await endpoints.tags.deleteTag(props.tagReference.tags_id)
         .then(() => {
             props.handleTagDeletion(props.tagReference.tags_id);
             toast.success("Tag deleted successfully."); 
@@ -73,7 +72,7 @@ function TagModification(props: {tagReference: TagReferences, handleTagUpdate: (
             toast.success("Tag updated successfully.")
         })
         .catch(() => {
-            toast.error("Failed to create tag");
+            toast.error("Failed to update tag");
         });
     }
     

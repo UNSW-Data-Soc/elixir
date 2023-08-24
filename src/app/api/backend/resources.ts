@@ -24,11 +24,11 @@ const getInternalResource: (id: string) => Promise<string> = async (id: string) 
   return `${BACKEND_URL}/file/resources/${id}`;
 }
 
-const getAll: () => Promise<Resource[]> = async () => {
+const getAll: (authRequired: boolean) => Promise<Resource[]> = async (authRequired: boolean) => {
   return (await callFetch({
     route: "/resources",
     method: "GET",
-    authRequired: false,
+    authRequired: authRequired,
   })) as Resource[];
 };
 

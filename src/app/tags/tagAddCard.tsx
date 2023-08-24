@@ -111,7 +111,7 @@ function AddTagModal(props: {
                                 >
                                     Cancel
                                 </Button>
-                                <Button color="success" variant="light" onPress={handleTagCreation}>
+                                <Button color="success" variant="light" onPress={() => {handleTagCreation(); onClose();}}>
                                     Create
                                 </Button>
                             </ModalFooter>

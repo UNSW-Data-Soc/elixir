@@ -26,7 +26,8 @@ export default function Blog() {
 }
 
 async function BlogsContainer() {
-  const blogs = await endpoints.blogs.getAll();
+  // TODO: make this a client comoponent and pass in auth depending on if user is logged in
+  const blogs = await endpoints.blogs.getAll(false);
 
   return (
     <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
