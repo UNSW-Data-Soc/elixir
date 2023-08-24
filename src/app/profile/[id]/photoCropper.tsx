@@ -10,12 +10,12 @@ export interface Crop {
 }
 
 export default function PhotoCropper(props: {
-    user_id: string;
-    photo: string;
-    xPixels: number;
-    yPixels: number;
-    uploadCroppedPhoto: (pixelCrop: Crop) => void;
-    cancelUploadingCroppedPhoto: () => void;
+    photo: string,
+    xPixels: number,
+    yPixels: number,
+    aspect: number,
+    uploadCroppedPhoto: (pixelCrop: Crop) => void,
+    cancelUploadingCroppedPhoto: () => void,
 }) {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -46,7 +46,7 @@ export default function PhotoCropper(props: {
                         image={props.photo}
                         crop={crop}
                         zoom={zoom}
-                        aspect={1}
+                        aspect={props.aspect}
                         onCropChange={setCrop}
                         onZoomChange={setZoom}
                         onCropComplete={handleCropComplete}
@@ -59,7 +59,7 @@ export default function PhotoCropper(props: {
                         className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
                         onClick={() => props.uploadCroppedPhoto(pixelCrop)}
                     >
-                        Upload Profile Picture
+                        Upload
                     </button>
                     <button
                         className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"

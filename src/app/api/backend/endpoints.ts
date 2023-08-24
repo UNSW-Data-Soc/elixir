@@ -3,6 +3,7 @@ import { blogs } from "./blogs";
 import {tags} from "./tags"
 import { users } from "./users";
 import { resources } from "./resources";
+import { file } from "./file";
 import { getSession } from "next-auth/react";
 
 export const BACKEND_URL = "http://127.0.0.1:8000";
@@ -43,4 +44,5 @@ export const endpoints = {
   tags,
   users,
   resources,
+  file,
 };
