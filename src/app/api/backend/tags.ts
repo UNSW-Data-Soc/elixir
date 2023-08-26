@@ -6,7 +6,7 @@ export interface Tag {
   colour: string    //hexcode 
 }
 
-export type Bearer = "blog" | "event" | "resource" | "sponsorship" | "job" | "portfolio";
+export type Bearer = "blog" | "event" | "resource" | "job" | "portfolio";
 export interface Attachment {
   attach_to: Bearer;
   bearer_id: string; 
@@ -35,7 +35,6 @@ export interface TagReferences {
   blog: TagReferenceInfo[],
   event: TagReferenceInfo[],
   resource: TagReferenceInfo[],
-  sponsorship: TagReferenceInfo[],
   job: TagReferenceInfo[],
 }
 

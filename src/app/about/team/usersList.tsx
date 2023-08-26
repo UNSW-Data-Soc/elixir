@@ -31,7 +31,8 @@ export default function UsersList() {
             setUsers(usersData);
             setLoading(false);
 
-            let tags = await endpoints.tags.attachments('portfolio');
+            // auth doesn't matter for 'portfolio'
+            let tags = await endpoints.tags.attachments('portfolio', false);
             setPortfolioTags(tags);
         };
 

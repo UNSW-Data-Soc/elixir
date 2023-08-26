@@ -58,10 +58,6 @@ const Navbar = () => {
                 <p className="font-bold text-inherit">DataSoc</p>
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="start">
-                {/*
-                TODO: navbarmenu item for smaller screens
-                https://nextui.org/docs/components/navbar
-                */}
                 <NavbarItem>
                     <Link href="/" className="">
                         <span>Home</span>
