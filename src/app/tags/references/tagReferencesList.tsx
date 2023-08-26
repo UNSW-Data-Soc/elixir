@@ -83,7 +83,6 @@ export default function TagReferencesList(props: {
             blog: [],
             event: [],
             resource: [],
-            sponsorship: [],
             job: []
         })
 
@@ -225,7 +224,6 @@ function getNumReferences(references: TagReferences) {
         references.blog.length +
         references.event.length +
         references.resource.length +
-        references.sponsorship.length +
         references.job.length;
 }
 
@@ -236,7 +234,6 @@ function getTabs(references: TagReferences) {
     if(references.blog.length > 0) {numRef += references.blog.length; tabs.push({id: "blog", label: "Blogs"})};
     if(references.event.length > 0) {numRef += references.event.length; tabs.push({id: "event", label: "Events"})};
     if(references.resource.length > 0) {numRef += references.resource.length; tabs.push({id: "resource", label: "Resources"})};
-    if(references.sponsorship.length > 0) {numRef += references.sponsorship.length; tabs.push({id: "sponsorship", label: "Sponsorships"})};
     if(references.job.length > 0) {numRef += references.job.length; tabs.push({id: "job", label: "Jobs"})};
     return tabs;
 }

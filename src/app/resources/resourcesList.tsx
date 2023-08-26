@@ -110,7 +110,6 @@ export default function ResourcesList() {
                     blog: [],
                     event: [],
                     resource: [[a.bearer_id, resources.find(r => r.id === a.bearer_id)?.title || ""]],
-                    sponsorship: [],
                     job: []
                 })
             }
