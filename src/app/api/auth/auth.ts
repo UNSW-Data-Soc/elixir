@@ -1,6 +1,7 @@
-import { SignInResponse, getSession, signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { endpoints } from "../../backend/endpoints";
+import { endpoints } from "../backend/endpoints";
+import { userLevels } from "../backend/users";
 
 interface LoginCredentials {
   email: string;
@@ -22,16 +23,23 @@ interface Session {
   token_type: "bearer";
 }
 
+interface Jwt {
+  id: string;
+  exp: number;
+  iat: number;
+  nbf: string;
+  access_level: userLevels;
+}
+
+function parseJwt(token: string): Jwt {
+  return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+}
+
 export const authRegister: (credentials: RegisterCredentials) => Promise<RegisterResponse> = async (
   credentials
 ) => {
   try {
-    const res = await endpoints.auth.register(credentials);
-
-    if (!res.ok) {
-      const err = await res.text();
-      return { ok: false, error: JSON.parse(err).detail };
-    }
+    await endpoints.auth.register(credentials);
 
     return { ok: true, error: null };
   } catch (error) {
@@ -41,19 +49,22 @@ export const authRegister: (credentials: RegisterCredentials) => Promise<Registe
   }
 };
 
-export const login: (credentials: LoginCredentials) => Promise<string> = async (
+export const login: (
+  credentials: LoginCredentials
+) => Promise<{ id: string, token: string; admin: boolean; exp: number }> = async (
   credentials: LoginCredentials
 ) => {
   try {
-    const res = await endpoints.auth.login(credentials);
+    const session: Session = await endpoints.auth.login(credentials);
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err);
-    }
-    const session: Session = await res.json();
+    const decodedJwt: Jwt = parseJwt(session.access_token);
 
-    return session.access_token;
+    return {
+      id: decodedJwt.id,
+      token: session.access_token,
+      admin: decodedJwt.access_level === "administrator",
+      exp: decodedJwt.exp,
+    };
   } catch (error) {
     let errorMessage = JSON.parse((error as any).message).detail;
 
@@ -72,20 +83,13 @@ export const login: (credentials: LoginCredentials) => Promise<string> = async (
 export const logout: () => Promise<boolean> = async () => {
   const session = await getSession();
 
-  await signOut();
-
   if (!session) {
     return false;
   }
 
   try {
-    const res = await endpoints.auth.logout();
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err);
-    }
-
+    await endpoints.auth.logout();
+    await signOut();
     return true;
   } catch (error) {
     return false;
