@@ -14,10 +14,10 @@ import {
 } from "@nextui-org/modal";
 import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
-import { Sponsorship } from "../api/backend/sponsorships";
+import { Job } from "../api/backend/jobs";
 
-export default function SponsorshipsActions(props: {
-    sponsorship: Sponsorship,
+export default function JobActions(props: {
+    job: Job,
     company: Company,
     handleDeletion: (id: string) => void,
 }) {
@@ -30,15 +30,15 @@ export default function SponsorshipsActions(props: {
         return <></>;
     }
 
-    async function handleSponsorshipDeletion() {
-        await endpoints.sponsorships
-            .remove(props.sponsorship.id)
+    async function handleJobDeletion() {
+        await endpoints.jobs
+            .remove(props.job.id)
             .then(() => {
-                toast.success("Sponsorship deleted successfully!");
-                props.handleDeletion(props.sponsorship.id);
+                toast.success("Job deleted successfully!");
+                props.handleDeletion(props.job.id);
             })
             .catch(() => {
-                toast.error("Failed to delete sponsorship");
+                toast.error("Failed to delete job");
             })
             .finally(() => {
                 setShowDeletionDialogue(false);
@@ -57,7 +57,7 @@ export default function SponsorshipsActions(props: {
                         setShowDeletionDialogue(true);
                     }}
                 >
-                    Delete Sponsorship
+                    Delete Job
                 </Button>
             </div>
             <Modal
@@ -75,7 +75,7 @@ export default function SponsorshipsActions(props: {
                             </ModalHeader>
                             <ModalBody>
                                 <p>
-                                    This action will permanently delete the sponsorship by &apos;
+                                    This action will permanently delete the job by &apos;
                                     {props.company.name}&apos;!
                                 </p>
                             </ModalBody>
@@ -90,7 +90,7 @@ export default function SponsorshipsActions(props: {
                                 <Button
                                     color="danger"
                                     variant="light"
-                                    onPress={handleSponsorshipDeletion}
+                                    onPress={handleJobDeletion}
                                 >
                                     Confirm
                                 </Button>

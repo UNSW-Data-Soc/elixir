@@ -39,8 +39,14 @@ async function create(company: CreateCompany, file: Blob): Promise<Company> {
   formData.append("name", company.name);
   formData.append("website_url", company.website_url);
   formData.append("description", company.description);
-  formData.append("photo", file);
+  
+  if(file) {
+    formData.append("photo", file);
+  } else {
+    throw new Error("Please attach a file");
+  }
 
+  
   return await callFetch({
     route: `/company`,
     method: "POST",

@@ -27,7 +27,7 @@ export default function ResourcesList() {
     const [tagReferences, setTagReferences] = useState<TagReferences[]>([]);
 
     useEffect(() => {
-        async function getTagReferences() {
+        async function getData() {
             let references_all: TagReferences[] = [];
             let resources_all: Resource[] = [];
             let attachments_all: AttachmentInfo[] = [];
@@ -57,7 +57,7 @@ export default function ResourcesList() {
             setAttachments(attachments_all);
         }
 
-        getTagReferences();
+        getData();
     }, [session.status]);
 
     async function updateResource(updatedResource: Resource, remove: boolean) {

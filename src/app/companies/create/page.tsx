@@ -132,7 +132,7 @@ export default function CreateCompany() {
                     />
 
                     <p className="py-5  text-2xl font-semibold">
-                        Upload file
+                        Upload photo
                     </p>
                     <FileUploadDropzone
                             handleFileChange={handleFileChange}

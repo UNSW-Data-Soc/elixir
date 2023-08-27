@@ -32,7 +32,7 @@ export default function SponsorshipsList() {
     const [sponsorships, setSponsorships] = useState<Sponsorship[]>([]);
 
     useEffect(() => {
-        async function getCompanies() {
+        async function getData() {
             let spons: Sponsorship[] = [];
             let cmp: Company[] = [];
 
@@ -55,7 +55,7 @@ export default function SponsorshipsList() {
             }
         }
 
-        getCompanies();
+        getData();
     }, [session.status]);
 
     function getCompanyFromSpons(spons: Sponsorship): Company {

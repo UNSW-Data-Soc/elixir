@@ -47,15 +47,6 @@ const remove: (id: string) => Promise<{id: string}> = async (id: string) => {
   });
 };
 
-// async function updateVisibility(id: string, visible: boolean) {
-//   return await callFetch({
-//     method: "PUT",
-//     route: "/company",
-//     authRequired: true,
-//     body: JSON.stringify({id: id, public: visible})
-//   })
-// }
-
 export const sponsorships = {
   getAll,
   create,
