@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FileUploadDropzone, Spinner, IMAGE_FILE_TYPES } from "@/app/utils";
-import { Company, CreateCompany, companies } from "@/app/api/backend/companies";
+import { Company, companies } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { CreateSponsorship, SponsorshipType, isOfTypeSponsorshipType } from "@/app/api/backend/sponsorships";
 import { Select, SelectItem } from "@nextui-org/select";
@@ -14,7 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import dayjs from "dayjs";
 
-export default function CreateCompany() {
+export default function CreateSponsorship() {
     const router = useRouter();
     const session = useSession();
 
@@ -51,6 +51,12 @@ export default function CreateCompany() {
     async function handleConfirm() {
         if(company === "") {
             return toast.error("Please select a company");
+        }
+
+        const exp = dayjs(expiration);
+
+        if(!exp.isAfter(Date.now())) {
+            return toast.error("Please select an expiration date in the future!");
         }
         
         let sponsorship: CreateSponsorship = {

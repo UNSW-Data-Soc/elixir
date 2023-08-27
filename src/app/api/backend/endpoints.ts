@@ -7,6 +7,7 @@ import { file } from "./file";
 import { getSession } from "next-auth/react";
 import { companies } from "./companies";
 import { sponsorships } from "./sponsorships";
+import { jobs } from "./jobs";
 
 export const BACKEND_URL = "http://127.0.0.1:8000";
 
@@ -48,5 +49,6 @@ export const endpoints = {
   resources,
   file,
   companies,
-  sponsorships
+  sponsorships,
+  jobs
 };

@@ -54,7 +54,7 @@ function AddTagModal(props: {
 }) {
 
     const [name, setName] = useState("");
-    const [colour, setColour] = useState("#00ff40");
+    const [colour, setColour] = useState("#00FF40");
     
     async function handleTagCreation() {
         if (name === "" || colour === "") {
