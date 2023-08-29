@@ -2,10 +2,10 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FileUploadDropzone, Spinner, IMAGE_FILE_TYPES } from "@/app/utils";
-import { Company, companies } from "@/app/api/backend/companies";
+import { Spinner, JOB_PHOTO_X_PXL, JOB_PHOTO_Y_PXL } from "@/app/utils";
+import { Company } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { Select, SelectItem } from "@nextui-org/select";
 import DatePicker from "react-datepicker";
@@ -13,6 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import dayjs from "dayjs";
 import { CreateJob } from "@/app/api/backend/jobs";
+import FileUploader from "@/app/photoUploader";
 
 export default function CreateJob() {
     const router = useRouter();
@@ -106,19 +107,6 @@ export default function CreateJob() {
         return router.back();
     }
 
-    async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-        let files = event.target.files;
-        setLoading(true);
-        if (files && IMAGE_FILE_TYPES.includes(files[0].type)) {
-            let blob = files[0];
-            setPhoto(blob);
-        } else {
-            toast.error("Please upload a valid file!");
-        }
-
-        setLoading(false);
-    }
-
     function getCompaniesSelect(): Iterable<string> {
         for (let c of companiesAll) {
             if (c.id === company) {
@@ -204,7 +192,20 @@ export default function CreateJob() {
                     />
 
                     <p className="py-5  text-2xl font-semibold">Upload photo</p>
-                    <FileUploadDropzone handleFileChange={handleFileChange} />
+                    <FileUploader
+                        uploadCroppedPhoto={
+                            (blob: Blob) => {
+                                setLoading(true);
+                                setPhoto(blob);
+                                setLoading(false);
+                            }
+                        }
+                        cancelUploadingCroppedPhoto={
+                            () => {setPhoto(null)}
+                        }
+                        xPixels={JOB_PHOTO_X_PXL}
+                        yPixels={JOB_PHOTO_Y_PXL}
+                    />
 
                     <button
                         className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"

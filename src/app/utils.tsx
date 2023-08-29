@@ -4,6 +4,16 @@ import Image from "next/image";
 export const ALL_IMAGE_FILE_TYPES = "image/png, image/jpg, image/gif, image/jpeg, image/webp";
 export const IMAGE_FILE_TYPES = ["image/png", "image/jpg", "image/gif", "image/jpeg", "image/webp"];
 export const ZERO_WIDTH_SPACE = <span> &#8203; </span>;
+
+export const COVER_PHOTO_X_PXL = 1920;
+export const COVER_PHOTO_Y_PXL = 1080;
+export const PROFILE_PIC_X_PXL = 500;
+export const PROFILE_PIC_Y_PXL = 500;
+export const COMPANY_PHOTO_X_PXL = 500;
+export const COMPANY_PHOTO_Y_PXL = 500;
+export const JOB_PHOTO_X_PXL = 500;
+export const JOB_PHOTO_Y_PXL = 500;
+
 export function Spinner() {
     return (
         <div className="fadeInOutSpinner z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center">

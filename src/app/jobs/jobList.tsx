@@ -102,18 +102,6 @@ export default function JobList() {
         setJobs(updatedJobs);
     }
 
-    function getJobCardStyle(j: Job): CSSProperties {
-        const expirationPassed = dayjs(Date.parse(j.expiration_time)).isAfter(
-            Date.now()
-        );
-
-        return expirationPassed
-            ? {}
-            : {
-                  opacity: 0.5,
-              };
-    }
-
     async function updateAttachments(updatedAttachments: AttachmentInfo[]) {
         setAttachments(updatedAttachments);
 
@@ -162,9 +150,8 @@ export default function JobList() {
     function allJobs() {
         return (
             <>
-                <div className="flex flex-col items-center justify-center align-baseline gap-3">
+                <div className="flex items-stretch justify-center align-baseline gap-3 flex-wrap">
                     {jobs.map((job) => (
-                        <div key={job.id} style={getJobCardStyle(job)}>
                             <JobCard
                                 key={job.id}
                                 company={getCompanyFromJobs(job)}
@@ -173,7 +160,6 @@ export default function JobList() {
                                 tagReferences={tagReferences}
                                 updateAttachments={updateAttachments}
                             />
-                        </div>
                     ))}
                 </div>
             </>
@@ -202,72 +188,82 @@ function JobCard(props: {
 }) {
     const [showcompanyDescription, setShowcompanyDescription] = useState(false);
 
+    function getJobCardStyle(j: Job): CSSProperties {
+        const expirationPassed = dayjs(Date.parse(j.expiration_time)).isAfter(
+            Date.now()
+        );
+
+        return expirationPassed
+            ? {}
+            : {
+                  opacity: 0.5,
+              };
+    }
+    
     return (
         <>
-            <div className="max-w-[400px]">
-                <Card className="py-4">
-                    <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                        <p className="text-tiny uppercase font-bold">
-                            {props.company.name}
-                        </p>
-                        <small className="text-default-500">
-                            {props.company.website_url}
-                        </small>
-                        <h4 className="font-bold text-md">
-                            {props.job.description.substring(
-                                0,
-                                MAX_DESCRIPTION_CHAR
-                            )}
-                            ...
-                        </h4>
-                    </CardHeader>
-                    <CardBody className="flex items-center justify-center align-baseline overflow-visible py-2">
-                        <Image
-                            isBlurred
-                            src={endpoints.jobs.getJobPhoto(props.job.id)}
-                            alt="Profile picture"
-                            className="object-cover rounded-xl"
-                            style={{ cursor: "pointer" }}
-                            height={300}
-                            width={300}
-                            onClick={() => {
-                                setShowcompanyDescription(true);
-                            }}
-                        />
-                    </CardBody>
-                    <CardFooter>
-                        <TagReferencesList
-                            styleLarge={false}
-                            showEditingTools={false}
-                            // pass in to prevent multiple fetch calls
-                            tagReferences={
-                                // only show tags related to this particular resource
-                                props.tagReferences.filter((r) => {
-                                    for (let i of r.job) {
-                                        if (i[0] === props.job.id) {
-                                            return true;
-                                        }
+            <Card className="py-4" style={getJobCardStyle(props.job)}>
+                <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                    <p className="text-tiny uppercase font-bold">
+                        {props.company.name}
+                    </p>
+                    <small className="text-default-500">
+                        {props.company.website_url}
+                    </small>
+                    <h4 className="font-bold text-md">
+                        {props.job.description.substring(
+                            0,
+                            MAX_DESCRIPTION_CHAR
+                        )}
+                        ...
+                    </h4>
+                </CardHeader>
+                <CardBody className="flex items-center justify-center align-baseline overflow-visible py-2">
+                    <Image
+                        isBlurred
+                        src={endpoints.jobs.getJobPhoto(props.job.id)}
+                        alt="Profile picture"
+                        className="object-cover rounded-xl"
+                        style={{ cursor: "pointer" }}
+                        height={300}
+                        width={300}
+                        onClick={() => {
+                            setShowcompanyDescription(true);
+                        }}
+                    />
+                </CardBody>
+                <CardFooter>
+                    <TagReferencesList
+                        styleLarge={false}
+                        showEditingTools={false}
+                        // pass in to prevent multiple fetch calls
+                        tagReferences={
+                            // only show tags related to this particular resource
+                            props.tagReferences.filter((r) => {
+                                for (let i of r.job) {
+                                    if (i[0] === props.job.id) {
+                                        return true;
                                     }
-                                    return false;
-                                })
-                            }
-                        />
-                    </CardFooter>
-                    <JobActions
-                        job={props.job}
-                        company={props.company}
-                        updateAttachments={props.updateAttachments}
+                                }
+                                return false;
+                            })
+                        }
                     />
-                </Card>
-                {showcompanyDescription && (
-                    <JobDescriptionModal
-                        company={props.company}
-                        job={props.job}
-                        onOpenChange={() => setShowcompanyDescription(false)}
-                        handleJobDeletion={props.handleJobDeletion}
-                    />
-                )}
-            </div>
+                </CardFooter>
+                <JobActions
+                    job={props.job}
+                    company={props.company}
+                    updateAttachments={props.updateAttachments}
+                />
+            </Card>
+            {showcompanyDescription && (
+                <JobDescriptionModal
+                    company={props.company}
+                    job={props.job}
+                    onOpenChange={() => setShowcompanyDescription(false)}
+                    handleJobDeletion={props.handleJobDeletion}
+                />
+            )}
         </>
     );
 }

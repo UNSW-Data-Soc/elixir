@@ -102,39 +102,41 @@ export default function TagReferencesList(props: {
                     handleTagCreation={handleTagCreation}
                 />
             }
-            {
-                references.map(r =>
-                    {
-                        return (
-                            props.styleLarge ?
-                            <Card
-                                key={r.tags_id}
-                                isBlurred
-                                isPressable
-                                radius="lg"
-                                className="border-none"
-                                onPress={() => handleTagClick(r)}
-                            >
-                                <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                                    <h4 className="font-bold text-large">{r.tags_name}</h4>
-                                    <small className="text-default-500">{getNumReferences(r)} references</small>
-                                </CardHeader>
-                                <CardBody className="overflow-visible py-2">
-                                </CardBody>
-                                <CardFooter style={{backgroundColor: r.tags_colour}}/>
-                            </Card>
-                            :
-                            <>
-                                <div key={r.tags_id} style={{ position: 'relative' }}>
-                                    <div style={getSmallTagStyle(r.tags_colour)} onClick={() => handleTagClick(r)}>
-                                        {r.tags_name}
+            <div className="flex items-center justify-center align-baseline flex-wrap">
+                {
+                    references.map(r =>
+                        {
+                            return (
+                                props.styleLarge ?
+                                <Card
+                                    key={r.tags_id}
+                                    isBlurred
+                                    isPressable
+                                    radius="lg"
+                                    className="border-none"
+                                    onPress={() => handleTagClick(r)}
+                                >
+                                    <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                                        <h4 className="font-bold text-large">{r.tags_name}</h4>
+                                        <small className="text-default-500">{getNumReferences(r)} references</small>
+                                    </CardHeader>
+                                    <CardBody className="overflow-visible py-2">
+                                    </CardBody>
+                                    <CardFooter style={{backgroundColor: r.tags_colour}}/>
+                                </Card>
+                                :
+                                <>
+                                    <div key={r.tags_id} style={{ position: 'relative' }}>
+                                        <div style={getSmallTagStyle(r.tags_colour)} onClick={() => handleTagClick(r)}>
+                                            {r.tags_name}
+                                        </div>
                                     </div>
-                                </div>
-                            </>
-                        )
-                    }
-                )
-            }
+                                </>
+                            )
+                        }
+                    )
+                }
+            </div>
             {
                 isModalOpen && openRef !== undefined &&
                 <TagInfoModal
@@ -159,6 +161,8 @@ function TagInfoModal(props: {
     handleTagUpdate: (updatedTagReference: TagReferences) => void,
 }) {
     const [activeTab, setActiveTab] = useState<Bearer>("resource");
+    const [showTagActionsModal, setShowTagActionsModal] = useState(false);
+
     return (
         <>
             <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
@@ -180,7 +184,7 @@ function TagInfoModal(props: {
                                         <Tab key={item.id} title={item.label}/>
                                     )}
                                 </Tabs>
-                                <div className="flex flex-row m-3 gap-3">
+                                <div className="flex flex-row m-3 gap-3 flex-wrap item-center justify-center align-baseline">
                                     {
                                         activeTab && props.reference[activeTab].map(r =>
                                             <Button key={r[0]} color="default" onPress={() => {}}>
@@ -192,21 +196,28 @@ function TagInfoModal(props: {
                             </div>
                             <Divider/>
                             {
-                                props.showEditingTools &&
-                                <TagActions
-                                    numRefences={getNumReferences(props.reference)}
-                                    tagReference={props.reference}
+                                props.showEditingTools && showTagActionsModal &&
+                                <DisplayTagActionsModal
+                                    isOpen={true}
+                                    onOpenChange={() => {setShowTagActionsModal(false)}}
+                                    reference={props.reference}
                                     handleTagDeletion={props.handleTagDeletion}
                                     handleTagUpdate={props.handleTagUpdate}
                                 />
                             }
                         </ModalBody>
                         <ModalFooter className="flex items-center justify-between align-baseline">
-                        <Link href="/tags/references">
-                            <Button color="secondary" variant="light">
-                                See all tags
-                            </Button>
-                        </Link>
+                            <Link href="/tags/references">
+                                <Button color="secondary" variant="light">
+                                    See all tags
+                                </Button>
+                            </Link>
+                            {
+                                props.showEditingTools &&
+                                <Button color="default" variant="light" onPress={() => setShowTagActionsModal(true)}>
+                                    Edit
+                                </Button>
+                            }
                             <Button color="primary" variant="light" onPress={onClose}>
                                 Close
                             </Button>
@@ -216,6 +227,36 @@ function TagInfoModal(props: {
                 </ModalContent>
             </Modal>
         </>
+    );
+}
+
+function DisplayTagActionsModal(props: {
+    isOpen: boolean;
+    onOpenChange: () => void;
+    reference: TagReferences,
+    handleTagDeletion: (id: string) => void,
+    handleTagUpdate: (updatedTagReference: TagReferences) => void,
+}) {
+    return (
+        <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
+            <ModalContent>
+                {(onClose) => (
+                    <>
+                        <ModalHeader className="flex flex-col gap-1">
+                            Edit Tag
+                        </ModalHeader>
+                        <ModalBody>
+                        <TagActions
+                            numRefences={getNumReferences(props.reference)}
+                            tagReference={props.reference}
+                            handleTagDeletion={props.handleTagDeletion}
+                            handleTagUpdate={props.handleTagUpdate}
+                        />
+                        </ModalBody>
+                    </>
+                )}
+            </ModalContent>
+        </Modal>
     );
 }
 
