@@ -104,7 +104,7 @@ export default function SponsorshipsList() {
                         <h1 className="text-3xl font-semibold">
                             Major Sponsors
                         </h1>
-                        <div className="flex flex-wrap items-center justify-center align-baseline">
+                        <div className="flex flex-wrap items-center justify-center align-baseline gap-3">
                             {sponsorships
                                 .filter((s) => s.sponsorship_type === "major")
                                 .map((sponsorship) => (
@@ -133,7 +133,7 @@ export default function SponsorshipsList() {
                     .length > 0 && (
                     <div className="flex flex-col items-center justify-center align-baseline gap-3">
                         <h1 className="text-3xl font-semibold">Partners</h1>
-                        <div className="flex flex-wrap items-center justify-center align-baseline">
+                        <div className="flex flex-wrap items-center justify-center align-baseline gap-3">
                             {sponsorships
                                 .filter((s) => s.sponsorship_type === "partner")
                                 .map((sponsorship) => (
@@ -162,7 +162,7 @@ export default function SponsorshipsList() {
                     .length > 0 && (
                     <div className="flex flex-col items-center justify-center align-baseline gap-3">
                         <h1 className="text-3xl font-semibold">Other</h1>
-                        <div className="flex flex-wrap items-center justify-center align-baseline">
+                        <div className="flex flex-wrap items-center justify-center align-baseline gap-3">
                             {sponsorships
                                 .filter((s) => s.sponsorship_type === "other")
                                 .map((sponsorship) => (
@@ -269,7 +269,7 @@ function SponsorshipDescriptionModal(props: {
                                 </Link>
                             </small>
                         </ModalHeader>
-                        <ModalBody className="flex flex-col items-center justify-center align-baseline">
+                        <ModalBody className="flex flex-col items-center justify-center align-baseline text-center">
                             <Image
                                 src={endpoints.companies.getCompanyPhoto(
                                     props.company.id

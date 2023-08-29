@@ -145,21 +145,6 @@ function ResourcesCard(props: {
 
     const createdDate = dayjs(Date.parse(props.resource.created_time)).fromNow();
     
-    
-    async function handleResourceClick() {
-        if(props.resource.internal) {
-            await endpoints.resources.getInternalResource(props.resource.id)
-                .then((link) => window.open(link))
-                .catch(() => toast.error("Failed to retrieve resource."))
-
-        } else {
-            if(props.resource.link) {
-                window.open(props.resource.link);
-            } else {
-                toast.error("Failed to retrieve resource.");
-            }
-        }
-    }
     return (
         <>
             <Card
@@ -179,14 +164,6 @@ function ResourcesCard(props: {
                 </CardBody>
                 <Divider/>
                 <CardFooter>
-                    <Link
-                        isExternal
-                        showAnchorIcon
-                        onClick={handleResourceClick}
-                        style={{cursor: "pointer"}}
-                    >
-                        View resource
-                    </Link>
                     <TagReferencesList
                         styleLarge={false}
                         showEditingTools={false}
@@ -219,13 +196,35 @@ function ResourcesCard(props: {
 function ResourceDescription(props: {resource: Resource, onOpenChange: () => void}) {
     const createdDate = dayjs(Date.parse(props.resource.created_time)).fromNow();
     
+    async function handleResourceClick() {
+        if(props.resource.internal) {
+            await endpoints.resources.getInternalResource(props.resource.id)
+                .then((link) => window.open(link))
+                .catch(() => toast.error("Failed to retrieve resource."))
+
+        } else {
+            if(props.resource.link) {
+                window.open(props.resource.link);
+            } else {
+                toast.error("Failed to retrieve resource.");
+            }
+        }
+    }
+
     return (
         <Modal isOpen={true} onOpenChange={props.onOpenChange}>
             <ModalContent>
             {(onClose) => (
                 <>
                 <ModalHeader className="flex flex-col gap-1">
-                    {props.resource.title}
+                    <Link
+                        isExternal
+                        showAnchorIcon
+                        onClick={handleResourceClick}
+                        style={{cursor: "pointer"}}
+                        >
+                        {props.resource.title}
+                    </Link>
                     <small className="text-default-500">{createdDate}</small>
                 </ModalHeader>
                 <ModalBody>

@@ -2,10 +2,10 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FileUploadDropzone, Spinner, IMAGE_FILE_TYPES } from "@/app/utils";
-import { Company, companies } from "@/app/api/backend/companies";
+import { Spinner } from "@/app/utils";
+import { Company } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { CreateSponsorship, SponsorshipType, isOfTypeSponsorshipType } from "@/app/api/backend/sponsorships";
 import { Select, SelectItem } from "@nextui-org/select";

@@ -2,11 +2,13 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FileUploadDropzone, Spinner, IMAGE_FILE_TYPES } from "@/app/utils";
+import { Spinner } from "@/app/utils";
 import { CreateCompany } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
+import FileUploader from "@/app/photoUploader";
+import { COMPANY_PHOTO_X_PXL, COMPANY_PHOTO_Y_PXL } from "@/app/utils";
 
 export default function CreateCompany() {
     const router = useRouter();
@@ -60,19 +62,6 @@ export default function CreateCompany() {
 
     async function handleCancel() {
         return router.back();
-    }
-
-    async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-        let files = event.target.files;
-        setLoading(true);
-        if (files && IMAGE_FILE_TYPES.includes(files[0].type)) {
-            let blob = files[0];
-            setPhoto(blob);
-        } else {
-            toast.error("Please upload a valid file!");
-        }
-
-        setLoading(false);
     }
 
     function isValidURL(text: string) {
@@ -134,8 +123,19 @@ export default function CreateCompany() {
                     <p className="py-5  text-2xl font-semibold">
                         Upload photo
                     </p>
-                    <FileUploadDropzone
-                            handleFileChange={handleFileChange}
+                    <FileUploader
+                        uploadCroppedPhoto={
+                            (blob: Blob) => {
+                                setLoading(true);
+                                setPhoto(blob);
+                                setLoading(false);
+                            }
+                        }
+                        cancelUploadingCroppedPhoto={
+                            () => {setPhoto(null)}
+                        }
+                        xPixels={COMPANY_PHOTO_X_PXL}
+                        yPixels={COMPANY_PHOTO_Y_PXL}
                     />
 
                     <button

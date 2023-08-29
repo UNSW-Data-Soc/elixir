@@ -4,16 +4,14 @@ import { endpoints } from "@/app/api/backend/endpoints";
 import { User } from "@/app/api/backend/users";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
-import { FileUploadDropzone, Spinner, IMAGE_FILE_TYPES } from "@/app/utils";
-import PhotoCropper, { Crop, getBlob } from "./photoCropper";
+import { PROFILE_PIC_X_PXL, PROFILE_PIC_Y_PXL, Spinner } from "@/app/utils";
+import FileUploader from "../../photoUploader";
 
 const ABOUT_YOU_CHAR_LIMIT = 200;
-const PROFILE_PIC_X_PXL = 500;
-const PROFILE_PIC_Y_PXL = 500;
 
 export default function ProfileManager(props: { user_id: string }) {
     const router = useRouter();
@@ -25,9 +23,6 @@ export default function ProfileManager(props: { user_id: string }) {
     const [name, setName] = useState("");
     const [about, setAbout] = useState("");
     const [profilePicURL, setProfilePicURL] = useState("");
-
-    const [showCropper, setShowCropper] = useState(false);
-    const [photoInCropper, setPhotoInCropper] = useState("");
 
     useEffect(() => {
         endpoints.users.getInfo(props.user_id).then((user) => {
@@ -81,20 +76,14 @@ export default function ProfileManager(props: { user_id: string }) {
         toast.error("Failed to update user permissions");
     }
 
-    async function uploadCroppedPhoto(crop: Crop) {
+    async function uploadCroppedPhoto(blob: Blob) {
         setLoading(true);
         if (!user)
             return toast.error("You do not have persmission to view this page");
 
-        const croppedBlob = await getBlob(
-            photoInCropper,
-            crop,
-            PROFILE_PIC_X_PXL,
-            PROFILE_PIC_X_PXL
-        );
         let uploaded_photo = await endpoints.users.uploadProfilePicture(
             user.id,
-            croppedBlob
+            blob
         );
 
         if (!uploaded_photo) {
@@ -103,9 +92,6 @@ export default function ProfileManager(props: { user_id: string }) {
             return;
         }
 
-        setShowCropper(false);
-        window.URL.revokeObjectURL(photoInCropper);
-        setPhotoInCropper("");
         setLoading(false);
         toast.success("Photo uploaded successfully");
         // append timestamp to update displayed photo immediately and bypass cache policy
@@ -116,28 +102,7 @@ export default function ProfileManager(props: { user_id: string }) {
     }
 
     async function cancelUploadingCroppedPhoto() {
-        setShowCropper(false);
-        window.URL.revokeObjectURL(photoInCropper);
-        setPhotoInCropper("");
-    }
 
-    async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-        if (!user)
-            return toast.error("You do not have persmission to view this page");
-        let files = event.target.files;
-        setLoading(true);
-        if (files && IMAGE_FILE_TYPES.includes(files[0].type)) {
-            let blob = files[0];
-            const blobURL = URL.createObjectURL(blob);
-            setPhotoInCropper(blobURL);
-            setLoading(false);
-
-            setShowCropper(true);
-        } else {
-            toast.error("Please upload a valid file!");
-        }
-
-        setLoading(false);
     }
 
     return (
@@ -211,20 +176,14 @@ export default function ProfileManager(props: { user_id: string }) {
                         Profile picture
                     </p>
 
-                    <FileUploadDropzone handleFileChange={handleFileChange} />
-
-                    {showCropper && (
-                        <PhotoCropper
-                            uploadCroppedPhoto={uploadCroppedPhoto}
-                            cancelUploadingCroppedPhoto={
-                                cancelUploadingCroppedPhoto
-                            }
-                            photo={photoInCropper}
-                            aspect={1}
-                            xPixels={PROFILE_PIC_X_PXL}
-                            yPixels={PROFILE_PIC_Y_PXL}
-                        />
-                    )}
+                    <FileUploader
+                        uploadCroppedPhoto={uploadCroppedPhoto}
+                        cancelUploadingCroppedPhoto={
+                            cancelUploadingCroppedPhoto
+                        }
+                        xPixels={PROFILE_PIC_X_PXL}
+                        yPixels={PROFILE_PIC_Y_PXL}
+                    />
 
                     <button
                         className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
