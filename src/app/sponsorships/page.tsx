@@ -8,14 +8,14 @@ export default function Sponsorship() {
           <header className="text-white p-12 bg-[#4799d1] flex flex-col gap-4">
           <h1 className='text-3xl font-semibold'>Our Sponsors</h1>
         <p>
-          DataSoc wouldn't be DataSoc without the amazing companies we've worked
+          DataSoc wouldn&apos;t be DataSoc without the amazing companies we&apos;ve worked
           with throughout our journey as a society. With more and more
           data-oriented decisions and predictions made everyday, the demand for
           talented Data Science graduates is growing.
         </p>
         <p>
-          It's our long term goal to help our members become as capable they can
-          be, and it wouldn't be possible without the continued support from
+          It&apos;s our long term goal to help our members become as capable they can
+          be, and it wouldn&apos;t be possible without the continued support from
           industry.
         </p>
         <p>

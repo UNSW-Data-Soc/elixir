@@ -197,7 +197,7 @@ export default function SponsorshipsList() {
                 {sponsorships.length > 0 ? (
                     allSponsorships()
                 ) : (
-                    <div> We're still looking for sponsors! Please reach out to us if you are interested.</div>
+                    <div> We&apos;re still looking for sponsors! Please reach out to us if you are interested.</div>
                 )}
             </div>
         </>
