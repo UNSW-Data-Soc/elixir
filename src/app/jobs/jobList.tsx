@@ -13,7 +13,6 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Chip,
     Divider,
     Card,
     CardHeader,
@@ -31,7 +30,7 @@ import { Job } from "../api/backend/jobs";
 import JobInformation from "./jobExpirationInfo";
 import JobActionsModal from "./jobActionsModal";
 import TagReferencesList from "../tags/references/tagReferencesList";
-import { AttachmentInfo, TagReferences } from "../api/backend/tags";
+import { Attachment, AttachmentInfo, Detachment, TagReferences } from "../api/backend/tags";
 import JobActions from "./jobActions";
 dayjs.extend(relativeTime);
 
@@ -102,49 +101,59 @@ export default function JobList() {
         setJobs(updatedJobs);
     }
 
-    async function updateAttachments(updatedAttachments: AttachmentInfo[]) {
+    async function updateAttachments(updatedAttachments: AttachmentInfo[], to_attach: Attachment[], to_detach: Detachment[]) {
+        let updatedTagReferences = updateTagReferencesResources(tagReferences, updatedAttachments, to_attach, to_detach);
         setAttachments(updatedAttachments);
-
-        // doesn't modify actual references, only *removes* from reference list
-        let updatedTagReferences: TagReferences[] = [];
-        for (let t of tagReferences) {
-            for (let a of updatedAttachments) {
-                if (t.tags_id === a.tag_id) {
-                    updatedTagReferences.push(t);
-                    break;
-                }
-            }
-        }
-
-        // doesn't modify actual references, only *adds* to reference list
-        for (let a of updatedAttachments) {
-            let found = false;
-            for (let t of updatedTagReferences) {
-                if (t.tags_id === a.tag_id) {
-                    found = true;
-                }
-            }
-
-            if (!found) {
-                updatedTagReferences.push({
-                    tags_id: a.tag_id,
-                    tags_name: a.name,
-                    tags_colour: a.colour,
-                    portfolio: [],
-                    blog: [],
-                    event: [],
-                    resource: [],
-                    job: [
-                        [
-                            a.bearer_id,
-                            jobs.find((j) => j.id === a.bearer_id)?.title || "",
-                        ],
-                    ],
-                });
-            }
-        }
-
         setTagReferences(updatedTagReferences);
+    }
+
+    function updateTagReferencesResources(
+        currentTagReferences: TagReferences[],
+        updatedAttachments: AttachmentInfo[],
+        to_attach: Attachment[],
+        to_detach: Detachment[]
+    ): TagReferences[] {
+        let updatedTagReferences: TagReferences[] = [];
+
+        for (let u of currentTagReferences) {
+            let new_tag_ref = u;
+            for (let d of to_detach) {
+                let attachment_info = attachments.find(
+                    (a) => a.attachment_id === d.attachment_id
+                );
+                if (!attachment_info) continue; // shouldn't occur
+                if (new_tag_ref.tags_id === attachment_info.tag_id) {
+                    new_tag_ref.resource = new_tag_ref.resource.filter(
+                        (r) => r[0] !== attachment_info?.bearer_id
+                    );
+                }
+            }
+            updatedTagReferences.push(new_tag_ref);
+        }
+
+        for (let a of to_attach) {
+            for (let u of updatedAttachments) {
+                if (a.bearer_id === u.bearer_id && a.tag_id === u.tag_id) {
+                    updatedTagReferences.push({
+                        tags_id: u.tag_id,
+                        tags_name: u.name,
+                        tags_colour: u.colour,
+                        portfolio: [],
+                        blog: [],
+                        event: [],
+                        resource: [
+                            [
+                                a.bearer_id,
+                                jobs.find((j) => j.id === a.bearer_id)?.title || "",
+                            ],
+                        ],
+                        job: [],
+                    });
+                }
+            }
+        }
+
+        return updatedTagReferences;
     }
 
     function allJobs() {
@@ -184,7 +193,7 @@ function JobCard(props: {
     job: Job;
     tagReferences: TagReferences[];
     handleJobDeletion: (id: string) => void;
-    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void;
+    updateAttachments: (updatedAttachments: AttachmentInfo[], to_attach: Attachment[], to_detach: Detachment[]) => void;
 }) {
     const [showcompanyDescription, setShowcompanyDescription] = useState(false);
 

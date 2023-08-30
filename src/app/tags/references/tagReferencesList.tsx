@@ -102,7 +102,7 @@ export default function TagReferencesList(props: {
                     handleTagCreation={handleTagCreation}
                 />
             }
-            <div className="flex items-center justify-center align-baseline flex-wrap">
+            <div className="flex items-center justify-center align-baseline flex-wrap gap-2">
                 {
                     references.map(r =>
                         {
@@ -126,7 +126,7 @@ export default function TagReferencesList(props: {
                                 </Card>
                                 :
                                 <>
-                                    <div key={r.tags_id} style={{ position: 'relative' }}>
+                                    <div key={r.tags_id}>
                                         <div style={getSmallTagStyle(r.tags_colour)} onClick={() => handleTagClick(r)}>
                                             {r.tags_name}
                                         </div>

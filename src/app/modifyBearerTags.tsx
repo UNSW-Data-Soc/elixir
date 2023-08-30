@@ -16,7 +16,7 @@ export default function ModifyBearerTags(props: {
     bearer: Bearer,
     tagLimit?: number,
     initialOptionsFilter?: (a: AttachmentInfo) => boolean,
-    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void
+    updateAttachments?: (updatedAttachments: AttachmentInfo[], to_attach: Attachment[], to_detach: Detachment[]) => void,
 }) {
     const router = useRouter();
     const [allTagOptions, setAllTagOptions] = useState<OptionTag[]>([]);
@@ -82,7 +82,7 @@ export default function ModifyBearerTags(props: {
         setIsLoading(true);
         getDetails();
         setIsLoading(false);
-    }, []);
+    }, [props.initialOptionsFilter]);
 
     return (
         <>
@@ -161,7 +161,7 @@ export default function ModifyBearerTags(props: {
                     })
                     updatedAttachedDetails = updatedAttachedDetails.concat(newAttachedDetails);
                     if(props.updateAttachments) {
-                        props.updateAttachments(updatedAttachedDetails);
+                        props.updateAttachments(updatedAttachedDetails, to_attach, to_detach);
                     }
                     setOptionsSelected(updatedOptions)
                     setAttachedDetails(updatedAttachedDetails);

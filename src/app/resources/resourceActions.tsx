@@ -8,12 +8,12 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import ModifyBearerTags from "../modifyBearerTags";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
-import { AttachmentInfo, TagReferences } from "../api/backend/tags";
+import { Attachment, AttachmentInfo, Detachment, TagReferences } from "../api/backend/tags";
 
 export default function ResourceActions(props: {
     resource: Resource,
     updateResource: (updatedResources: Resource, remove: boolean) => void
-    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void,
+    updateAttachments?: (updatedAttachments: AttachmentInfo[], to_attach: Attachment[], to_detach: Detachment[]) => void,
 }) {
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
     const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
