@@ -98,3 +98,13 @@ const updateSponsorship = async ({
     body: JSON.stringify({ message, sponsorship, company, expiration, id }),
   });
 };
+
+export default sponsorship = {
+  getCompany,
+  updateCompany,
+  createCompany,
+  getCompanies,
+  deleteCompany,
+  getSponsorship,
+  updateSponsorship,
+};

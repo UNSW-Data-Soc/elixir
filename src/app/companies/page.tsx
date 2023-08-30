@@ -1,55 +1,30 @@
 'use client';
-import {
-  BuildingOfficeIcon,
-  BanknotesIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+import { BuildingOfficeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import CompanyForm from '../companies/companyForm';
 import { useSession } from 'next-auth/react';
 
 export default function Companies() {
   const [showCompanyModal, setShowCompanyModal] = useState(false);
-
+  const [companies, setCompanies] = useState([]);
   const session = useSession();
-
-  const BACKEND_URL = 'http://127.0.0.1:8000';
-
-  const demoCompany = {
-    id: 1,
-    name: 'NAB',
-    icon: 'https://logos-world.net/wp-content/uploads/2021/02/NAB-Logo.png',
-    url: 'https://www.nab.com.au/',
-    description:
-      'National Australia Bank is one of the four largest financial institutions in Australia in terms of market capitalisation, earnings and customers.',
-  };
-
-  const companies = [
-    demoCompany,
-    demoCompany,
-    demoCompany,
-    demoCompany,
-    demoCompany,
-  ];
+  const BACKEND_URL = 'http://localhost:8000';
 
   const fetchCompanies = async () => {
-    console.log('fetching companies');
-    const res = await fetch(`${BACKEND_URL}/company`);
+    const res = await fetch(`${BACKEND_URL}/companies`);
     const data = await res.json();
-    console.log(data);
+    setCompanies(data);
   };
 
   useEffect(() => {
     fetchCompanies();
   }, []);
 
-  const deleteCompany = async (id) => {
-    console.log('deleting company');
-    const res = await fetch(`${BACKEND_URL}/company/${id}`, {
+  const deleteCompany = async (id: string) => {
+    await fetch(`${BACKEND_URL}/company?id=${id}`, {
       method: 'DELETE',
     });
-    const data = await res.json();
-    console.log(data);
+    setCompanies(companies.filter((company) => company.id !== id));
   };
 
   return (
@@ -57,17 +32,14 @@ export default function Companies() {
       <header className='text-white p-12 bg-[#4799d1] flex flex-col gap-4'>
         <h1 className='text-3xl font-semibold'>Companies</h1>
         <p>Here are the companies DataSoc has collaborated with in the past</p>
-        {session.status === 'authenticated' && (
-          <div className='w-full flex flex-row gap-6 content-evenly'>
-            <button
-              onClick={() => setShowCompanyModal(true)}
-              className='text-black py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 transition-all flex gap-3 flex-row'
-            >
-              <BuildingOfficeIcon className='h-6 w-6' />{' '}
-              <span>Add Company</span>
-            </button>
-          </div>
-        )}
+        <div className='w-full flex flex-row gap-6 content-evenly'>
+          <button
+            onClick={() => setShowCompanyModal(true)}
+            className='text-black py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 transition-all flex gap-3 flex-row'
+          >
+            <BuildingOfficeIcon className='h-6 w-6' /> <span>Add Company</span>
+          </button>
+        </div>
       </header>
 
       {showCompanyModal && (
@@ -104,13 +76,13 @@ export default function Companies() {
             </div>
             <img
               className='object-scale-down h-24 w-24'
-              src={company.icon}
+              src={company.photo_id}
               alt={company.name}
             />
             <h1 className='text-2xl font-semibold'>{company.name}</h1>
             <p>{company.description}</p>
-            <a className='text-blue-600' href={company.url}>
-              {company.url}
+            <a className='text-blue-600' href={company.website_url}>
+              {company.website_url}
             </a>
           </div>
         ))}
