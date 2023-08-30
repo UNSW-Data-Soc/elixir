@@ -16,12 +16,12 @@ import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
 import { Job } from "../api/backend/jobs";
 import ModifyBearerTags from "../modifyBearerTags";
-import { AttachmentInfo } from "../api/backend/tags";
+import { Attachment, AttachmentInfo, Detachment } from "../api/backend/tags";
 
 export default function JobActions(props: {
     job: Job,
     company: Company,
-    updateAttachments?: (updatedAttachments: AttachmentInfo[]) => void,
+    updateAttachments: (updatedAttachments: AttachmentInfo[], to_attach: Attachment[], to_detach: Detachment[]) => void;
 }) {
     const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
 

@@ -9,7 +9,6 @@ import { Job } from "../api/backend/jobs";
 import { useEffect, useState } from "react";
 import { endpoints } from "../api/backend/endpoints";
 import { UserPublic } from "../api/backend/users";
-import { Divider } from "@nextui-org/react";
 dayjs.extend(relativeTime);
 
 export default function JobInformation(props: { job: Job }) {
@@ -30,7 +29,7 @@ export default function JobInformation(props: { job: Job }) {
         }
 
         getDetails();
-    }, []);
+    }, [props.job.creator]);
 
     if (session.status !== "authenticated" || !session.data.user.admin) {
         return <></>;
