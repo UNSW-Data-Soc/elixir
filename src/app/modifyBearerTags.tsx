@@ -78,10 +78,10 @@ export default function ModifyBearerTags(props: {
             
             setInitialOptions(tags, bearers);
             setAttachedDetails(bearers);
+            setIsLoading(false);
         }
         setIsLoading(true);
         getDetails();
-        setIsLoading(false);
     }, [props.initialOptionsFilter]);
 
     return (

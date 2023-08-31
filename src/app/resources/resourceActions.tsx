@@ -117,7 +117,7 @@ export default function ResourceActions(props: {
                 </ModalContent>
             </Modal>
 
-            <Modal isOpen={showModifyTagsDialogue} onOpenChange={() => setShowModifyTagsDialogue(false)}>
+            <Modal isOpen={showModifyTagsDialogue} onOpenChange={() => setShowModifyTagsDialogue(false)} className="h-96">
                 <ModalContent>
                 {(onClose) => (
                     <>

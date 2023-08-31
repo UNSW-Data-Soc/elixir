@@ -45,7 +45,6 @@ export default function TagReferencesList(props: {
     
             setReferences(refs);
         }
-        
         getReferences();
     }, [session.status, props.tagReferences]);
     
