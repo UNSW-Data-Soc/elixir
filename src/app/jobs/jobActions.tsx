@@ -37,6 +37,7 @@ export default function JobActions(props: {
             <Modal
                 isOpen={showModifyTagsDialogue}
                 onOpenChange={() => setShowModifyTagsDialogue(false)}
+                className="h-96"
             >
                 <ModalContent>
                 {(onClose) => (

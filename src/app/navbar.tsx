@@ -109,17 +109,6 @@ const Navbar = () => {
                                     Login
                                 </Button>
                         </NavbarItem>
-                        <NavbarItem>
-                                <Button
-                                    as={Link}
-                                    color="primary"
-                                    href="#"
-                                    variant="flat"
-                                    onClick={() => {router.push("/auth/register")}}
-                                >
-                                    Register
-                                </Button>
-                        </NavbarItem>
                     </>
                 )}
 

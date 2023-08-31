@@ -193,7 +193,7 @@ export default function SponsorshipsList() {
 
     return (
         <>
-            <div className="flex flex-col items-center justify-center align-baseline gap-3">
+            <div className="flex flex-col items-center justify-center align-baseline gap-16">
                 {sponsorships.length > 0 ? (
                     allSponsorships()
                 ) : (
