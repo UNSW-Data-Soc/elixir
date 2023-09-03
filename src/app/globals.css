@@ -71,3 +71,84 @@ body {
   background-repeat: repeat;
   background-size: 200px 300px;
 }
+
+.fadeInOutSpinner {
+  /* width:500px;
+  height: 500px; */
+  -webkit-animation: fadeinout 4s linear forwards;
+  animation: fadeinout 2s linear forwards;
+  animation-iteration-count: infinite;
+  background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
+    linear-gradient(
+        235deg,
+        var(--yellow) 20%,
+        var(--orange),
+        var(--red),
+        var(--purple) 60%,
+        var(--blue)
+      )
+      80%;
+}
+
+@-webkit-keyframes fadeinout {
+0%,100% { opacity: 0; }
+50% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+0%,100% { opacity: 0; }
+50% { opacity: 1; }
+}
+
+
+
+.fade-in-image {
+  animation: fadeIn ease 3s;
+  -webkit-animation: fadeIn ease 3s;
+  -moz-animation: fadeIn ease 3s;
+  -o-animation: fadeIn ease 3s;
+  -ms-animation: fadeIn ease 3s;
+}@keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+}
+}

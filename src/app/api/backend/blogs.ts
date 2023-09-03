@@ -6,6 +6,7 @@ export interface Blog {
   creator: string;
   title: string;
   body: string;
+  tags: String[]; // list of tag ids,
   author: string;
   public: boolean;
   id: string;
@@ -29,11 +30,11 @@ const validateBlog = (blog: any) => {
   return blogSchema.parse(blog);
 };
 
-const getAll: () => Promise<Blog[]> = async () => {
+const getAll: ({authRequired}:{authRequired: boolean}) => Promise<Blog[]> = async ({authRequired}:{authRequired: boolean}) => {
   const res = await callFetch({
     route: "/blogs",
     method: "GET",
-    authRequired: false,
+    authRequired,
   });
   return res.map(validateBlog);
 };

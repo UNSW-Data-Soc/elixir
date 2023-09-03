@@ -19,19 +19,14 @@ export default function Blog() {
           data science in the real world, they&apos;re here for you!
         </p>
       </header>
-      {/* <p>
-        TODO: Dialog for <b>tags</b> go here!
-      </p> */}
       <BlogsContainer />
     </main>
   );
 }
 
 async function BlogsContainer() {
-  let blogs = await endpoints.blogs.getAll();
-  const session = await getServerSession();
-
-  if (!session) blogs = blogs.filter((blog) => blog.public);
+  // TODO: make this a client comoponent and pass in auth depending on if user is logged in
+  const blogs = await endpoints.blogs.getAll({authRequired: false});
 
   return (
     <div className="container m-auto flex gap-8 p-10 flex-wrap justify-center">
@@ -43,3 +38,9 @@ async function BlogsContainer() {
     </div>
   );
 }
+
+
+
+
+
+
