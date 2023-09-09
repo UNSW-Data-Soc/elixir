@@ -6,6 +6,7 @@ import BlogBlockWrapper from "./blogBlockWrapper";
 import { useSessionStorage } from "usehooks-ts";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { BlogBlock } from "./[slug]/page";
+import { useSession } from "next-auth/react";
 
 export type EditorContext = {
   getters: {
@@ -32,7 +33,7 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
 
   useEffect(() => {
     const getBlog = async () => {
-      const blog = await endpoints.blogs.get({ slug: blogSlug });
+      const blog = await endpoints.blogs.get({ slug: blogSlug, authRequired: true });
       return blog;
     };
 

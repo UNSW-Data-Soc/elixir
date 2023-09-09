@@ -9,7 +9,7 @@ dayjs.extend(relativeTime);
 
 import { convert } from "html-to-text";
 
-export default async function BlogCard(blog: Blog) {
+export default function BlogCard(blog: Blog) {
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
 
   // get excerpt

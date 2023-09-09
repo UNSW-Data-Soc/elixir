@@ -30,7 +30,11 @@ const validateBlog = (blog: any) => {
   return blogSchema.parse(blog);
 };
 
-const getAll: ({authRequired}:{authRequired: boolean}) => Promise<Blog[]> = async ({authRequired}:{authRequired: boolean}) => {
+const getAll: ({ authRequired }: { authRequired: boolean }) => Promise<Blog[]> = async ({
+  authRequired,
+}: {
+  authRequired: boolean;
+}) => {
   const res = await callFetch({
     route: "/blogs",
     method: "GET",
@@ -55,11 +59,11 @@ const create = async (blog: CreateBlog) => {
   return validateBlog(res);
 };
 
-const get = async ({ slug }: { slug: string }) => {
+const get = async ({ slug, authRequired = false }: { slug: string; authRequired?: boolean }) => {
   const res = await callFetch({
     route: `/blog?slug=${slug}`,
     method: "GET",
-    authRequired: false,
+    authRequired,
   });
   return validateBlog(res);
 };
