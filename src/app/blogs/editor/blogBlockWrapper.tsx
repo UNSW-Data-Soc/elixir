@@ -4,6 +4,7 @@ import { EditorContext } from "./blogContentEditor";
 import BlogBlockText from "./blogBlockText";
 import useClickAway from "@/app/hooks/useClickAway";
 import BlogBlockImage from "./blogBlockImage";
+import BlogBlockEmbed from "./blogBlockEmbed";
 
 type BlogBlockProps = {
   id: BlogBlock["id"];
@@ -49,6 +50,9 @@ const BlogBlockWrapper = ({ id }: BlogBlockProps) => {
       break;
     case "image":
       blockComponent = <BlogBlockImage key={id} id={id} initialUrl={blockInfo.url} />;
+      break;
+    case "embed":
+      blockComponent = <BlogBlockEmbed key={id} id={id} initialContent={blockInfo.script} />;
       break;
     default:
       break;

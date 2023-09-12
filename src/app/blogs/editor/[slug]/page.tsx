@@ -25,7 +25,7 @@ export type BlogBlock = {
     }
   | {
       type: "embed";
-      script: string;
+      script: string | null;
     }
   | {
       type: "divider";

@@ -109,6 +109,19 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
     });
   };
 
+  const addEmbedBlock = () => {
+    const blockId = crypto.randomUUID();
+    setBlockInfo((prev) => ({
+      ...prev,
+      [blockId]: {
+        id: blockId,
+        type: "embed",
+        script: null,
+        order: (Math.max(...Object.values(blockInfo).map((b) => b.order)) ?? 0) + 1,
+      },
+    }));
+  };
+
   return (
     <EditorContext.Provider value={editorContext}>
       <div className="sm:px-0 sm:w-[80%] md:w-[75%] lg:w-[65%] xl:w-[60%] 2xl:w-[40%] mx-auto mb-10">
@@ -143,6 +156,12 @@ const BlogContentEditor = ({ blogSlug }: { blogSlug: string }) => {
             onClick={addImgBlock}
           >
             + Img
+          </button>
+          <button
+            className="p-3 w-full border rounded-lg font-light text-[#ddd] hover:text-[#333] hover:border-[#333] transition-all text-2xl"
+            onClick={addEmbedBlock}
+          >
+            + {"</>"}
           </button>
         </div>
       </div>

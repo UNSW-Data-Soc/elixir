@@ -7,6 +7,7 @@ const filterBadContent = (content: BlogBlock[]) => {
   return content.filter((block) => {
     if (!block) return false;
     if (block.type === "image" && !block.url && !block.imageId) return false;
+    if (block.type === "embed" && !block.script) return false;
     return true;
   });
 };
@@ -75,6 +76,12 @@ export default function BlogContent({ content }: { content: BlogBlock[] }) {
             />
             {!!block.caption && <p className="text-[#555] italic mb-5">{block.caption}</p>}
           </div>
+        );
+      case "embed":
+        return block.script ? (
+          <div key={block.id} dangerouslySetInnerHTML={{ __html: block.script }}></div>
+        ) : (
+          <></>
         );
       default:
         return <div key={block.id}>UNKNOWN BLOCK TYPE</div>;
