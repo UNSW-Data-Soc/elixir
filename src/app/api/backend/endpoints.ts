@@ -1,6 +1,6 @@
 import { auth } from "./auth";
 import { blogs } from "./blogs";
-import {tags} from "./tags"
+import { tags } from "./tags";
 import { users } from "./users";
 import { resources } from "./resources";
 import { file } from "./file";
@@ -8,6 +8,7 @@ import { getSession } from "next-auth/react";
 import { companies } from "./companies";
 import { sponsorships } from "./sponsorships";
 import { jobs } from "./jobs";
+import { getToken } from "next-auth/jwt";
 
 export const BACKEND_URL = "http://127.0.0.1:8000";
 
@@ -19,13 +20,16 @@ interface FetchArguments {
   authRequired?: boolean;
 }
 
-export const callFetch = async ({
-  route,
-  method = "GET",
-  contentType = "application/json",
-  body = null,
-  authRequired = false,
-}: FetchArguments, setContentType=true) => {
+export const callFetch = async (
+  {
+    route,
+    method = "GET",
+    contentType = "application/json",
+    body = null,
+    authRequired = false,
+  }: FetchArguments,
+  setContentType = true
+) => {
   const session = await getSession();
 
   const headers: HeadersInit = setContentType ? { "Content-Type": contentType } : {};
@@ -50,5 +54,5 @@ export const endpoints = {
   file,
   companies,
   sponsorships,
-  jobs
+  jobs,
 };
