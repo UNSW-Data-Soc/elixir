@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { BlogBlock, textBlockTypes } from "./[slug]/page";
+import { BlogBlock } from "./[slug]/page";
 import { EditorContext } from "./blogContentEditor";
 import BlogBlockText from "./blogBlockText";
 import useClickAway from "@/app/hooks/useClickAway";

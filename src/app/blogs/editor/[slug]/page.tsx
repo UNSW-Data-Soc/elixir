@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import BlogContentEditor from "../blogContentEditor";
 
-export const textBlockTypes = ["h1", "h2", "h3", "p", "quote"] as const;
+const textBlockTypes = ["h1", "h2", "h3", "p", "quote"] as const;
 type TextBlockType = (typeof textBlockTypes)[number];
 
 export type BlogBlock = {
