@@ -4,6 +4,7 @@ import { FormEventHandler, useEffect, useState } from 'react';
 import toast, { useToasterStore } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { logout } from "../../api/auth/auth";
 
 import { signIn, useSession } from 'next-auth/react';
 
@@ -22,6 +23,8 @@ const LoginForm = () => {
       .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
   }, [toasts]);
 
+  const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(null);
+
   const submitHandler: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
@@ -38,8 +41,25 @@ const LoginForm = () => {
       return;
     }
 
+     // Reset the inactivity timer
+    if (inactivityTimer) {
+      clearTimeout(inactivityTimer);
+    }
+
+    // Set a new inactivity timer
+    const newInactivityTimer = setTimeout(() => {
+      // Perform the logout action here
+      // You can redirect the user to the logout page or perform any other necessary actions
+      logout(); // Call the logout function directly
+    }, 5 * 1000); // 5 seconds in milliseconds
+      
+
+    setInactivityTimer(newInactivityTimer);
+
     // if login successful redirect to home page
     router.push('/');
+
+    
   };
 
   return (
