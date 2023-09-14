@@ -25,7 +25,7 @@ export default function BlogCard(blog: Blog) {
 
   // get image
   const image = Object.values(content).find((b) => b.type === "image" && b.url);
-  const imageUrl = image ? image.url : "/kentosoc.jpeg";
+  const imageUrl = image ? image.id : "/kentosoc.jpeg";
 
   return (
     <div className="border-[1px] border-black flex flex-col items-center w-4/12 hover:scale-105 hover:shadow-xl transition-all">
