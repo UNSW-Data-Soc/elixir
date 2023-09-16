@@ -20,7 +20,7 @@ const BlogCardActions = (blog: Blog) => {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          router.push(`/blogs/editor/${blog.slug}`);
+          router.push(`/blogs/editor?blogSlug=${blog.slug}`);
         }}
         className="text-blue-500 hover:underline"
       >

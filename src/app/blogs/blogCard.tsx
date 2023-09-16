@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import BlogCardActions from "./blogCardActions";
 import Link from "next/link";
-import { BlogBlock } from "./editor/[slug]/page";
 dayjs.extend(relativeTime);
 
 import { convert } from "html-to-text";
@@ -12,20 +11,12 @@ import { convert } from "html-to-text";
 export default function BlogCard(blog: Blog) {
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
 
-  // get excerpt
-  const content = JSON.parse(blog.body) as BlogBlock[];
-  const paragraphBlocks = Object.values(content)
-    .sort((a, b) => a.order - b.order)
-    .map((b) => {
-      if (b.type === "p") return b.content;
-      else return "";
-    })
-    .join(" ");
-  const blogExcerpt = convert(paragraphBlocks, {}).split(new RegExp(/\s/)).splice(0, 40).join(" ");
+  // TODO: get excerpt
+  // const blogExcerpt = convert(paragraphBlocks, {}).split(new RegExp(/\s/)).splice(0, 40).join(" ");
+  const blogExcerpt = "sdfsadfadf ";
 
-  // get image
-  const image = Object.values(content).find((b) => b.type === "image" && b.url);
-  const imageUrl = image ? image.id : "/kentosoc.jpeg";
+  // TODO: get image
+  const imageUrl = "/kentosoc.jpeg";
 
   return (
     <div className="border-[1px] border-black flex flex-col items-center w-4/12 hover:scale-105 hover:shadow-xl transition-all">

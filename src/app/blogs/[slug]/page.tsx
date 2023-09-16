@@ -2,8 +2,6 @@ import { endpoints } from "@/app/api/backend/endpoints";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import BlogContent from "./blogContent";
-import { BlogBlock } from "../editor/[slug]/page";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { generateHTML } from "@tiptap/html";
@@ -39,6 +37,7 @@ export default async function BlogPage({ params }: { params: { slug: string } })
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
   const editedDate = dayjs(Date.parse(blog.last_edit_time)).fromNow();
 
+  // TODO: some styling doesn't match
   const content = generateHTML(JSON.parse(blog.body), [
     Document,
     Paragraph,

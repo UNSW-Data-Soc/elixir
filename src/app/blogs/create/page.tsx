@@ -94,7 +94,7 @@ export default function BlogCreate() {
       return;
     }
 
-    router.push(`/blogs/altEditor?blogSlug=${blog.slug}`);
+    router.push(`/blogs/editor?blogSlug=${blog.slug}`);
   };
 
   return (
