@@ -41,17 +41,13 @@ const LoginForm = () => {
       return;
     }
 
-     // Reset the inactivity timer
     if (inactivityTimer) {
       clearTimeout(inactivityTimer);
     }
 
-    // Set a new inactivity timer
     const newInactivityTimer = setTimeout(() => {
-      // Perform the logout action here
-      // You can redirect the user to the logout page or perform any other necessary actions
-      logout(); // Call the logout function directly
-    }, 5 * 1000); // 5 seconds in milliseconds
+      logout(); 
+    }, 5 * 1000); // 5 seconds 
       
 
     setInactivityTimer(newInactivityTimer);
