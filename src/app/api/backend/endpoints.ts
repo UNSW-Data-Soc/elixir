@@ -10,7 +10,7 @@ import { sponsorships } from "./sponsorships";
 import { jobs } from "./jobs";
 import { getToken } from "next-auth/jwt";
 
-export const BACKEND_URL = "http://127.0.0.1:8000";
+export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 interface FetchArguments {
   route: string;
