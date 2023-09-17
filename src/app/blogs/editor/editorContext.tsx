@@ -1,25 +1,10 @@
 "use client";
 
 import { Editor, useEditor } from "@tiptap/react";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Heading from "@tiptap/extension-heading";
-import Strike from "@tiptap/extension-strike";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Underline from "@tiptap/extension-underline";
-import Code from "@tiptap/extension-code";
-import Image from "@tiptap/extension-image";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import Blockquote from "@tiptap/extension-blockquote";
-import OrderedList from "@tiptap/extension-ordered-list";
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import Link from "@tiptap/extension-link";
 import { createContext, useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { endpoints } from "@/app/api/backend/endpoints";
+import { TIPTAP_EXTENSIONS } from "../tiptapExtensions";
 // import Heading1 from "./nodes/heading1";
 
 type EditorContextType = {
@@ -54,61 +39,7 @@ export default function EditorContextProvider({ children }: { children: React.Re
         class: "prose max-w-none outline-none pt-4",
       },
     },
-    extensions: [
-      Document,
-      Paragraph.configure({
-        HTMLAttributes: {
-          class: "text-justify",
-        },
-      }),
-      Text,
-      Heading.configure({
-        levels: [1, 2, 3],
-        HTMLAttributes: {
-          class: "text-3xl",
-        },
-      }),
-      // Heading1,
-      Strike,
-      Bold,
-      Italic,
-      Code,
-      Underline,
-      Image.configure({
-        HTMLAttributes: {
-          class: "w-full",
-        },
-      }),
-      HorizontalRule.configure({
-        HTMLAttributes: {
-          class: "my-2",
-        },
-      }),
-      Blockquote.configure({
-        HTMLAttributes: {
-          class: "border-l-3 border-slate-200 pl-4 ml-4 my-2",
-        },
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: "list-decimal ml-8",
-        },
-      }),
-      BulletList.configure({
-        HTMLAttributes: {
-          class: "list-disc ml-8",
-        },
-      }),
-      ListItem,
-      Link.configure({
-        protocols: ["mailto"],
-        openOnClick: false,
-        // validate: (href) => /^https?:\/\//.test(href),
-        HTMLAttributes: {
-          class: "text-blue-500 underline",
-        },
-      }),
-    ],
+    extensions: TIPTAP_EXTENSIONS,
     content: blogBody ?? "",
     autofocus: false,
     onBlur: ({ editor }) => {

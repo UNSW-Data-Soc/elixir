@@ -11,7 +11,7 @@ import { Blog } from "@/app/api/backend/blogs";
 import { Input, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
 
 const BlogsEditor = () => {
-  const { status } = useSession();
+  const { status, data } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const editorContext = useEditorContext();
@@ -49,6 +49,12 @@ const BlogsEditor = () => {
 
   if (status === "loading") return <></>;
   if (status === "unauthenticated") router.push("/auth/login");
+  if (!data?.user.admin)
+    return (
+      <p className="flex justify-center items-center w-full h-[calc(100vh-10rem)] text-3xl">
+        You do not have permission to edit blogs. Contact IT if you think this is a mistake.
+      </p>
+    );
   if (!editorContext.editor) return <></>;
   if (!blogSlug || !validBlog) return <BlogsList />; // TODO: show list of blogs to edit
 
@@ -67,6 +73,7 @@ const BlogsEditor = () => {
 };
 
 const BlogsEditInfoForm = () => {
+  const router = useRouter();
   const editorContext = useEditorContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -78,7 +85,7 @@ const BlogsEditInfoForm = () => {
       if (!blogId || !blogTitle || !blogAuthor || !blogPublic || !blogBody) {
         return;
       }
-      await endpoints.blogs.update({
+      const blog = await endpoints.blogs.update({
         id: blogId,
         body: blogBody,
         author: blogAuthor,
@@ -87,6 +94,9 @@ const BlogsEditInfoForm = () => {
       });
 
       onClose();
+
+      // if we change the title, the slug will change, so navigate to the new slug
+      router.push(`/blogs/editor?blogSlug=${blog.slug}`);
     };
 
     await updateDatabase();
