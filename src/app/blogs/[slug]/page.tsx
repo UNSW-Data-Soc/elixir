@@ -40,21 +40,58 @@ export default async function BlogPage({ params }: { params: { slug: string } })
   // TODO: some styling doesn't match
   const content = generateHTML(JSON.parse(blog.body), [
     Document,
-    Paragraph,
+    Paragraph.configure({
+      HTMLAttributes: {
+        class: "text-justify min-h-[1rem]",
+      },
+    }),
     Text,
-    Heading,
+    Heading.configure({
+      levels: [1, 2, 3],
+      HTMLAttributes: {
+        class: "text-3xl",
+      },
+    }),
+    // Heading1,
     Strike,
     Bold,
     Italic,
-    Underline,
     Code,
-    Image,
-    HorizontalRule,
-    Blockquote,
-    OrderedList,
-    BulletList,
+    Underline,
+    Image.configure({
+      HTMLAttributes: {
+        class: "w-full",
+      },
+    }),
+    HorizontalRule.configure({
+      HTMLAttributes: {
+        class: "my-2",
+      },
+    }),
+    Blockquote.configure({
+      HTMLAttributes: {
+        class: "border-l-3 border-slate-200 pl-4 ml-4 my-2",
+      },
+    }),
+    OrderedList.configure({
+      HTMLAttributes: {
+        class: "list-decimal ml-8",
+      },
+    }),
+    BulletList.configure({
+      HTMLAttributes: {
+        class: "list-disc ml-8",
+      },
+    }),
     ListItem,
-    Link,
+    Link.configure({
+      protocols: ["mailto"],
+      openOnClick: false,
+      // validate: (href) => /^https?:\/\//.test(href),
+      HTMLAttributes: {
+        class: "text-blue-500 underline",
+      },
+    }),
   ]);
 
   return (

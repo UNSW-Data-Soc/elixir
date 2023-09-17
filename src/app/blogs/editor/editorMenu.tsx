@@ -26,7 +26,7 @@ export default function EditorMenu() {
   if (!editor) return <></>;
 
   return (
-    <div className="fixed top-28 z-[999999] bg-[#fafafa] flex flex-row justify-start border-[0.5px] border-[#ddd] items-center rounded-lg overflow-hidden shadow-lg">
+    <div className="fixed top-28 z-50 bg-[#fafafa] flex flex-row justify-start border-[0.5px] border-[#ddd] items-center rounded-lg overflow-hidden shadow-lg">
       <EditorMenuGroup leftBorder={false}>
         <button
           className={`p-2 ${
