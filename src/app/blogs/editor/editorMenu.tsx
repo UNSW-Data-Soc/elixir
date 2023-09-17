@@ -1,4 +1,3 @@
-import { Editor } from "@tiptap/react";
 import {
   BoldIcon,
   CodeIcon,
@@ -26,7 +25,7 @@ export default function EditorMenu() {
   if (!editor) return <></>;
 
   return (
-    <div className="fixed top-28 translate-x-[-170%] z-50 bg-[#fafafa] flex flex-col justify-start border-[0.5px] border-[#ddd] items-center rounded-lg overflow-hidden shadow-lg">
+    <div className="fixed top-28 translate-x-[-170%] z-50 bg-[#fafafa] flex flex-col justify-start border-[0.5px] border-[#ddd] items-center rounded-lg shadow-lg">
       <EditorMenuGroup bottomBorder={false}>
         <button
           className={`p-2 ${
