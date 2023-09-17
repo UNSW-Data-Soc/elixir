@@ -13,7 +13,7 @@ export default function BlogsAddButton() {
     return (
       <button
         className="transition-all bg-[#4799d1] fixed bottom-7 right-7 z-50 rounded-full p-3 shadow-xl hover:bg-[#267ab1]"
-        onClick={() => router.push("/blogs/post")}
+        onClick={() => router.push("/blogs/create")}
       >
         <PlusIcon className="h-12 w-12 text-white" />
       </button>

@@ -27,8 +27,8 @@ interface CreateEvent {
   creator: string;
   title: string;
   description: string;
-  start_date: "2023-06-29T10:46:26.753Z";
-  end_date: "2023-06-29T10:46:26.753Z";
+  start_date: string;
+  end_date: string;
   location: string;
   link: string;
 }

@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { endpoints } from "../backend/endpoints";
+import { userLevels } from "../backend/users";
 
 interface LoginCredentials {
   email: string;
@@ -27,7 +28,7 @@ interface Jwt {
   exp: number;
   iat: number;
   nbf: string;
-  access_level: "member" | "administrator";
+  access_level: userLevels;
 }
 
 function parseJwt(token: string): Jwt {
@@ -50,7 +51,7 @@ export const authRegister: (credentials: RegisterCredentials) => Promise<Registe
 
 export const login: (
   credentials: LoginCredentials
-) => Promise<{ token: string; admin: boolean; exp: number }> = async (
+) => Promise<{ id: string, token: string; admin: boolean; exp: number }> = async (
   credentials: LoginCredentials
 ) => {
   try {
@@ -59,6 +60,7 @@ export const login: (
     const decodedJwt: Jwt = parseJwt(session.access_token);
 
     return {
+      id: decodedJwt.id,
       token: session.access_token,
       admin: decodedJwt.access_level === "administrator",
       exp: decodedJwt.exp,
