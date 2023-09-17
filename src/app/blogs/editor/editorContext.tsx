@@ -22,65 +22,6 @@ import toast from "react-hot-toast";
 import { endpoints } from "@/app/api/backend/endpoints";
 // import Heading1 from "./nodes/heading1";
 
-const DEFAULT_BLOG_CONTENT = {
-  type: "doc",
-  content: [
-    {
-      type: "heading",
-      attrs: { level: 1 },
-      content: [{ type: "text", text: "Write your exciting blog post here!" }],
-    },
-    { type: "paragraph" },
-    { type: "horizontalRule" },
-    { type: "paragraph" },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi leo diam, placerat eu dolor sit amet, sollicitudin gravida tortor. Ut neque leo, tristique ac arcu nec, fringilla vehicula leo. In efficitur sapien ex, eu dignissim lorem tincidunt non. ",
-        },
-      ],
-    },
-    { type: "paragraph" },
-    {
-      type: "image",
-      attrs: {
-        src: "https://static.ffx.io/images/$zoom_1%2C$multiply_1.3061%2C$ratio_1.777778%2C$width_588%2C$x_0%2C$y_22/t_crop_custom/q_86%2Cf_auto/31bc6e9479ea58d2cb31601157a7ddc9fc41ed5a",
-        alt: null,
-        title: null,
-      },
-    },
-    { type: "paragraph" },
-    { type: "horizontalRule" },
-    { type: "paragraph" },
-    {
-      type: "blockquote",
-      content: [
-        {
-          type: "paragraph",
-          content: [
-            {
-              type: "text",
-              text: "Aenean lacinia dui sit amet lectus suscipit bibendum. In et nunc mollis, tempus sapien at, eleifend quam. In ultrices gravida magna, non gravida dui facilisis in. ",
-            },
-          ],
-        },
-      ],
-    },
-    { type: "paragraph" },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "Duis sed nibh ac risus porttitor posuere a in augue. Suspendisse quam erat, luctus vel tellus non, sodales ornare lacus. Morbi ac metus mi. Phasellus eu fringilla leo, in cursus elit. Mauris sed odio aliquam, hendrerit ante vel, pulvinar orci. ",
-        },
-      ],
-    },
-  ],
-};
-
 type EditorContextType = {
   editor: Editor | null;
   get: {
@@ -110,7 +51,7 @@ export default function EditorContextProvider({ children }: { children: React.Re
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: "prose max-w-none outline-none pt-20",
+        class: "prose max-w-none outline-none pt-4",
       },
     },
     extensions: [

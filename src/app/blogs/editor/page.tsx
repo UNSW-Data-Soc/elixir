@@ -95,11 +95,12 @@ const BlogsEditInfoForm = () => {
   return (
     <>
       <div
-        className="fixed right-4 top-20 z-40 p-5 py-3 bg-[#fafafa] hover:bg-[#eee] transition-colors cursor-pointer max-w-[calc(100vw-1000px)] whitespace-pre-wrap"
+        className="fixed right-4 top-20 z-40 p-10 py-6 bg-white hover:bg-[#fafafa] transition-colors cursor-pointer max-w-[calc(50vw-450px)] whitespace-pre-wrap text-right rounded-2xl"
         onClick={() => onOpen()}
       >
-        <h2 className="text-2xl">{editorContext.get.blogTitle}</h2>
-        <p className="text-xl">{editorContext.get.blogAuthor}</p>
+        <h2 className="text-6xl">{editorContext.get.blogTitle}</h2>
+        <hr className="my-6" />
+        <p className="text-3xl">{editorContext.get.blogAuthor}</p>
       </div>
       <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque">
         <ModalContent>

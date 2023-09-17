@@ -26,8 +26,8 @@ export default function EditorMenu() {
   if (!editor) return <></>;
 
   return (
-    <div className="fixed top-28 z-50 bg-[#fafafa] flex flex-row justify-start border-[0.5px] border-[#ddd] items-center rounded-lg overflow-hidden shadow-lg">
-      <EditorMenuGroup leftBorder={false}>
+    <div className="fixed top-28 translate-x-[-170%] z-50 bg-[#fafafa] flex flex-col justify-start border-[0.5px] border-[#ddd] items-center rounded-lg overflow-hidden shadow-lg">
+      <EditorMenuGroup bottomBorder={false}>
         <button
           className={`p-2 ${
             editor.isActive("heading", {
@@ -248,16 +248,16 @@ const EditorAddLink = () => {
 
 const EditorMenuGroup = ({
   children,
-  leftBorder = true,
+  bottomBorder = true,
 }: {
   children: React.ReactNode;
-  leftBorder?: boolean;
+  bottomBorder?: boolean;
 }) => {
   return (
     <div
-      className={`flex flex-row justify-start items-center ${
-        leftBorder ? "border-l" : ""
-      } py-1 px-2 gap-1`}
+      className={`flex flex-col justify-start items-center ${
+        bottomBorder ? "border-t" : ""
+      } py-2 px-2 gap-1`}
     >
       {children}
     </div>
