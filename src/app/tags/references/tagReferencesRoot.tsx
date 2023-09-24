@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import TagReferencesList from "./tagReferencesList";
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import TagReferencesList from './tagReferencesList';
 
 export default function TagReferencesRoot() {
-    const session = useSession();
-    const [showEditingTools, setShowEditingTools] = useState(false);
-    
-    useEffect(() => {
-        if (session.status === "authenticated" && session.data.user.admin) {
-            setShowEditingTools(true);
-        }
-    }, [session.status]);
-    
-    return (
-        <TagReferencesList styleLarge={true} showEditingTools={showEditingTools}/>
-    );
+  const session = useSession();
+  const [showEditingTools, setShowEditingTools] = useState(false);
+
+  useEffect(() => {
+    if (session.status === 'authenticated' && session.data.user.admin) {
+      setShowEditingTools(true);
+    }
+  }, [session.status]);
+
+  return (
+    <TagReferencesList styleLarge={true} showEditingTools={showEditingTools} />
+  );
 }
