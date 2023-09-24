@@ -16,6 +16,7 @@ import ListItem from "@tiptap/extension-list-item";
 import Link from "@tiptap/extension-link";
 
 import { mergeAttributes } from "@tiptap/core";
+import { Node } from "@tiptap/core";
 
 type Levels = 1 | 2 | 3;
 
@@ -36,6 +37,41 @@ export const Heading = BaseHeading.configure({ levels: [1, 2, 3] }).extend({
         class: `${classes[level]}`,
       }),
       0,
+    ];
+  },
+});
+
+export const Embed = Node.create({
+  name: "embed",
+  group: "block",
+  selectable: true,
+  draggable: true,
+  atom: true,
+  addAttributes() {
+    return {
+      src: { default: null },
+      width: { default: 560 },
+      height: { default: 315 },
+      title: { default: "Embed" },
+      frameborder: { default: null },
+      allow: { default: null },
+      allowfullscreen: { default: null },
+      srcdoc: { default: null },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "iframe",
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes, node }) {
+    return [
+      `iframe`,
+      mergeAttributes(HTMLAttributes, {
+        srcdoc: `<img src='${node.attrs.src}/hqdefault.jpg'`,
+      }),
     ];
   },
 });
@@ -88,4 +124,5 @@ export const TIPTAP_EXTENSIONS = [
       class: "text-blue-500 underline",
     },
   }),
+  Embed,
 ];

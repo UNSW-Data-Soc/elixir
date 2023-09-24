@@ -1,6 +1,7 @@
 import {
   BoldIcon,
   CodeIcon,
+  EmbedIcon,
   H1Icon,
   H2Icon,
   H3Icon,
@@ -121,6 +122,7 @@ export default function EditorMenu() {
       <EditorMenuGroup>
         <EditorAddLink />
         <EditorAddImage />
+        <EditorAddEmbed />
         <button
           className={`p-2 ${
             editor.isActive("blockquote") ? "bg-slate-300" : "bg-transparent"
@@ -226,6 +228,54 @@ const EditorAddImage = () => {
                 setImageUrl("");
               }}
             />
+          </form>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+const EditorAddEmbed = () => {
+  const { editor } = useEditorContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [embed, setEmbed] = useState<string>("");
+  if (!editor) return <></>;
+
+  return (
+    <>
+      <button
+        className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
+          isOpen || editor.isActive("image") ? "bg-slate-200" : "bg-transparent"
+        }}`}
+        onClick={onOpen}
+      >
+        <EmbedIcon />
+      </button>
+      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
+        <ModalContent className={`p-5 flex flex-col gap-3`}>
+          <h3 className="text-2xl text-center lowercase font-light">Embed a code snippet!</h3>
+          <form
+            className={`flex flex-col gap-3 items-center`}
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              if (!embed) {
+                toast.error("no embed content entered!");
+                return;
+              }
+
+              editor.commands.insertContent(embed);
+              onClose();
+              setEmbed("");
+            }}
+          >
+            <textarea
+              placeholder="paste your embed code here..."
+              value={embed}
+              onChange={(e) => setEmbed(e.target.value)}
+              className="outline-none bg-[#f7f7f7] focus:bg-[#eee] p-2 px-3 transition-all rounded-lg w-full"
+            ></textarea>
+            <input type="submit" className="p-2 px-3 bg-[#fafafa] rounded-lg max-w-[100px]" />
           </form>
         </ModalContent>
       </Modal>
