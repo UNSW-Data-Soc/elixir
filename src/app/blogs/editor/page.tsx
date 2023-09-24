@@ -112,7 +112,7 @@ const BlogsEditInfoForm = () => {
         <hr className="my-6" />
         <p className="text-3xl">{editorContext.get.blogAuthor}</p>
       </div>
-      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque">
+      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
         <ModalContent>
           <form onSubmit={handleFormSubmit} className="p-10 flex flex-col gap-8">
             <Input

@@ -169,7 +169,7 @@ const EditorAddImage = () => {
       >
         <ImageIcon />
       </button>
-      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque">
+      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
         <ModalContent className={`p-5 flex flex-col gap-3`}>
           <h3 className="text-2xl text-center lowercase font-light">Insert an image</h3>
           <form
