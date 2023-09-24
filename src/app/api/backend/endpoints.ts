@@ -9,6 +9,9 @@ import { companies } from "./companies";
 import { sponsorships } from "./sponsorships";
 import { jobs } from "./jobs";
 import { getToken } from "next-auth/jwt";
+import { logout } from "../auth/auth";
+import { useRouter } from "next/navigation"; 
+import { isTokenExpired } from "./isTokenExpired";
 
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -30,8 +33,21 @@ export const callFetch = async (
   }: FetchArguments,
   setContentType = true
 ) => {
-  const session = await getSession();
 
+  const session = await getSession();
+  const router = useRouter();
+
+
+
+  // console.log(isTokenExpired(session.user.token));
+
+   if (authRequired && session && !isTokenExpired(session.user.token)) {
+    console.log("expired");
+    handleTokenExpiration(router);
+   }
+
+   
+  
   const headers: HeadersInit = setContentType ? { "Content-Type": contentType } : {};
   if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
 
@@ -43,6 +59,15 @@ export const callFetch = async (
   }
 
   return await res.json();
+};
+
+
+// function for handling token expiration and redirection
+const handleTokenExpiration = (router) => {
+   // const router = useRouter();
+    console.log("expired tokenn");
+    logout();
+    router.push("/auth/login");
 };
 
 export const endpoints = {
