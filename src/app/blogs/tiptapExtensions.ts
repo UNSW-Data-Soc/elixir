@@ -76,6 +76,29 @@ export const Embed = Node.create({
   },
 });
 
+export const Script = Node.create({
+  name: "script",
+  group: "block",
+  atom: true,
+  addAttributes() {
+    return {
+      src: { default: null },
+      async: { default: false },
+      charset: { default: null },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "script",
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return [`script`, mergeAttributes(HTMLAttributes)];
+  },
+});
+
 export const TIPTAP_EXTENSIONS = [
   Document,
   Paragraph.configure({
@@ -125,4 +148,5 @@ export const TIPTAP_EXTENSIONS = [
     },
   }),
   Embed,
+  Script,
 ];
