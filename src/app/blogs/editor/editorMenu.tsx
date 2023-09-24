@@ -39,7 +39,7 @@ export default function EditorMenu() {
               ? "bg-slate-300"
               : "bg-transparent"
           } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.commands.toggleHeading({ level: 1 })}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         >
           <H1Icon />
         </button>
@@ -51,7 +51,7 @@ export default function EditorMenu() {
               ? "bg-slate-300"
               : "bg-transparent"
           } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.commands.toggleHeading({ level: 2 })}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
           <H2Icon />
         </button>
@@ -63,7 +63,7 @@ export default function EditorMenu() {
               ? "bg-slate-300"
               : "bg-transparent"
           } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.commands.toggleHeading({ level: 3 })}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         >
           <H3Icon />
         </button>
@@ -71,7 +71,7 @@ export default function EditorMenu() {
           className={`p-2 ${
             editor.isActive("paragraph") ? "bg-slate-300" : "bg-transparent"
           } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.commands.setParagraph()}
+          onClick={() => editor.chain().focus().setParagraph().run()}
         >
           <PIcon />
         </button>
