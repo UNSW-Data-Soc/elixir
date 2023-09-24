@@ -4,11 +4,12 @@ import { tags } from "./tags";
 import { users } from "./users";
 import { resources } from "./resources";
 import { file } from "./file";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import { companies } from "./companies";
 import { sponsorships } from "./sponsorships";
 import { jobs } from "./jobs";
 import { getToken } from "next-auth/jwt";
+import { redirect } from "next/navigation";
 
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -38,6 +39,10 @@ export const callFetch = async (
   const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      await signOut();
+      redirect("/auth/login");
+    }
     const err = await res.text();
     throw new Error(err);
   }
