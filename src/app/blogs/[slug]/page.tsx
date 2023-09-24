@@ -1,22 +1,33 @@
+"use client";
+
 import { endpoints } from "@/app/api/backend/endpoints";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { generateHTML } from "@tiptap/html";
 import { TIPTAP_EXTENSIONS } from "../tiptapExtensions";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { Blog } from "@/app/api/backend/blogs";
 dayjs.extend(relativeTime);
 
-export default async function BlogPage({ params }: { params: { slug: string } }) {
-  const session = await getServerSession();
+export default function BlogPage({ params }: { params: { slug: string } }) {
+  const session = useSession();
+  const router = useRouter();
 
   const slug = params.slug;
 
-  const blog = await endpoints.blogs.get({ slug });
+  const [blog, setBlog] = useState<Blog | null>(null);
+  useEffect(() => {
+    const getBlog = async () => await endpoints.blogs.get({ slug, authRequired: true });
+    getBlog().then((blog) => setBlog(blog));
+  }, [slug]);
+
+  if (!blog) return <></>;
 
   if (!session && !blog.public) {
-    return redirect("/auth/login");
+    return router.push("/auth/login");
   }
 
   const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();

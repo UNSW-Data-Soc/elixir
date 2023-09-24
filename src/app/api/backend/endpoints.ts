@@ -39,10 +39,10 @@ export const callFetch = async (
   const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
 
   if (!res.ok) {
-    // if (res.status === 401) {
-    //   await signOut();
-    //   redirect("/auth/login");
-    // }
+    if (res.status === 401) {
+      await signOut();
+      redirect("/auth/login");
+    }
     const err = await res.text();
     throw new Error(err);
   }
