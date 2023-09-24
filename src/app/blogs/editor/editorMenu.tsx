@@ -18,6 +18,10 @@ import {
 import { useEditorContext } from "./editorContext";
 import { useState } from "react";
 import useClickAway from "@/app/hooks/useClickAway";
+import { Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import { FileUploadDropzone, IMAGE_FILE_TYPES } from "@/app/utils";
+import toast from "react-hot-toast";
+import { BACKEND_URL, endpoints } from "@/app/api/backend/endpoints";
 
 export default function EditorMenu() {
   const { editor } = useEditorContext();
@@ -147,46 +151,84 @@ export default function EditorMenu() {
 }
 
 const EditorAddImage = () => {
-  const { editor } = useEditorContext();
-  const [showImageAdd, setShowImageAdd] = useState<boolean>(false);
+  const {
+    editor,
+    get: { blogId },
+  } = useEditorContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [imageUrl, setImageUrl] = useState<string>("");
-  const clickAwayRef = useClickAway(() => setShowImageAdd(false));
-  if (!editor) return <></>;
+  if (!editor || !blogId) return <></>;
 
   return (
     <>
       <button
         className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
-          showImageAdd || editor.isActive("image") ? "bg-slate-200" : "bg-transparent"
+          isOpen || editor.isActive("image") ? "bg-slate-200" : "bg-transparent"
         }}`}
-        onClick={() => setShowImageAdd((prev) => !prev)}
+        onClick={onOpen}
       >
         <ImageIcon />
       </button>
-      <form
-        ref={clickAwayRef}
-        className={`absolute ${
-          showImageAdd ? "opacity-100 w-auto h-auto z-30" : "z-[-10] opacity-0"
-        } bg-white shadow-xl rounded-md flex flex-row items-center gap-2 transition-all overflow-hidden translate-x-10`}
-        onSubmit={(e) => {
-          e.preventDefault();
+      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque">
+        <ModalContent className={`p-5 flex flex-col gap-3`}>
+          <h3 className="text-2xl text-center lowercase font-light">Insert an image</h3>
+          <form
+            className={`flex flex-col gap-2`}
+            onSubmit={(e) => {
+              e.preventDefault();
 
-          if (!imageUrl) return;
+              if (!imageUrl) return;
 
-          editor.commands.setImage({ src: imageUrl });
-          setShowImageAdd(false);
-          setImageUrl("");
-        }}
-      >
-        {/* <label>Insert a new image:</label> */}
-        <input
-          type="text"
-          placeholder="image url..."
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          className="outline-none focus:bg-[#eee] p-2 px-3 transition-all"
-        />
-      </form>
+              editor.commands.setImage({ src: imageUrl });
+              onClose();
+              setImageUrl("");
+            }}
+          >
+            <input
+              type="text"
+              placeholder="image url..."
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="outline-none bg-[#f7f7f7] focus:bg-[#eee] p-2 px-3 transition-all rounded-lg"
+            />
+          </form>
+          <label className="text-center">----- OR -----</label>
+          <form
+            className={`flex flex-col gap-2`}
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              if (!imageUrl) return;
+
+              editor.commands.setImage({ src: imageUrl });
+              onClose();
+              setImageUrl("");
+            }}
+          >
+            <FileUploadDropzone
+              handleFileChange={async (e) => {
+                const files = e.target.files;
+                if (!files || !IMAGE_FILE_TYPES.includes(files[0].type)) {
+                  toast.error("Please upload a valid image!");
+                  return;
+                }
+
+                const { id: imageId } = await endpoints.blogs.image.upload({
+                  blogId,
+                  file: files[0],
+                });
+                const imageURL = new URL("/file/blog", BACKEND_URL);
+                imageURL.searchParams.append("blog_id", blogId);
+                imageURL.searchParams.append("photo_id", imageId);
+                editor.commands.setImage({ src: imageURL.href });
+
+                onClose();
+                setImageUrl("");
+              }}
+            />
+          </form>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
