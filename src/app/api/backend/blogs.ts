@@ -6,7 +6,7 @@ export interface Blog {
   creator: string;
   title: string;
   body: string;
-  tags: String[]; // list of tag ids,
+  // tags: String[]; // list of tag ids,
   author: string;
   public: boolean;
   id: string;
@@ -19,6 +19,7 @@ const validateBlog = (blog: any) => {
   const blogSchema = z.object({
     title: z.string(),
     body: z.string(),
+    // tags: z.array(z.string()), // list of tag ids,
     author: z.string(),
     public: z.boolean(),
     slug: z.string(),

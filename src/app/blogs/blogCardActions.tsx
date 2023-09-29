@@ -20,7 +20,7 @@ const BlogCardActions = (blog: Blog) => {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          router.push(`/blogs/editor/${blog.slug}`);
+          router.push(`/blogs/editor?blogSlug=${blog.slug}`);
         }}
         className="text-blue-500 hover:underline"
       >
@@ -34,6 +34,7 @@ const BlogCardActions = (blog: Blog) => {
             e.stopPropagation();
             await endpoints.blogs.update({ ...blog, blogPublic: true });
             toast.success(`Blog "${blog.title}" published!`);
+            setTimeout(() => router.refresh(), 1000);
           }}
         >
           Publish
@@ -47,6 +48,7 @@ const BlogCardActions = (blog: Blog) => {
             e.stopPropagation();
             await endpoints.blogs.update({ ...blog, blogPublic: false });
             toast.success(`Blog "${blog.title}" unpublished!`);
+            setTimeout(() => router.refresh(), 1000);
           }}
         >
           Unpublish
@@ -60,6 +62,7 @@ const BlogCardActions = (blog: Blog) => {
           // TODO: add confirmation box
           await endpoints.blogs.deleteBlog({ id: blog.id });
           toast.success(`Blog "${blog.title}" deleted!`);
+          setTimeout(() => router.refresh(), 1000);
         }}
       >
         Delete
