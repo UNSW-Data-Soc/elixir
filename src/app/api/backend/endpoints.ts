@@ -1,5 +1,6 @@
 import { auth } from "./auth";
 import { blogs } from "./blogs";
+import { events } from "./events";
 import { tags } from "./tags";
 import { users } from "./users";
 import { resources } from "./resources";
@@ -60,4 +61,5 @@ export const endpoints = {
   companies,
   sponsorships,
   jobs,
+  events,
 };

@@ -48,15 +48,15 @@ export default function ResourceActions(props: {
         await endpoints.resources.updateVisibility(props.resource.id, !props.resource.public)
             .then(() => {
                 toast.success(`Resource ${actionPubUnpub} successfully!`);
+                let updatedResource = props.resource;
+                updatedResource.public = !props.resource.public;
+                props.updateResource(updatedResource, false);
             })
             .catch(() => {
                 toast.error(`Failed to ${actionPubUnpubPresent} resource`);
             })
             .finally(() => {
                 setShowVisibilityDialogue(false);
-                let updatedResource = props.resource;
-                updatedResource.public = !props.resource.public;
-                props.updateResource(updatedResource, false);
                 return;
             });
     }

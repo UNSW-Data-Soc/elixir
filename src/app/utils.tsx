@@ -13,6 +13,8 @@ export const COMPANY_PHOTO_X_PXL = 500;
 export const COMPANY_PHOTO_Y_PXL = 500;
 export const JOB_PHOTO_X_PXL = 500;
 export const JOB_PHOTO_Y_PXL = 500;
+export const Event_PHOTO_X_PXL = 1000;
+export const Event_PHOTO_Y_PXL = 500;
 
 export function Spinner() {
     return (
