@@ -27,21 +27,26 @@ export default function About() {
           best for students.
         </p>
       </header>
-      <section className='flex flex-col my-14 md:mx-96 lg:px-72'>
+      <section className='flex flex-col my-14 mx-4 lg:mx-72 xl:mx-200 2xl:mx-200'>
         <h3 className='text-xl font-semibold'>
           Uniting mathematicians, econometricians and computer scientists, UNSW
           DataSoc seeks to empower our members with knowledge and skills of data
           science, machine learning and artificial intelligence.
         </h3>
         <h1 className='text-5xl font-semibold mt-20 mb-8'>Affiliated with</h1>
-        <div className='flex row justify-between'>
+        <div className='flex flex-col md:flex-row justify-between w-full'>
           <Image src={unswMathsLogo} height={100} alt='UNSW Maths Logo' />
           <Image src={arcLogo} height={100} alt='Arc Logo' />
         </div>
         <h1 className='text-5xl font-semibold mt-20 mb-8'>Our Goals</h1>
         <ul className='flex flex-col space-y-4'>
           <li className='flex flex-row space-x-12'>
-            <Image src={lightBulbIdea} width={100} alt='Light Bulb Idea' />
+            <Image
+              src={lightBulbIdea}
+              className='object-contain'
+              width={100}
+              alt='Light Bulb Idea'
+            />
             <p>
               DataSoc aims to become Australia’s leading student run society
               platform in assisting students on achieving their data science
@@ -49,7 +54,12 @@ export default function About() {
             </p>
           </li>
           <li className='flex flex-row space-x-12'>
-            <Image src={bulletinBoard} width={100} alt='Bulletin Board' />
+            <Image
+              src={bulletinBoard}
+              className='object-contain'
+              width={100}
+              alt='Bulletin Board'
+            />
             <p>
               We strive to create the data science related opportunities for
               students in their studies and careers alike. We host information
@@ -58,7 +68,12 @@ export default function About() {
             </p>
           </li>
           <li className='flex flex-row space-x-12'>
-            <Image src={graphicDesign} width={100} alt='Graphic Design' />
+            <Image
+              src={graphicDesign}
+              className='object-contain'
+              width={100}
+              alt='Graphic Design'
+            />
             <p>
               We aim to enrich students' lives with a sense of community and
               diversity among UNSW data science students. We host a list of
@@ -67,7 +82,12 @@ export default function About() {
             </p>
           </li>
           <li className='flex flex-row space-x-12'>
-            <Image src={zoom} width={100} alt='Zoom' />
+            <Image
+              src={zoom}
+              className='object-contain'
+              width={100}
+              alt='Zoom'
+            />
             <p>
               We want to support data science students in their studies with
               DataSoc’s help sessions, workshops and peer supporters.
