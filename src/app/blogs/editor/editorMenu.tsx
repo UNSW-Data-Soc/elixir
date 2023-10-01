@@ -30,7 +30,7 @@ export default function EditorMenu() {
   if (!editor) return <></>;
 
   return (
-    <div className="fixed top-28 translate-x-[-170%] z-50 bg-[#fafafa] flex flex-col justify-start border-[0.5px] border-[#ddd] items-center rounded-lg shadow-lg">
+    <div className="fixed top-28 translate-x-[-150%] md:translate-x-[-170%] md:z-50 bg-[#fafafa] flex flex-col justify-start border-[0.5px] border-[#ddd] items-center rounded-lg shadow-lg">
       <EditorMenuGroup bottomBorder={false}>
         <Tooltip placement="left" content="Heading 1" color="default" closeDelay={0}>
           <button
