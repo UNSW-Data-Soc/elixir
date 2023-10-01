@@ -19,7 +19,7 @@ import {
 import { useEditorContext } from "./editorContext";
 import { useState } from "react";
 import useClickAway from "@/app/hooks/useClickAway";
-import { Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent, Tooltip, useDisclosure } from "@nextui-org/react";
 import { FileUploadDropzone, IMAGE_FILE_TYPES } from "@/app/utils";
 import toast from "react-hot-toast";
 import { BACKEND_URL, endpoints } from "@/app/api/backend/endpoints";
@@ -32,121 +32,145 @@ export default function EditorMenu() {
   return (
     <div className="fixed top-28 translate-x-[-170%] z-50 bg-[#fafafa] flex flex-col justify-start border-[0.5px] border-[#ddd] items-center rounded-lg shadow-lg">
       <EditorMenuGroup bottomBorder={false}>
-        <button
-          className={`p-2 ${
-            editor.isActive("heading", {
-              level: 1,
-            })
-              ? "bg-slate-300"
-              : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        >
-          <H1Icon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("heading", {
-              level: 2,
-            })
-              ? "bg-slate-300"
-              : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        >
-          <H2Icon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("heading", {
-              level: 3,
-            })
-              ? "bg-slate-300"
-              : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        >
-          <H3Icon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("paragraph") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().setParagraph().run()}
-        >
-          <PIcon />
-        </button>
+        <Tooltip placement="left" content="Heading 1" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("heading", {
+                level: 1,
+              })
+                ? "bg-slate-300"
+                : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          >
+            <H1Icon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Heading 2" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("heading", {
+                level: 2,
+              })
+                ? "bg-slate-300"
+                : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          >
+            <H2Icon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Heading 3" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("heading", {
+                level: 3,
+              })
+                ? "bg-slate-300"
+                : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          >
+            <H3Icon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Text" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("paragraph") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().setParagraph().run()}
+          >
+            <PIcon />
+          </button>
+        </Tooltip>
       </EditorMenuGroup>
       <EditorMenuGroup>
-        <button
-          className={`p-2 ${
-            editor.isActive("bold") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        >
-          <BoldIcon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("italic") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        >
-          <ItalicIcon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("underline") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-        >
-          <UnderlineIcon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("strike") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-        >
-          <StrikeIcon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("code") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleCode().run()}
-        >
-          <CodeIcon />
-        </button>
+        <Tooltip placement="left" content="Bold" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("bold") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleBold().run()}
+          >
+            <BoldIcon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Italic" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("italic") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+          >
+            <ItalicIcon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Underline" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("underline") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+          >
+            <UnderlineIcon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Strikethrough" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("strike") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+          >
+            <StrikeIcon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Code" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("code") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleCode().run()}
+          >
+            <CodeIcon />
+          </button>
+        </Tooltip>
       </EditorMenuGroup>
       <EditorMenuGroup>
         <EditorAddLink />
         <EditorAddImage />
         <EditorAddEmbed />
-        <button
-          className={`p-2 ${
-            editor.isActive("blockquote") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        >
-          <QuoteIcon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("bulletList") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-        >
-          <ULIcon />
-        </button>
-        <button
-          className={`p-2 ${
-            editor.isActive("orderedList") ? "bg-slate-300" : "bg-transparent"
-          } hover:bg-slate-200 transition-all rounded-lg`}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        >
-          <OLIcon />
-        </button>
+        <Tooltip placement="left" content="Quote" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("blockquote") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          >
+            <QuoteIcon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Bullet List" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("bulletList") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+          >
+            <ULIcon />
+          </button>
+        </Tooltip>
+        <Tooltip placement="left" content="Numbered List" color="default" closeDelay={0}>
+          <button
+            className={`p-2 ${
+              editor.isActive("orderedList") ? "bg-slate-300" : "bg-transparent"
+            } hover:bg-slate-200 transition-all rounded-lg`}
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          >
+            <OLIcon />
+          </button>
+        </Tooltip>
       </EditorMenuGroup>
     </div>
   );
@@ -163,14 +187,16 @@ const EditorAddImage = () => {
 
   return (
     <>
-      <button
-        className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
-          isOpen || editor.isActive("image") ? "bg-slate-200" : "bg-transparent"
-        }}`}
-        onClick={onOpen}
-      >
-        <ImageIcon />
-      </button>
+      <Tooltip placement="left" content="Image" color="default" closeDelay={0}>
+        <button
+          className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
+            isOpen || editor.isActive("image") ? "bg-slate-200" : "bg-transparent"
+          }}`}
+          onClick={onOpen}
+        >
+          <ImageIcon />
+        </button>
+      </Tooltip>
       <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
         <ModalContent className={`p-5 flex flex-col gap-3`}>
           <h3 className="text-2xl text-center lowercase font-light">Insert an image</h3>
@@ -243,14 +269,16 @@ const EditorAddEmbed = () => {
 
   return (
     <>
-      <button
-        className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
-          isOpen || editor.isActive("image") ? "bg-slate-200" : "bg-transparent"
-        }}`}
-        onClick={onOpen}
-      >
-        <EmbedIcon />
-      </button>
+      <Tooltip placement="left" content="Embed" color="default" closeDelay={0}>
+        <button
+          className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
+            isOpen || editor.isActive("embed") ? "bg-slate-200" : "bg-transparent"
+          }}`}
+          onClick={onOpen}
+        >
+          <EmbedIcon />
+        </button>
+      </Tooltip>
       <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
         <ModalContent className={`p-5 flex flex-col gap-3`}>
           <h3 className="text-2xl text-center lowercase font-light">Embed a code snippet!</h3>
@@ -292,22 +320,26 @@ const EditorAddLink = () => {
 
   return (
     <>
-      <button
-        className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
-          showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
-        }}`}
-        onClick={() => setShowLinkAdd((prev) => !prev)}
-      >
-        <LinkIcon />
-      </button>
-      <button
-        className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
-          showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
-        }}`}
-        onClick={() => editor.chain().focus().extendMarkRange("link").unsetLink().run()}
-      >
-        <UnlinkIcon />
-      </button>
+      <Tooltip placement="left" content="Link" color="default" closeDelay={0}>
+        <button
+          className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
+            showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
+          }}`}
+          onClick={() => setShowLinkAdd((prev) => !prev)}
+        >
+          <LinkIcon />
+        </button>
+      </Tooltip>
+      <Tooltip placement="left" content="Unlink" color="default" closeDelay={0}>
+        <button
+          className={`p-2 hover:bg-slate-200 transition-all rounded-lg ${
+            showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
+          }}`}
+          onClick={() => editor.chain().focus().extendMarkRange("link").unsetLink().run()}
+        >
+          <UnlinkIcon />
+        </button>
+      </Tooltip>
       <form
         ref={clickAwayRef}
         className={`absolute ${
