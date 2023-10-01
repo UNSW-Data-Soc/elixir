@@ -1,13 +1,10 @@
 import { auth } from "./auth";
 import { blogs } from "./blogs";
-<<<<<<< HEAD
 import { events } from "./events";
-=======
 import { tags } from "./tags";
 import { users } from "./users";
 import { resources } from "./resources";
 import { file } from "./file";
->>>>>>> 543fc3d0ee77c2c6173aab5de8b1c589bef1d66a
 import { getSession } from "next-auth/react";
 import { companies } from "./companies";
 import { sponsorships } from "./sponsorships";
@@ -52,9 +49,7 @@ export const callFetch = async (
 export const endpoints = {
   auth,
   blogs,
-<<<<<<< HEAD
   events,
-=======
   tags,
   users,
   resources,
@@ -62,5 +57,4 @@ export const endpoints = {
   companies,
   sponsorships,
   jobs,
->>>>>>> 543fc3d0ee77c2c6173aab5de8b1c589bef1d66a
 };
