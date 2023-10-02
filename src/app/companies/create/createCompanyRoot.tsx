@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { Spinner } from "@/app/utils";
 import { CreateCompany } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
-import FileUploader from "@/app/photoUploader";
+import PhotoUploader from "@/app/photoUploader";
 import { COMPANY_PHOTO_X_PXL, COMPANY_PHOTO_Y_PXL } from "@/app/utils";
 
 export default function CreateCompanyRoot() {
@@ -123,7 +123,7 @@ export default function CreateCompanyRoot() {
                     <p className="py-5  text-2xl font-semibold">
                         Upload photo
                     </p>
-                    <FileUploader
+                    <PhotoUploader
                         uploadCroppedPhoto={
                             (blob: Blob) => {
                                 setLoading(true);

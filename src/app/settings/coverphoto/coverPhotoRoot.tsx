@@ -1,7 +1,7 @@
 "use client";
 
 import { endpoints } from "@/app/api/backend/endpoints";
-import FileUploader from "@/app/photoUploader";
+import PhotoUploader from "@/app/photoUploader";
 import { COVER_PHOTO_X_PXL, COVER_PHOTO_Y_PXL, Spinner } from "@/app/utils";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ export default function CoverPhotoRoot() {
     return (
         <div>
             {loading && <Spinner />}
-            <FileUploader
+            <PhotoUploader
                 uploadCroppedPhoto={uploadCroppedPhoto}
                 cancelUploadingCroppedPhoto={cancelUploadingCroppedPhoto}
                 xPixels={COVER_PHOTO_X_PXL}

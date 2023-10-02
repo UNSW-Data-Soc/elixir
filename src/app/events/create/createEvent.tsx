@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL, Spinner } from "@/app/utils";
 import { CreateEvent } from "@/app/api/backend/events";
 import { endpoints } from "@/app/api/backend/endpoints";
-import FileUploader from "@/app/photoUploader";
+import PhotoUploader from "@/app/photoUploader";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -180,7 +180,7 @@ export default function CreateEvent() {
                     <p className="py-5  text-2xl font-semibold">
                         Upload photo
                     </p>
-                    <FileUploader
+                    <PhotoUploader
                         uploadCroppedPhoto={
                             (blob: Blob) => {
                                 setLoading(true);
