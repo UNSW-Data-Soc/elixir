@@ -43,6 +43,8 @@ export const FYG_2021_LINK = "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPS
 export const FYG_2022_LINK = "https://drive.google.com/file/d/1tfqWGa1CUkUhNagho0dYeYMGXQscnke0/preview";
 export const FYG_2023_LINK = "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPSttzRIb5Cfg6z7H5/preview";
 
+export const DATASOC_REGISTRATION_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSfEJZ5-mx3yPrnI5ArorJripmcqRDfGSl2QJ-W1HZ7KKEsWHQ/viewform";
+
 export const CAREERS_GUIDE = "https://drive.google.com/file/d/1-y2Uv3YahnbM9O8Xp1knhRs2qTSDTBJ5/preview";
 
 export const NEWSLETTER_ARCHIVE_LINK = "https://us19.campaign-archive.com/home/?u=8dc568d0db37b26ed75ba4d94&id=01f8128da2";
