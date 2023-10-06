@@ -33,6 +33,13 @@ export const JOB_PHOTO_Y_PXL = 500;
 export const Event_PHOTO_X_PXL = 1000;
 export const Event_PHOTO_Y_PXL = 500;
 
+
+export const DATASOC_YOUTUBE_LINK = "https://www.youtube.com/channel/UC5xEG38_Jr0251sMBoj8xwQ";
+export const DATASOC_INSTAGRAM_LINK = "https://www.instagram.com/unswdatasoc/";
+export const DATASOC_LINKEDIN_LINK = "https://au.linkedin.com/company/datasoc";
+export const DATASOC_GITHUB_LINK = "https://github.com/UNSW-Data-Soc";
+export const DATASOC_FACEBOOK_LINK = "https://www.facebook.com/DataSoc/";
+
 export function Spinner() {
     return (
         <div className="fadeInOutSpinner z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center"></div>

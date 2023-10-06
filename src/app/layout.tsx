@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 import Navbar from "./navbar";
 import SessionProvider from "./NextAuthSession";
+import Footer from "./footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SessionProvider>
           <Toaster />
           <Navbar />
-          {children}
+          <div className="flex flex-col h-screen justify-between">
+            {children}
+            <Footer/>
+          </div>
         </SessionProvider>
       </body>
     </html>
