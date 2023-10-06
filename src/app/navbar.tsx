@@ -32,6 +32,7 @@ import {
 } from "@nextui-org/react";
 import { Avatar } from "@nextui-org/avatar";
 import { endpoints } from "./api/backend/endpoints";
+import { useState } from "react";
 
 const Navbar = () => {
   const router = useRouter();
@@ -96,6 +97,16 @@ const Navbar = () => {
             <span>Resources</span>
           </Link>
         </NavbarItem>
+        
+        <NavbarItem>
+          <PublicationsDropdown/>
+        </NavbarItem>
+        
+        <NavbarItem>
+          <Link href="/resources" className="">
+            <span>Resources</span>
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="end">
@@ -139,6 +150,28 @@ const Navbar = () => {
     </NextUINavbar>
   );
 };
+
+function PublicationsDropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  return (
+    <div onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+    <Dropdown isOpen={isOpen}>
+      <DropdownTrigger>
+      <Link href="/publications" className="">
+          <span>Publications</span>
+        </Link>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Static Actions">
+        <DropdownItem key="publications" onClick={() => router.push("/publications")}>Publications</DropdownItem>
+        <DropdownItem key="first-year-guide" onClick={() => router.push("/first-year-guide")}>First Year Guide</DropdownItem>
+        <DropdownItem key="careers-guide" onClick={() => router.push("/careers-guide")}>Careers Guide</DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+    </div>
+  )
+}
 
 function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
   const router = useRouter();

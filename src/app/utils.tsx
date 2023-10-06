@@ -33,12 +33,19 @@ export const JOB_PHOTO_Y_PXL = 500;
 export const Event_PHOTO_X_PXL = 1000;
 export const Event_PHOTO_Y_PXL = 500;
 
-
 export const DATASOC_YOUTUBE_LINK = "https://www.youtube.com/channel/UC5xEG38_Jr0251sMBoj8xwQ";
 export const DATASOC_INSTAGRAM_LINK = "https://www.instagram.com/unswdatasoc/";
 export const DATASOC_LINKEDIN_LINK = "https://au.linkedin.com/company/datasoc";
 export const DATASOC_GITHUB_LINK = "https://github.com/UNSW-Data-Soc";
 export const DATASOC_FACEBOOK_LINK = "https://www.facebook.com/DataSoc/";
+
+export const FYG_2021_LINK = "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPSttzRIb5Cfg6z7H5/preview";
+export const FYG_2022_LINK = "https://drive.google.com/file/d/1tfqWGa1CUkUhNagho0dYeYMGXQscnke0/preview";
+export const FYG_2023_LINK = "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPSttzRIb5Cfg6z7H5/preview";
+
+export const CAREERS_GUIDE = "https://drive.google.com/file/d/1-y2Uv3YahnbM9O8Xp1knhRs2qTSDTBJ5/preview";
+
+export const NEWSLETTER_ARCHIVE_LINK = "https://us19.campaign-archive.com/home/?u=8dc568d0db37b26ed75ba4d94&id=01f8128da2";
 
 export function Spinner() {
     return (
