@@ -71,7 +71,7 @@ export default function Home() {
     );
 }
 
-export function SocialIcons() {
+function SocialIcons() {
     return (
         <>
             <div className="text-[#b4b6b7] flex items-start justify-start align-baseline gap-3">
