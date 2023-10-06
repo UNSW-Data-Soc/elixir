@@ -1,6 +1,4 @@
-const FYG_2021_LINK = "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPSttzRIb5Cfg6z7H5/preview";
-const FYG_2022_LINK = "https://drive.google.com/file/d/1tfqWGa1CUkUhNagho0dYeYMGXQscnke0/preview";
-const FYG_2023_LINK = "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPSttzRIb5Cfg6z7H5/preview";
+import { FYG_2021_LINK, FYG_2022_LINK, FYG_2023_LINK } from "../utils";
 
 export default function FirstYearGuide() {
   return (
@@ -22,7 +20,7 @@ export default function FirstYearGuide() {
         </p>
       </header>
       <div className="flex items-center justify-center align-baseline p-6">
-        <iframe className="w-2/3 w-full h-screen" src={FYG_2023_LINK}/>
+        <iframe className="w-2/3 h-screen" src={FYG_2023_LINK}/>
       </div>
     </main>
   );

@@ -1,4 +1,4 @@
-const CAREERS_GUIDE = "https://drive.google.com/file/d/1-y2Uv3YahnbM9O8Xp1knhRs2qTSDTBJ5/preview";
+import { CAREERS_GUIDE } from "../utils";
 
 export default function CareersGuide() {
   return (
@@ -16,7 +16,7 @@ export default function CareersGuide() {
         </p>
       </header>
       <div className="flex items-center justify-center align-baseline p-6">
-        <iframe className="w-2/3 w-full h-screen" src={CAREERS_GUIDE}/>
+        <iframe className="w-2/3 h-screen" src={CAREERS_GUIDE}/>
       </div>
     </main>
   );
