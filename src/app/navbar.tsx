@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { logout } from "./api/auth/auth";
+import Image from "next/image";
 
 import {
   ArrowLeftOnRectangleIcon,
@@ -51,7 +52,14 @@ const Navbar = () => {
   return (
     <NextUINavbar isBordered>
       <NavbarBrand>
-        <p className="font-bold text-inherit">DataSoc</p>
+      <Link href="/" className="">
+        <Image
+            src="/logo.png"
+            width={100}
+            height={100}
+            alt="Picture of the author"
+        />
+      </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="start">
         <NavbarItem>
