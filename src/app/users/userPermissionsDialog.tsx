@@ -10,16 +10,23 @@ import { useRouter } from "next/navigation";
 import { Spinner } from "../utils";
 import { Tag } from "../api/backend/tags";
 import ModifyBearerTags from "../modifyBearerTags";
-import { Modal, ModalContent, ModalHeader, User as UserAvatar, Image, ModalBody, Divider, ModalFooter, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, User as UserAvatar, Image, ModalBody, Divider, ModalFooter, Button, Tooltip } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 export default function UserDialogueInfo(props: {
     isModalOpen: boolean,
     user: User;
     tags: Tag[],
     updateUser: (user: User) => void;
+    removeUser: (id: string) => void;
     closeModal: () => void;
 }) {
     const router = useRouter();
+    const session = useSession();
 
     const [accessLevel, setAccessLevel] = useState<userLevels>(
         props.user.access_level
@@ -30,6 +37,8 @@ export default function UserDialogueInfo(props: {
     >([]);
     const [retired, setRetired] = useState(props.user.retired);
     const [loading, setLoading] = useState(false);
+
+    const [showUserDeletionDialog, setShowUserDeletionDialog] = useState(false);
 
     useEffect(() => {
         async function getUserDetails() {
@@ -138,10 +147,85 @@ export default function UserDialogueInfo(props: {
         },
     ];
 
+    function DeleteUserConfirmationDialog() {
+        const registeredTime = dayjs(Date.parse(props.user.registration_time));
+
+        return (
+            <>
+                <Modal
+                isOpen={showUserDeletionDialog}
+                onOpenChange={() => setShowUserDeletionDialog(false)}
+            >
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">
+                                Are you sure?
+                                <small className="text-default-500">{`${props.user.name}`}</small>
+                                <small className="text-default-500">{`${props.user.email}`}</small>
+                                <Tooltip content={registeredTime.format('DD/MM/YYYY HH:mm')}>
+                                    <small className="text-default-500">{`Registered on ${registeredTime}`}</small>
+                                </Tooltip>
+                                {
+                                    props.user.years_active.length > 0 ?
+                                    <small className="text-red-500">Currently active in {`${props.user.years_active}`}</small> :
+                                    <small className="text-green-500">Not currently active across any years</small>
+                                }
+                            </ModalHeader>
+                            <ModalBody>
+                                <p>{`This action will permanently delete the user '${props.user.name}'`}</p>
+                                <p>
+                                    {`All blogs, events, job postings etc. created by this user will not be deleted, but the 'creator' field will may appear empty'.`}
+                                </p>
+                                <p>
+                                    {`The user will also be removed from the 'Our Team' page if they are active in any years.`}
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button
+                                    color="primary"
+                                    variant="light"
+                                    onPress={onClose}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="danger"
+                                    variant="light"
+                                    onPress={async () => {
+                                        try {
+                                            await endpoints.users.deleteAccount(
+                                                props.user.id
+                                            );
+                                            toast.success(
+                                                "Successfully deleted user"
+                                            );
+                                            props.removeUser(props.user.id);
+                                        } catch {
+                                            toast.error("Failed to delete user");
+                                        } finally {
+                                            onClose();
+                                        }
+                                    }}
+                                >
+                                    Confirm
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+            </>
+        )
+    };
+
     return (
         <>
             {loading && <Spinner />}
-            <Modal isOpen={props.isModalOpen} onOpenChange={() => props.closeModal()}>
+            <Modal
+                isOpen={props.isModalOpen}
+                onOpenChange={() => props.closeModal()}
+            >
                 <ModalContent>
                     {(onClose) => (
                         <>
@@ -151,7 +235,9 @@ export default function UserDialogueInfo(props: {
                                 description={props.user.email}
                                 avatarProps={{
                                     isBordered: true,
-                                    src: endpoints.users.getUserProfilePicture(props.user.id),
+                                    src: endpoints.users.getUserProfilePicture(
+                                        props.user.id
+                                    ),
                                     size: "lg",
                                     color: "success",
                                     showFallback: true,
@@ -159,7 +245,7 @@ export default function UserDialogueInfo(props: {
                             />
 
                             <ModalBody>
-                                <Divider/>
+                                <Divider />
                                 <div>
                                     <div className="flex flex-col gap-2 pb-3">
                                         <p className="text-2xl font-semibold py-5">
@@ -178,7 +264,9 @@ export default function UserDialogueInfo(props: {
                                             defaultValue={{
                                                 value: accessLevel,
                                                 label:
-                                                    accessLevel.charAt(0).toUpperCase() +
+                                                    accessLevel
+                                                        .charAt(0)
+                                                        .toUpperCase() +
                                                     accessLevel.slice(1),
                                                 isDisabled: true,
                                             }}
@@ -187,13 +275,19 @@ export default function UserDialogueInfo(props: {
                                             Years active
                                         </p>
                                         <CreatableSelect
-                                            components={{ DropdownIndicator: null }}
+                                            components={{
+                                                DropdownIndicator: null,
+                                            }}
                                             inputValue={year.toString()}
                                             isClearable
                                             isMulti
                                             menuIsOpen={false}
-                                            onChange={(newVal) => setYearsActive(newVal)}
-                                            onInputChange={(newVal) => setYear(newVal)}
+                                            onChange={(newVal) =>
+                                                setYearsActive(newVal)
+                                            }
+                                            onInputChange={(newVal) =>
+                                                setYear(newVal)
+                                            }
                                             onKeyDown={handleKeyDown}
                                             placeholder="Enter a year and press enter..."
                                             value={yearsActive}
@@ -217,21 +311,48 @@ export default function UserDialogueInfo(props: {
                                                 isDisabled: false,
                                             }}
                                         />
-                                        <p className="text-2xl font-semibold py-5">Portfolio</p>
+                                        <p className="text-2xl font-semibold py-5">
+                                            Portfolio
+                                        </p>
                                         <ModifyBearerTags
                                             bearer="portfolio"
                                             bearer_id={props.user.id}
                                             tagLimit={1}
-                                            initialOptionsFilter={ai => ai.bearer_id === props.user.id}
+                                            initialOptionsFilter={(ai) =>
+                                                ai.bearer_id === props.user.id
+                                            }
                                         />
+                                        {
+                                            session.data && props.user.id !== session.data.user.id &&
+                                            <Button
+                                                color="danger"
+                                                variant="ghost"
+                                                onPress={() =>
+                                                    setShowUserDeletionDialog(true)
+                                                }
+                                            >
+                                                Delete Account
+                                            </Button>
+                                        }
                                     </div>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="light" onPress={props.closeModal}>
+                                <Button
+                                    color="danger"
+                                    variant="light"
+                                    onPress={props.closeModal}
+                                >
                                     Cancel
                                 </Button>
-                                <Button color="primary" variant="light" onPress={() => {handleConfirm(); props.closeModal()}}>
+                                <Button
+                                    color="primary"
+                                    variant="light"
+                                    onPress={() => {
+                                        handleConfirm();
+                                        props.closeModal();
+                                    }}
+                                >
                                     Confirm
                                 </Button>
                             </ModalFooter>
@@ -239,6 +360,8 @@ export default function UserDialogueInfo(props: {
                     )}
                 </ModalContent>
             </Modal>
+            
+            <DeleteUserConfirmationDialog/>
         </>
     );
 }
