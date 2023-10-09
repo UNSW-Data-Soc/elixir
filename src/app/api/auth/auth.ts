@@ -23,12 +23,20 @@ interface Session {
   token_type: "bearer";
 }
 
+interface LoginFailure {
+  detail: string;
+}
+
 interface Jwt {
   id: string;
   exp: number;
   iat: number;
   nbf: string;
   access_level: userLevels;
+}
+
+function isInstanceOfLoginFailure(object: any): object is LoginFailure {
+  return 'detail' in object;
 }
 
 function parseJwt(token: string): Jwt {
@@ -55,7 +63,11 @@ export const login: (
   credentials: LoginCredentials
 ) => {
   try {
-    const session: Session = await endpoints.auth.login(credentials);
+    const session: Session | LoginFailure = await endpoints.auth.login(credentials);
+    
+    if(isInstanceOfLoginFailure(session)) {
+      throw new Error(session.detail);
+    }
 
     const decodedJwt: Jwt = parseJwt(session.access_token);
 
