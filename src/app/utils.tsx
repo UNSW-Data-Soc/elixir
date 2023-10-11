@@ -2,6 +2,8 @@ import { ChangeEvent } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
+const DEFAULT_ERROR_MESSAGE = "An error occurred";
+
 export const ALL_IMAGE_FILE_TYPES_STR =
     "image/png, image/jpg, image/gif, image/jpeg, image/webp, application/pdf, text/csv, text/plain";
 export const IMAGE_FILE_TYPES = [
@@ -108,4 +110,13 @@ export function FileUploadDropzone(props: {
             </label>
         </div>
     );
+}
+
+export function parseBackendError(err: Error) {
+    try {
+        let e = JSON.parse(err.message);
+        return e.detail;
+    } catch {
+        return DEFAULT_ERROR_MESSAGE;
+    }
 }

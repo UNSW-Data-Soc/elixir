@@ -10,6 +10,8 @@ import { TIPTAP_EXTENSIONS } from "../tiptapExtensions";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Blog } from "@/app/api/backend/blogs";
+import toast from "react-hot-toast";
+import { parseBackendError } from "@/app/utils";
 dayjs.extend(relativeTime);
 
 export default function BlogPage({ params }: { params: { slug: string } }) {
@@ -22,7 +24,13 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
   useEffect(() => {
     const getBlog = async () =>
       await endpoints.blogs.get({ slug, authRequired: session.status === "authenticated" });
-    getBlog().then((blog) => setBlog(blog));
+    
+    getBlog()
+      .then((blog) => setBlog(blog))
+      .catch((err) => {
+        toast.error(parseBackendError(err));
+        router.push("/");
+      });
   }, [session.status, slug]);
 
   if (!blog) return <></>;
