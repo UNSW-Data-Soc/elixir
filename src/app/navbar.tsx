@@ -101,12 +101,6 @@ const Navbar = () => {
         <NavbarItem>
           <PublicationsDropdown/>
         </NavbarItem>
-        
-        <NavbarItem>
-          <Link href="/resources" className="">
-            <span>Resources</span>
-          </Link>
-        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="end">
