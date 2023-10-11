@@ -98,7 +98,7 @@ export default function BlogCreate() {
   };
 
   return (
-    <main className="flex justify-center items-center fixed top-0 left-0 h-screen w-screen">
+    <main className="flex justify-center items-center top-0 left-0 h-screen w-screen">
       <div className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12 flex flex-col gap-3">
         <h1 className="text-3xl font-bold">Start working on a new blog!</h1>
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-2">
