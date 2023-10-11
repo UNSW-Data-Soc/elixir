@@ -129,6 +129,14 @@ async function getUsersByYears(year: Number): Promise<UserPublic[]> {
   })) as User[];
 };
 
+async function deleteAccount(id: string): Promise<{ id: string }> {
+  return await callFetch({
+    method: "DELETE",
+    route: `/user?id=${id}`,
+    authRequired: true,
+  });
+};
+
 
 export const users = {
   get,
@@ -141,4 +149,5 @@ export const users = {
   getUserProfilePicture,
   getYears,
   getUsersByYears,
+  deleteAccount,
 };

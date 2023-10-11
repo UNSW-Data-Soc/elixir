@@ -23,12 +23,13 @@ export default function UsersList() {
         const getData = async () => {
             let yearsData = await endpoints.users.getYears();
             yearsData = yearsData.sort().reverse();
-            let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
-            setYears(yearsData);
+            
             if(yearsData.length > 0) {
                 setSelectedYear(yearsData[0]);
+                let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
+                setYears(yearsData);
+                setUsers(usersData);
             }
-            setUsers(usersData);
             setLoading(false);
 
             // auth doesn't matter for 'portfolio'
@@ -100,30 +101,35 @@ export default function UsersList() {
                         </Tabs>
                     </div>
                     <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
-                        {users.sort(sortUsers).map((user) => (
-                            <>
-                                <Card isBlurred isPressable radius="lg" className="border-none" onPress={() =>{handleProfilePress(user)}}>
-                                    <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                                        <small className="text-default-500">{getUserPortfolio(user) || ZERO_WIDTH_SPACE}</small>
-                                        <h4 className="font-bold text-large">{user.name}</h4>
-                                    </CardHeader>
-                                    <CardBody className="overflow-visible py-2">
-                                        <Image
-                                            // fill
-                                            src={endpoints.users.getUserProfilePicture(
-                                                user.id
-                                            )}
-                                            alt="Profile picture"
-                                            className="object-cover rounded-xl"
-                                            // height={240}
-                                            height={300}
-                                            width={300}
-                                            // sizes="100vw"
-                                        />
-                                    </CardBody>
-                                </Card>
-                            </>
-                        ))}
+                        {
+                            users.length > 0 ?
+                            users.sort(sortUsers).map((user) => (
+                                <>
+                                    <Card isBlurred isPressable radius="lg" className="border-none" onPress={() =>{handleProfilePress(user)}}>
+                                        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                                            <small className="text-default-500">{getUserPortfolio(user) || ZERO_WIDTH_SPACE}</small>
+                                            <h4 className="font-bold text-large">{user.name}</h4>
+                                        </CardHeader>
+                                        <CardBody className="overflow-visible py-2">
+                                            <Image
+                                                // fill
+                                                src={endpoints.users.getUserProfilePicture(
+                                                    user.id
+                                                )}
+                                                alt="Profile picture"
+                                                className="object-cover rounded-xl"
+                                                // height={240}
+                                                height={300}
+                                                width={300}
+                                                // sizes="100vw"
+                                            />
+                                        </CardBody>
+                                    </Card>
+                                </>
+                            ))
+                            :
+                            <div> No team members yet :( </div>
+                    }
                     </div>
                     {currUserDisplay && <DisplayModal user={currUserDisplay} isOpen={displayUserAbout} portfolio={getUserPortfolio(currUserDisplay)} onOpenChange={handleProfileClose}/>}
                 </div>

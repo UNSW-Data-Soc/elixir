@@ -34,7 +34,7 @@ const LoginForm = () => {
       toast.error('Sign in error.');
       return;
     } else if (signInResponse.error) {
-      toast.error(signInResponse.error);
+      toast.error("Invalid credentials.");
       return;
     }
 

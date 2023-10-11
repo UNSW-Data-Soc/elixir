@@ -20,9 +20,10 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
 
   const [blog, setBlog] = useState<Blog | null>(null);
   useEffect(() => {
-    const getBlog = async () => await endpoints.blogs.get({ slug, authRequired: true });
+    const getBlog = async () =>
+      await endpoints.blogs.get({ slug, authRequired: session.status === "authenticated" });
     getBlog().then((blog) => setBlog(blog));
-  }, [slug]);
+  }, [session.status, slug]);
 
   if (!blog) return <></>;
 
