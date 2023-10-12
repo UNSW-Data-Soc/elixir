@@ -1,74 +1,83 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { MouseEvent } from "react";
+import { Button } from '@nextui-org/button';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from '@nextui-org/modal';
+import ModifyBearerTags from '../modifyBearerTags';
+import { Attachment, AttachmentInfo, Detachment } from '../api/backend/tags';
+import { Blog } from '../api/backend/blogs';
 
-import { Blog } from "../api/backend/blogs";
-import { endpoints } from "../api/backend/endpoints";
-import { toast } from "react-hot-toast";
+export default function BlogCardActions(props: {
+  blog: Blog;
+  updateAttachments: (
+    updatedAttachments: AttachmentInfo[],
+    to_attach: Attachment[],
+    to_detach: Detachment[]
+  ) => void;
+}) {
+  const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
 
-const BlogCardActions = (blog: Blog) => {
   const session = useSession();
   const router = useRouter();
 
-  if (!session || session.status === "unauthenticated") return <></>;
+  if (session.status !== 'authenticated' || !session.data.user.admin) {
+    return <></>;
+  }
 
   return (
-    <div className="flex flex-row gap-8">
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          router.push(`/blogs/editor?blogSlug=${blog.slug}`);
-        }}
-        className="text-blue-500 hover:underline"
+    <>
+      <Modal
+        isOpen={showModifyTagsDialogue}
+        onOpenChange={() => setShowModifyTagsDialogue(false)}
+        className='h-96'
       >
-        Edit
-      </button>
-      {!blog.public && (
-        <button
-          className="text-green-500"
-          onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            await endpoints.blogs.update({ ...blog, blogPublic: true });
-            toast.success(`Blog "${blog.title}" published!`);
-            setTimeout(() => router.refresh(), 1000);
-          }}
-        >
-          Publish
-        </button>
-      )}
-      {!!blog.public && (
-        <button
-          className="text-orange-500"
-          onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            await endpoints.blogs.update({ ...blog, blogPublic: false });
-            toast.success(`Blog "${blog.title}" unpublished!`);
-            setTimeout(() => router.refresh(), 1000);
-          }}
-        >
-          Unpublish
-        </button>
-      )}
-      <button
-        className="text-red-500"
-        onClick={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          // TODO: add confirmation box
-          await endpoints.blogs.deleteBlog({ id: blog.id });
-          toast.success(`Blog "${blog.title}" deleted!`);
-          setTimeout(() => router.refresh(), 1000);
-        }}
-      >
-        Delete
-      </button>
-    </div>
-  );
-};
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className='flex flex-col gap-1'>
+                Edit tags
+                <small className='text-default-500'>
+                  Add or remove tags from this blog
+                </small>
+              </ModalHeader>
+              <ModalBody>
+                <ModifyBearerTags
+                  bearer='blog'
+                  bearer_id={props.blog.id}
+                  initialOptionsFilter={(ai) => ai.bearer_id === props.blog.id}
+                  updateAttachments={props.updateAttachments}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color='success' variant='light' onPress={onClose}>
+                  Done
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
 
-export default BlogCardActions;
+      <div className='flex items-center justify-between align-baseline'>
+        <Button
+          color='warning'
+          radius='full'
+          variant='light'
+          onClick={() => {
+            setShowModifyTagsDialogue(true);
+          }}
+        >
+          Edit Tags
+        </Button>
+      </div>
+    </>
+  );
+}
