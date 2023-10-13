@@ -221,7 +221,6 @@ function SponsorshipCard(props: {
                     style={{ cursor: "pointer" }}
                     height={300}
                     width={300}
-                    isZoomed
                     onClick={() => {
                         setShowcompanyDescription(true);
                     }}
