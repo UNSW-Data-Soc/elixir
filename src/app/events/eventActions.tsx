@@ -15,9 +15,10 @@ import {
 import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
 
-export default function EventActions(props: {
+export default function EventActionsModal(props: {
     event: Event;
     handleDeletion: (id: string) => void;
+    handleEventUpdate: (updatedBlog: Event) => void;
 }) {
     const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
@@ -56,6 +57,7 @@ export default function EventActions(props: {
                 toast.success(`Resource ${actionPubUnpub} successfully!`);
                 let updatedEvent = props.event;
                 updatedEvent.public = !props.event.public;
+                props.handleEventUpdate(updatedEvent);
             })
             .catch(() => {
                 toast.error(`Failed to ${actionPubUnpubPresent} event`);

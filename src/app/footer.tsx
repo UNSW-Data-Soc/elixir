@@ -17,7 +17,7 @@ const SOCIAL_WIDTH = 25;
 export default function Footer() {
     return (
         <>
-            <div className="mt-12 pl-3 sm:pl-24 pr-3 sm:pr-24 pt-12 pb-12 sm:pl-96 sm:pr-96 sm:pt-24 sm:pb-24 flex items-start justify-between align-baseline gap-6 flex-wrap bg-[#f1f1f1]">
+            <div className="mt-12 pl-3 md:pl-24 pr-3 md:pr-24 pt-12 pb-12 flex items-start justify-between align-baseline gap-6 flex-wrap bg-[#f1f1f1]">
                 <div className="text-[#b4b6b7] text-sm italic flex flex-col items-start justify-start align-start gap-6 sm:w-2/5">
                     <Image
                         src="/logo.png"

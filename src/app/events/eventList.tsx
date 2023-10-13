@@ -23,7 +23,7 @@ import {
 } from "@nextui-org/react";
 
 import { Event } from "../api/backend/events";
-import EventActions from "./eventActions";
+import EventActionsModal from "./eventActions";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -92,6 +92,20 @@ export default function EventList() {
         setEvents(updatedEvents);
     }
 
+    async function handleEventUpdate(updatedEvent: Event) {
+        let updatedEvents: Event[] = [];
+
+        for (let e of events) {
+            if (e.id === updatedEvent.id) {
+                updatedEvents.push({ ...updatedEvent });
+            } else {
+                updatedEvents.push(e);
+            }
+        }
+
+        setEvents(updatedEvents);
+    }
+
     if (session.status === "unauthenticated" && events.length === 0) {
         return (
             <div className="h-full flex justify-center items-center p-10">
@@ -107,6 +121,7 @@ export default function EventList() {
                     key={event.id}
                     event={event}
                     handleDeletion={handleDeletion}
+                    handleEventUpdate={handleEventUpdate}
                 />
             ))}
         </>
@@ -116,19 +131,16 @@ export default function EventList() {
 function EventsCard(props: {
     event: Event;
     handleDeletion: (id: string) => void;
+    handleEventUpdate: (updatedBlog: Event) => void;
 }) {
     const [showEventDescription, setShowEventDescription] = useState(false);
 
     const startTime = dayjs(Date.parse(props.event.start_date));
     const endTime = dayjs(Date.parse(props.event.end_date));
-    const expirationPassed = endTime.isAfter(Date.now());
+    const inFuture = endTime.isAfter(Date.now());
 
     function getEventCardStyle(e: Event): CSSProperties {
-        const expirationPassed = dayjs(Date.parse(e.end_date)).isAfter(
-            Date.now()
-        );
-
-        return expirationPassed
+        return props.event.public && inFuture
             ? {}
             : {
                   opacity: 0.5,
@@ -154,13 +166,13 @@ function EventsCard(props: {
                         </Link>
                         <Tooltip
                             content={
-                                expirationPassed
+                                inFuture
                                     ? startTime.format("DD/MM/YYYY HH:mm")
                                     : endTime.format("DD/MM/YYYY HH:mm")
                             }
                         >
                             <p className="italic">
-                                {expirationPassed
+                                {inFuture
                                     ? `Starts ${startTime.fromNow()}`
                                     : `Ended ${endTime.toNow(true)} ago`}
                             </p>
@@ -181,9 +193,10 @@ function EventsCard(props: {
                     />
                 </CardBody>
                 <CardFooter className="flex items-center justify-center align-baseline">
-                    <EventActions
+                    <EventActionsModal
                         handleDeletion={props.handleDeletion}
                         event={props.event}
+                        handleEventUpdate={props.handleEventUpdate}
                     />
                 </CardFooter>
             </Card>
