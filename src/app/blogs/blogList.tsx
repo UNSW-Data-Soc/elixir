@@ -200,7 +200,6 @@ function BlogCard(props: {
     ) => void;
     handleBlogUpdate: (updatedBlog: Blog) => void;
 }) {
-    const [filteredTags, setFilteredTags] = useState<TagReferences[]>([]);
     const [author, setAuthor] = useState("");
     const router = useRouter();
 
@@ -216,9 +215,8 @@ function BlogCard(props: {
         async function getDetails() {
             let user = await endpoints.users.get(props.blog.creator);
             setAuthor(user.name);
-            setFilteredTags(filterTagReferences());
         }
-
+        
         getDetails();
     }, [props.tagReferences, props.blog]);
 
@@ -286,7 +284,17 @@ function BlogCard(props: {
                     <TagReferencesList
                         styleLarge={false}
                         showEditingTools={false}
-                        tagReferences={filteredTags}
+                        tagReferences={
+                            // only show tags related to this particular blog
+                            props.tagReferences.filter(r => {
+                                for(let i of r.blog) {
+                                    if(i[0] === props.blog.id) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            })
+                        }
                     />
                 </CardFooter>
                 <div className="flex items-center justify-center align-baseline">
