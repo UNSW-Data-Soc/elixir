@@ -26,6 +26,7 @@ import {
 } from "../api/backend/tags";
 import BlogCardActions from "./blogCardActions";
 import BlogActionsModal from "./blogActionsModal";
+import { Spinner } from "../utils";
 
 dayjs.extend(relativeTime);
 
@@ -36,6 +37,8 @@ export default function BlogsList() {
 
     const [attachments, setAttachments] = useState<AttachmentInfo[]>([]);
     const [tagReferences, setTagReferences] = useState<TagReferences[]>([]);
+
+    const[loading, setLoading] = useState(true);
 
     async function getData() {
         let blogsAll: Blog[] = [];
@@ -57,6 +60,8 @@ export default function BlogsList() {
             setTagReferences(references_all);
         } catch {
             return toast.error("Failed to retrieve blogs");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -161,16 +166,18 @@ export default function BlogsList() {
         return (
             <>
                 <div className="flex items-stretch justify-center align-baseline gap-3 flex-wrap">
-                    {blogs.map((b) => (
-                        <BlogCard
-                            key={b.id}
-                            blog={b}
-                            handleBlogDeletion={handleBlogDeletion}
-                            tagReferences={tagReferences}
-                            updateAttachments={updateAttachments}
-                            handleBlogUpdate={handleBlogUpdate}
-                        />
-                    ))}
+                    {
+                        blogs.map((b) => (
+                            <BlogCard
+                                key={b.id}
+                                blog={b}
+                                handleBlogDeletion={handleBlogDeletion}
+                                tagReferences={tagReferences}
+                                updateAttachments={updateAttachments}
+                                handleBlogUpdate={handleBlogUpdate}
+                            />
+                        ))
+                    }
                 </div>
             </>
         );
@@ -179,11 +186,13 @@ export default function BlogsList() {
     return (
         <>
             <div className="flex flex-col items-center justify-center align-baseline gap-3">
-                {blogs.length > 0 ? (
-                    allBlogs()
-                ) : (
+                {
+                    loading ? <Spinner/> : allBlogs()
+                }
+                {
+                    !loading && blogs.length == 0 &&
                     <div>We will have more blogs coming soon, stay tuned!</div>
-                )}
+                }
             </div>
         </>
     );

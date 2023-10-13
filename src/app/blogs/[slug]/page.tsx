@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Blog } from "@/app/api/backend/blogs";
 import toast from "react-hot-toast";
-import { parseBackendError } from "@/app/utils";
+import { Spinner, parseBackendError } from "@/app/utils";
 dayjs.extend(relativeTime);
 
 export default function BlogPage({ params }: { params: { slug: string } }) {
@@ -21,6 +21,8 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
   const slug = params.slug;
 
   const [blog, setBlog] = useState<Blog | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const getBlog = async () =>
       await endpoints.blogs.get({ slug, authRequired: session.status === "authenticated" });
@@ -30,6 +32,9 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
       .catch((err) => {
         toast.error(parseBackendError(err));
         router.push("/");
+      })
+      .finally( () =>  {
+        setLoading(false);
       });
   }, [session.status, slug]);
 
@@ -46,17 +51,23 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
 
   return (
     <main className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12">
-      <header className="flex flex-col gap-4">
-        <h1 className="text-6xl font-light tracking-tighter">{blog.title}</h1>
-        <p className="text-[#555] text-xl font-light">
-          Written by <span className="italic">{blog.author}</span>
-        </p>
-        <div className="flex flex-row w-full justify-between">
-          <p className="text-[#555] italic">Published {createdDate}</p>
-          <p className="text-[#555] italic">Edited {editedDate}</p>
-        </div>
-      </header>
-      <div dangerouslySetInnerHTML={{ __html: content }} className="pt-8"></div>
+      {
+        loading ? <Spinner/> : (
+          <>
+            <header className="flex flex-col gap-4">
+            <h1 className="text-6xl font-light tracking-tighter">{blog.title}</h1>
+            <p className="text-[#555] text-xl font-light">
+              Written by <span className="italic">{blog.author}</span>
+            </p>
+            <div className="flex flex-row w-full justify-between">
+              <p className="text-[#555] italic">Published {createdDate}</p>
+              <p className="text-[#555] italic">Edited {editedDate}</p>
+            </div>
+          </header>
+          <div dangerouslySetInnerHTML={{ __html: content }} className="pt-8"></div>
+          </>
+        )
+      }
     </main>
   );
 }
