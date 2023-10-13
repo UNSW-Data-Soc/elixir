@@ -220,24 +220,13 @@ function BlogCard(props: {
         getDetails();
     }, [props.tagReferences, props.blog]);
 
-    function filterTagReferences() {
-        return props.tagReferences.filter((r) => {
-            for (let i of r.blog) {
-                if (i[0] === props.blog.id) {
-                    return true;
-                }
-            }
-            return false;
-        });
-    }
-
     const editedDate = dayjs(Date.parse(props.blog.last_edit_time));
 
     return (
         <>
             <Card className="py-4 w-96" style={getBlogCardStyle(props.blog)}>
                 <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny uppercase font-bold">
+                    <p className="text-lg font-bold">
                         {props.blog.title}
                     </p>
                     <small className="text-default-500">
