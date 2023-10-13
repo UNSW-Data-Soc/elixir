@@ -1,8 +1,25 @@
 import { ChangeEvent } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
-export const ALL_IMAGE_FILE_TYPES = "image/png, image/jpg, image/gif, image/jpeg, image/webp";
-export const IMAGE_FILE_TYPES = ["image/png", "image/jpg", "image/gif", "image/jpeg", "image/webp"];
+export const ALL_IMAGE_FILE_TYPES_STR =
+    "image/png, image/jpg, image/gif, image/jpeg, image/webp, application/pdf, text/csv, text/plain";
+export const IMAGE_FILE_TYPES = [
+    "image/png",
+    "image/jpg",
+    "image/gif",
+    "image/jpeg",
+    "image/webp",
+];
+export const RESOURCE_FILE_TYPES = [
+    "application/pdf",
+    "text/csv",
+    "text/plain",
+];
+
+export const MAX_ALLOWABLE_IMAGE_FILE_SIZE = 3e6; // 3MB
+export const MAX_ALLOWABLE_RESOURCE_FILE_SIZE = 10e6; // 10MB
+
 export const ZERO_WIDTH_SPACE = <span> &#8203; </span>;
 
 export const COVER_PHOTO_X_PXL = 1920;
@@ -18,13 +35,15 @@ export const Event_PHOTO_Y_PXL = 500;
 
 export function Spinner() {
     return (
-        <div className="fadeInOutSpinner z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center">
-        </div>
+        <div className="fadeInOutSpinner z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center"></div>
     );
 }
 
 // https://flowbite.com/docs/forms/file-input/
-export function FileUploadDropzone(props: {handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void}) {
+export function FileUploadDropzone(props: {
+    handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    allowLargerFileSize?: number;
+}) {
     return (
         <div className="flex items-center justify-center w-full">
             <label
@@ -56,8 +75,19 @@ export function FileUploadDropzone(props: {handleFileChange: (event: ChangeEvent
                     id="dropzone-file"
                     className="hidden"
                     type="file"
-                    accept={ALL_IMAGE_FILE_TYPES}
-                    onChange={props.handleFileChange}
+                    accept={ALL_IMAGE_FILE_TYPES_STR}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        let files = event.target.files;
+                        if (files) {
+                            let file_size = files[0].size;
+                            
+                            if(file_size > MAX_ALLOWABLE_IMAGE_FILE_SIZE || (props.allowLargerFileSize && file_size > props.allowLargerFileSize)) {
+                                return toast.error(`File size too large!`);
+                            }
+                        }
+
+                        props.handleFileChange(event);
+                    }}
                 />
             </label>
         </div>

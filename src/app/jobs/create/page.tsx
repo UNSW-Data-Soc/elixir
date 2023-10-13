@@ -13,7 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import dayjs from "dayjs";
 import { CreateJob } from "@/app/api/backend/jobs";
-import FileUploader from "@/app/photoUploader";
+import PhotoUploader from "@/app/photoUploader";
 
 export default function CreateJob() {
     const router = useRouter();
@@ -191,7 +191,7 @@ export default function CreateJob() {
                     />
 
                     <p className="py-5  text-2xl font-semibold">Upload photo</p>
-                    <FileUploader
+                    <PhotoUploader
                         uploadCroppedPhoto={
                             (blob: Blob) => {
                                 setLoading(true);
