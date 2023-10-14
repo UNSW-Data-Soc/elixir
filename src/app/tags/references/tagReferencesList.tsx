@@ -13,6 +13,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  ScrollShadow,
   Tab,
   Tabs,
 } from '@nextui-org/react';
@@ -199,12 +200,21 @@ function TagInfoModal(props: {
                     {(item) => <Tab key={item.id} title={item.label} />}
                   </Tabs>
                   <div className='flex flex-row m-3 gap-3 flex-wrap item-center justify-center align-baseline'>
+                  <ScrollShadow className="p-9 h-[400px]">
                     {activeTab &&
                       props.reference[activeTab].map((r) => (
-                        <Button key={r[0]} color='default' onPress={() => {}}>
-                          {r[1]}
-                        </Button>
+                        <>
+                          <div
+                            key={r[0]}
+                            color='default'
+                            className='p-3 flex flex-row max-w-xs flex-wrap item-center justify-center align-baseline'
+                          >
+                            {r[1]}
+                          </div>
+                          <Divider/>
+                        </>
                       ))}
+                    </ScrollShadow>
                   </div>
                 </div>
                 <Divider />

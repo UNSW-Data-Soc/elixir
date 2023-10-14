@@ -5,9 +5,16 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FileUploadDropzone, Spinner, IMAGE_FILE_TYPES } from "@/app/utils";
+import {
+    FileUploadDropzone,
+    Spinner,
+    IMAGE_FILE_TYPES,
+    RESOURCE_FILE_TYPES,
+    MAX_ALLOWABLE_RESOURCE_FILE_SIZE,
+} from "@/app/utils";
 import { CreateResource } from "@/app/api/backend/resources";
-
+import { Tooltip } from "@nextui-org/react";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 const ABOUT_YOU_CHAR_LIMIT = 200;
 
 export default function CreateResource() {
@@ -37,6 +44,8 @@ export default function CreateResource() {
             return toast.error("Invalid link!");
         } else if (resourceTypeFile && !file) {
             return toast.error("Please upload a file!");
+        } else if(title === "" || description === "") {
+            return toast.error("Please ensure all fields are non-empty!")
         }
 
         let resource: CreateResource = {
@@ -67,7 +76,11 @@ export default function CreateResource() {
     async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         let files = event.target.files;
         setLoading(true);
-        if (files && IMAGE_FILE_TYPES.includes(files[0].type)) {
+        if (
+            files &&
+            (IMAGE_FILE_TYPES.includes(files[0].type) ||
+                RESOURCE_FILE_TYPES.includes(files[0].type))
+        ) {
             let blob = files[0];
             setFile(blob);
         } else {
@@ -141,22 +154,38 @@ export default function CreateResource() {
                         <p className="py-5  text-2xl font-semibold">
                             Upload file
                         </p>
+                        <Tooltip
+                            content={
+                                "Link an existing resource OR upload an image, pdf, csv or plain text file"
+                            }
+                        >
+                            <QuestionMarkCircleIcon className="flex items-center justify-center align-baseline w-5" />
+                        </Tooltip>
                     </div>
 
-                    {resourceTypeFile ? (
+                    {resourceTypeFile && file === null && (
                         <FileUploadDropzone
                             handleFileChange={handleFileChange}
+                            allowLargerFileSize={MAX_ALLOWABLE_RESOURCE_FILE_SIZE}
                         />
-                    ) : (
+                    )}
+                    {
+                        resourceTypeFile && file !== null &&
+                        <div className="flex item-center justify-center align-baseline outline outline-2 p-3 m-3">
+                            <p>{file?.name}</p>
+                        </div>
+                    }
+
+                    {!resourceTypeFile && (
                         <input
-                            className="py-3 px-4 border-2 rounded-xl transition-all"
-                            type="text"
-                            placeholder="Add a link.."
-                            value={link}
-                            onChange={(e) => {
-                                setLink(e.target.value);
-                            }}
-                        />
+                        className="py-3 px-4 border-2 rounded-xl transition-all"
+                        type="text"
+                        placeholder="Add a link.."
+                        value={link}
+                        onChange={(e) => {
+                            setLink(e.target.value);
+                        }}
+                    />
                     )}
 
                     <div className="flex gap-5 mr-8 mt-8 mb-8 items-center">

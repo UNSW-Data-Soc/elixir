@@ -1,5 +1,6 @@
 import { auth } from "./auth";
 import { blogs } from "./blogs";
+import { events } from "./events";
 import { tags } from "./tags";
 import { users } from "./users";
 import { resources } from "./resources";
@@ -40,8 +41,15 @@ export const callFetch = async (
 
   if (!res.ok) {
     if (res.status === 401) {
-      await signOut();
-      redirect("/auth/login");
+      if(route === "/login" || route === "/register") {
+        // can't remove token if it doesn't exist
+        return await res.json();
+      }
+      if(session && session.user.token) {
+        await signOut();
+        return redirect("/auth/login");
+      }
+      
     }
     const err = await res.text();
     throw new Error(err);
@@ -60,4 +68,5 @@ export const endpoints = {
   companies,
   sponsorships,
   jobs,
+  events,
 };

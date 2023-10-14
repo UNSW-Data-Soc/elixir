@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { logout } from './api/auth/auth';
+import Image from "next/image";
 
 import {
   ArrowLeftOnRectangleIcon,
@@ -33,8 +34,9 @@ import {
   Link,
   Button,
   NavbarMenuToggle,
+  Avatar,
 } from '@nextui-org/react';
-import { Avatar } from '@nextui-org/avatar';
+import { useState } from 'react';
 import { endpoints } from './api/backend/endpoints';
 
 const Navbar = () => {
@@ -55,7 +57,14 @@ const Navbar = () => {
   return (
     <NextUINavbar isBordered>
       <NavbarBrand>
-        <p className='font-bold text-inherit'>DataSoc</p>
+      <Link href="/" className="">
+        <Image
+            src="/logo.png"
+            width={100}
+            height={100}
+            alt="Picture of the author"
+        />
+      </Link>
       </NavbarBrand>
       <NavbarContent className='hidden sm:flex gap-4' justify='start'>
         <NavbarItem>
@@ -97,6 +106,10 @@ const Navbar = () => {
           <Link href='/resources' className=''>
             <span>Resources</span>
           </Link>
+        </NavbarItem>
+        
+        <NavbarItem>
+          <PublicationsDropdown/>
         </NavbarItem>
       </NavbarContent>
 
@@ -147,6 +160,28 @@ const Navbar = () => {
     </NextUINavbar>
   );
 };
+
+function PublicationsDropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  return (
+    <div onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+    <Dropdown isOpen={isOpen}>
+      <DropdownTrigger>
+      <Link href="/publications" className="">
+          <span>Publications</span>
+        </Link>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Static Actions">
+        <DropdownItem key="publications" onClick={() => router.push("/publications")}>Publications</DropdownItem>
+        <DropdownItem key="first-year-guide" onClick={() => router.push("/first-year-guide")}>First Year Guide</DropdownItem>
+        <DropdownItem key="careers-guide" onClick={() => router.push("/careers-guide")}>Careers Guide</DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+    </div>
+  )
+}
 
 function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
   const router = useRouter();

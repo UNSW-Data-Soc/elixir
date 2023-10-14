@@ -6,7 +6,7 @@ import { Card } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function BlogsAddCard() {
+export default function EventAddCard() {
   const session = useSession();
   const router = useRouter();
 
@@ -15,10 +15,10 @@ export default function BlogsAddCard() {
       <>
         <Card
           isPressable
-          className='border-[1px] border-black p-5 flex justify-center items-center sm:w-4/12'
-          onPress={() => router.push('/blogs/create')}
+          className="border-[1px] border-black p-5 flex justify-center items-center sm:w-4/12"
+          onPress={() => router.push("/events/create")}
         >
-          <PlusIcon className='h-8 w-8' />
+          <PlusIcon className="h-8 w-8" />
         </Card>
       </>
     );

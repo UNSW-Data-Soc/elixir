@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { PROFILE_PIC_X_PXL, PROFILE_PIC_Y_PXL, Spinner } from "@/app/utils";
-import FileUploader from "../../photoUploader";
+import PhotoUploader from "../../photoUploader";
 
 const ABOUT_YOU_CHAR_LIMIT = 200;
 
@@ -176,7 +176,7 @@ export default function ProfileManager(props: { user_id: string }) {
                         Profile picture
                     </p>
 
-                    <FileUploader
+                    <PhotoUploader
                         uploadCroppedPhoto={uploadCroppedPhoto}
                         cancelUploadingCroppedPhoto={
                             cancelUploadingCroppedPhoto

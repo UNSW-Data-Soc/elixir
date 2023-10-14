@@ -216,7 +216,6 @@ function JobCard(props: {
   ) => void;
 }) {
   const [showcompanyDescription, setShowcompanyDescription] = useState(false);
-  const [filteredTags, setFilteredTags] = useState<TagReferences[]>([]);
 
   function getJobCardStyle(j: Job): CSSProperties {
     const expirationPassed = dayjs(Date.parse(j.expiration_time)).isAfter(
@@ -228,21 +227,6 @@ function JobCard(props: {
       : {
           opacity: 0.5,
         };
-  }
-
-  useEffect(() => {
-    setFilteredTags(filterTagReferences());
-  }, [props.tagReferences]);
-
-  function filterTagReferences() {
-    return props.tagReferences.filter((r) => {
-      for (let i of r.job) {
-        if (i[0] === props.job.id) {
-          return true;
-        }
-      }
-      return false;
-    });
   }
 
   return (
@@ -276,7 +260,17 @@ function JobCard(props: {
           <TagReferencesList
             styleLarge={false}
             showEditingTools={false}
-            tagReferences={filteredTags}
+            tagReferences={
+               // only show tags related to this particular job
+               props.tagReferences.filter(r => {
+                for(let i of r.job) {
+                    if(i[0] === props.job.id) {
+                        return true;
+                    }
+                }
+                return false;
+            })
+            }
           />
         </CardFooter>
         <JobActions

@@ -10,7 +10,7 @@ export interface Crop {
     height: number;
 }
 
-export default function FileUploader(props: {
+export default function PhotoUploader(props: {
     xPixels: number;
     yPixels: number;
     uploadCroppedPhoto: (blob: Blob) => void;
