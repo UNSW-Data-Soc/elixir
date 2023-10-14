@@ -38,6 +38,7 @@ import {
 } from '@nextui-org/react';
 import { useState } from 'react';
 import { endpoints } from './api/backend/endpoints';
+import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from './utils';
 
 const Navbar = () => {
   const router = useRouter();
@@ -73,14 +74,7 @@ const Navbar = () => {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link href='/about' className=''>
-            <span>About</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href='/about/team' className=''>
-            <span>Our Team</span>
-          </Link>
+          <AboutUsDropdown/>
         </NavbarItem>
         <NavbarItem>
           <Link href='/sponsorships' className=''>
@@ -94,7 +88,7 @@ const Navbar = () => {
         </NavbarItem>
         <NavbarItem>
           <Link href='/jobs' className=''>
-            <span>Jobs</span>
+            <span>Jobs Board</span>
           </Link>
         </NavbarItem>
         <NavbarItem>
@@ -160,6 +154,29 @@ const Navbar = () => {
     </NextUINavbar>
   );
 };
+
+function AboutUsDropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  return (
+    <div onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+    <Dropdown isOpen={isOpen}>
+      <DropdownTrigger>
+      <Link href="/about" className="">
+          <span>About Us</span>
+        </Link>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Static Actions">
+        <DropdownItem key="about-us" onClick={() => router.push("/about")}>About Us</DropdownItem>
+        <DropdownItem key="our-team" onClick={() => router.push("/about/team")}>Our Team</DropdownItem>
+        <DropdownItem key="careers-guide" onClick={() => router.push(DATASOC_CONSTITUION_LINK)}>Our Constitution</DropdownItem>
+        <DropdownItem key="careers-guide" onClick={() => router.push(DATASOC_SPARC_LINK)}>SpArc</DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+    </div>
+  )
+}
 
 function PublicationsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
