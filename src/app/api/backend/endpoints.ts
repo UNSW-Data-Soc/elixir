@@ -9,7 +9,6 @@ import { getSession, signOut } from "next-auth/react";
 import { companies } from "./companies";
 import { sponsorships } from "./sponsorships";
 import { jobs } from "./jobs";
-import { getToken } from "next-auth/jwt";
 import { redirect } from "next/navigation";
 
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -32,8 +31,7 @@ export const callFetch = async (
   }: FetchArguments,
   setContentType = true
 ) => {
-  const session = await getSession();
-
+  
   const headers: HeadersInit = setContentType ? { "Content-Type": contentType } : {};
   if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
 
@@ -46,7 +44,7 @@ export const callFetch = async (
     }
     const err = await res.text();
     throw new Error(err);
-  }
+  }  
 
   return await res.json();
 };
