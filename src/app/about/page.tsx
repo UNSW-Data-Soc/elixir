@@ -75,7 +75,7 @@ export default function About() {
               alt='Graphic Design'
             />
             <p>
-              We aim to enrich students' lives with a sense of community and
+              We aim to enrich students&apos; lives with a sense of community and
               diversity among UNSW data science students. We host a list of
               various social activities such as BBQs, competitions, etc. that
               welcome everyone to attend and meet like minded people.
@@ -100,7 +100,7 @@ export default function About() {
           career progression in data science.
         </p>
         <h2 className='text-3xl font-semibold text-center mt-12'>
-          "Opportunities don't happen. You create them."
+          &quot;Opportunities don&apos;t happen. You create them.&quot;
         </h2>
         <h1 className='text-5xl font-semibold mt-20 mb-8'>Our Values</h1>
         <p className='mb-10'>
@@ -154,10 +154,10 @@ export default function About() {
               <strong>Be the best at what you do</strong>
               <p>
                 What distinguishes DataSoc members from others, despite having
-                all different areas and expertise? It's the passion that we
+                all different areas and expertise? It&apos;s the passion that we
                 bring to everything we do. We approach every task with
                 confidence, seize all opportunities and never settle for
-                "acceptable".
+                &quot;acceptable&quot;.
               </p>
             </div>
           </li>
@@ -231,7 +231,7 @@ export default function About() {
             </h3>
             <p>
               DataSoc celebrates 1000 likes and 1000+ follows on Facebook! This
-              month also marks the beginning of DataSoc's Weekly Data
+              month also marks the beginning of DataSoc&apos;s Weekly Data
               Discoveries tradition that continues to this day in our
               newsletters!
             </p>
@@ -246,7 +246,7 @@ export default function About() {
             </h3>
             <p>
               As we celebrate 2000 likes on Facebook, we hosted our first ever
-              international datathon in conjunction with Tsinghua University's
+              international datathon in conjunction with Tsinghua University&apos;s
               Institute of Data Science!
             </p>
           </VerticalTimelineElement>
@@ -259,7 +259,7 @@ export default function About() {
               March, 2020
             </h3>
             <p>
-              DataSoc's website undergoes a modern transformation as we double
+              DataSoc&apos;s website undergoes a modern transformation as we double
               our subcommitee team.
             </p>
           </VerticalTimelineElement>
