@@ -145,6 +145,7 @@ export default function BlogsList() {
     return (
       <>
         <div className="flex items-stretch justify-center align-baseline gap-3 flex-wrap">
+          {/* TODO: sort these? */}
           {blogs.map((b) => (
             <BlogCard
               key={b.id}
@@ -190,7 +191,7 @@ function BlogCard(props: {
     return b.public
       ? {}
       : {
-          opacity: 0.4,
+          opacity: 0.5,
         };
   }
 
@@ -208,7 +209,7 @@ function BlogCard(props: {
   return (
     <>
       <Card
-        className="max-w-sm"
+        className="min-w-[20rem] sm:w-96 aspect-[16/9]"
         style={getBlogCardStyle(props.blog)}
         isPressable
         onPress={() => {
@@ -217,11 +218,11 @@ function BlogCard(props: {
       >
         <Image
           removeWrapper
-          alt="Card background"
+          alt="blog post hero image"
           className="z-0 w-full h-full object-cover"
-          src="/kentosoc.jpeg"
+          src="/bulletin_board.png" // TODO: change this
         />
-        <CardFooter className="absolute pt-3 px-5 flex gap-1 flex-col items-start w-full bottom-0 bg-[#fffa] ">
+        <CardFooter className="absolute pt-3 px-5 flex gap-1 flex-col items-start w-full bottom-0 bg-[#fffc]">
           <div className="flex flex-col items-start w-full">
             <p className="text-lg font-bold">{props.blog.title}</p>
             <div className="flex justify-between w-full">
@@ -233,21 +234,23 @@ function BlogCard(props: {
           </Tooltip> */}
               <small className="text-default-500">{editedDate.fromNow()}</small>
             </div>
-            <TagReferencesList
-              styleLarge={false}
-              showEditingTools={false}
-              tagReferences={
-                // only show tags related to this particular blog
-                props.tagReferences.filter((r) => {
-                  for (let i of r.blog) {
-                    if (i[0] === props.blog.id) {
-                      return true;
+            <div className="pt-2">
+              <TagReferencesList
+                styleLarge={false}
+                showEditingTools={false}
+                tagReferences={
+                  // only show tags related to this particular blog
+                  props.tagReferences.filter((r) => {
+                    for (let i of r.blog) {
+                      if (i[0] === props.blog.id) {
+                        return true;
+                      }
                     }
-                  }
-                  return false;
-                })
-              }
-            />
+                    return false;
+                  })
+                }
+              />
+            </div>
           </div>
           <div className="flex items-center justify-center align-baseline w-full">
             <BlogCardActions blog={props.blog} updateAttachments={props.updateAttachments} />
