@@ -15,7 +15,7 @@ export default function BlogsAddCard() {
       <>
         <Card
           isPressable
-          className="border-[1px] border-black p-5 flex justify-center items-center max-w-sm min-w-[24rem]"
+          className="flex aspect-[16/9] min-w-[20rem] items-center justify-center p-5 sm:w-96"
           onPress={() => router.push("/blogs/create")}
         >
           <PlusIcon className="h-8 w-8" />

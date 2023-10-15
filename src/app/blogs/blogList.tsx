@@ -4,7 +4,14 @@ import { CSSProperties, useEffect, useState } from "react";
 
 import { endpoints } from "../api/backend/endpoints";
 import { toast } from "react-hot-toast";
-import { Card, CardHeader, CardBody, CardFooter, Tooltip, Image } from "@nextui-org/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Tooltip,
+  Image,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +19,12 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Blog } from "../api/backend/blogs";
 import TagReferencesList from "../tags/references/tagReferencesList";
-import { Attachment, AttachmentInfo, Detachment, TagReferences } from "../api/backend/tags";
+import {
+  Attachment,
+  AttachmentInfo,
+  Detachment,
+  TagReferences,
+} from "../api/backend/tags";
 import BlogCardActions from "./blogCardActions";
 import BlogActionsModal from "./blogActionsModal";
 import { Spinner } from "../utils";
@@ -88,13 +100,13 @@ export default function BlogsList() {
   async function updateAttachments(
     updatedAttachments: AttachmentInfo[],
     to_attach: Attachment[],
-    to_detach: Detachment[]
+    to_detach: Detachment[],
   ) {
     const updatedTagReferences = updateTagReferencesBlogs(
       tagReferences,
       updatedAttachments,
       to_attach,
-      to_detach
+      to_detach,
     );
 
     setAttachments(updatedAttachments);
@@ -105,17 +117,21 @@ export default function BlogsList() {
     currentTagReferences: TagReferences[],
     updatedAttachments: AttachmentInfo[],
     to_attach: Attachment[],
-    to_detach: Detachment[]
+    to_detach: Detachment[],
   ): TagReferences[] {
     let updatedTagReferences: TagReferences[] = [];
 
     for (let u of currentTagReferences) {
       let new_tag_ref = u;
       for (let d of to_detach) {
-        let attachment_info = attachments.find((a) => a.attachment_id === d.attachment_id);
+        let attachment_info = attachments.find(
+          (a) => a.attachment_id === d.attachment_id,
+        );
         if (!attachment_info) continue; // shouldn't occur
         if (new_tag_ref.tags_id === attachment_info.tag_id) {
-          new_tag_ref.blog = new_tag_ref.blog.filter((r) => r[0] !== attachment_info?.bearer_id);
+          new_tag_ref.blog = new_tag_ref.blog.filter(
+            (r) => r[0] !== attachment_info?.bearer_id,
+          );
         }
       }
       updatedTagReferences.push(new_tag_ref);
@@ -129,7 +145,12 @@ export default function BlogsList() {
             tags_name: u.name,
             tags_colour: u.colour,
             portfolio: [],
-            blog: [[u.bearer_id, blogs.find((b) => b.id === u.bearer_id)?.title || ""]],
+            blog: [
+              [
+                u.bearer_id,
+                blogs.find((b) => b.id === u.bearer_id)?.title || "",
+              ],
+            ],
             event: [],
             resource: [],
             job: [],
@@ -144,7 +165,7 @@ export default function BlogsList() {
   function allBlogs() {
     return (
       <>
-        <div className="flex items-stretch justify-center align-baseline gap-3 flex-wrap">
+        <div className="flex flex-wrap items-stretch justify-center gap-3 align-baseline">
           {/* TODO: sort these? */}
           {blogs.map((b) => (
             <BlogCard
@@ -163,7 +184,7 @@ export default function BlogsList() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center align-baseline gap-3">
+      <div className="flex flex-col items-center justify-center gap-3 align-baseline">
         {loading ? <Spinner /> : allBlogs()}
         {!loading && blogs.length == 0 && (
           <div>We will have more blogs coming soon, stay tuned!</div>
@@ -180,7 +201,7 @@ function BlogCard(props: {
   updateAttachments: (
     updatedAttachments: AttachmentInfo[],
     to_attach: Attachment[],
-    to_detach: Detachment[]
+    to_detach: Detachment[],
   ) => void;
   handleBlogUpdate: (updatedBlog: Blog) => void;
 }) {
@@ -209,23 +230,26 @@ function BlogCard(props: {
   return (
     <>
       <Card
-        className="min-w-[20rem] sm:w-96 aspect-[16/9]"
+        className="aspect-[16/9] min-w-[20rem] sm:w-96"
         style={getBlogCardStyle(props.blog)}
-        isPressable
+        isPressable // TODO: returns button within button validateDOMNesting error
         onPress={() => {
           router.push(`/blogs/${props.blog.slug}`);
         }}
+        // onClick={() => {
+        //   router.push(`/blogs/${props.blog.slug}`);
+        // }}
       >
         <Image
           removeWrapper
           alt="blog post hero image"
-          className="z-0 w-full h-full object-cover"
+          className="z-0 h-full w-full object-cover"
           src="/bulletin_board.png" // TODO: change this
         />
-        <CardFooter className="absolute pt-3 px-5 flex gap-1 flex-col items-start w-full bottom-0 bg-[#fffc]">
-          <div className="flex flex-col items-start w-full">
+        <CardFooter className="absolute bottom-0 flex w-full flex-col items-start gap-1 bg-[#fffc] px-5 pt-3">
+          <div className="flex w-full flex-col items-start">
             <p className="text-lg font-bold">{props.blog.title}</p>
-            <div className="flex justify-between w-full">
+            <div className="flex w-full justify-between">
               <small className="text-default-500">
                 {author === "" ? "UNSW DataSoc" : `Authored by ${author}`}
               </small>
@@ -252,8 +276,11 @@ function BlogCard(props: {
               />
             </div>
           </div>
-          <div className="flex items-center justify-center align-baseline w-full">
-            <BlogCardActions blog={props.blog} updateAttachments={props.updateAttachments} />
+          <div className="flex w-full items-center justify-center align-baseline">
+            <BlogCardActions
+              blog={props.blog}
+              updateAttachments={props.updateAttachments}
+            />
             <BlogActionsModal
               blog={props.blog}
               handleDeletion={props.handleBlogDeletion}
