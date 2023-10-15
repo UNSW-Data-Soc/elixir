@@ -250,7 +250,7 @@ function BlogCard(props: {
   return (
     <>
       <Card
-        className="group/blogCard aspect-[16/9] min-w-[20rem] sm:w-96"
+        className="aspect-[16/9] min-w-[20rem] sm:w-96"
         style={getBlogCardStyle(props.blog)}
         isPressable // TODO: returns button within button validateDOMNesting error
         onPress={() => {
@@ -278,7 +278,7 @@ function BlogCard(props: {
               <small className="text-default-500">{editedDate.fromNow()}</small>
             </div>
             {tagReferences.length > 0 && (
-              <div className="hidden w-full pt-2 group-hover/blogCard:flex">
+              <div className="flex w-full pt-2">
                 <TagReferencesList
                   styleLarge={false}
                   showEditingTools={false}
