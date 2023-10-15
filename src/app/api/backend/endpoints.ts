@@ -41,8 +41,15 @@ export const callFetch = async (
 
   if (!res.ok) {
     if (res.status === 401) {
-      await signOut();
-      redirect("/auth/login");
+      if(route === "/login" || route === "/register") {
+        // can't remove token if it doesn't exist
+        return await res.json();
+      }
+      if(session && session.user.token) {
+        await signOut();
+        return redirect("/auth/login");
+      }
+      
     }
     const err = await res.text();
     throw new Error(err);

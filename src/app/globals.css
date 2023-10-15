@@ -73,21 +73,14 @@ body {
 }
 
 .fadeInOutSpinner {
-  /* width:500px;
-  height: 500px; */
   -webkit-animation: fadeinout 4s linear forwards;
   animation: fadeinout 2s linear forwards;
   animation-iteration-count: infinite;
-  background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
-    linear-gradient(
-        235deg,
-        var(--yellow) 20%,
-        var(--orange),
-        var(--red),
-        var(--purple) 60%,
-        var(--blue)
-      )
-      80%;
+  background-image: url("/logo.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: 300px;
 }
 
 @-webkit-keyframes fadeinout {

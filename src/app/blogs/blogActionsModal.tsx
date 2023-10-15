@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import { Event } from "../api/backend/events";
+import { Company } from "../api/backend/companies";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -14,14 +14,16 @@ import {
 } from "@nextui-org/modal";
 import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
+import { Blog } from "../api/backend/blogs";
 
-export default function EventActionsModal(props: {
-    event: Event;
+export default function BlogActionsModal(props: {
+    blog: Blog;
     handleDeletion: (id: string) => void;
-    handleEventUpdate: (updatedBlog: Event) => void;
+    handleBlogUpdate: (updatedBlog: Blog) => void;
 }) {
     const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
     const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
+
     const session = useSession();
     const router = useRouter();
 
@@ -29,15 +31,15 @@ export default function EventActionsModal(props: {
         return <></>;
     }
 
-    async function handleEventDeletion() {
-        await endpoints.events
-            .remove(props.event.id)
+    async function handleBlogDeletion() {
+        await endpoints.blogs
+            .deleteBlog({id: props.blog.id})
             .then(() => {
-                toast.success("Event deleted successfully!");
-                props.handleDeletion(props.event.id);
+                toast.success("Blog deleted successfully!");
+                props.handleDeletion(props.blog.id);
             })
             .catch(() => {
-                toast.error("Failed to delete event");
+                toast.error("Failed to delete blog");
             })
             .finally(() => {
                 setShowDeletionDialogue(false);
@@ -45,22 +47,26 @@ export default function EventActionsModal(props: {
             });
     }
 
-    async function handleEventPublication() {
-        let actionPubUnpub = props.event.public ? "unpublished" : "published";
-        let actionPubUnpubPresent = props.event.public
-            ? "unpublish"
-            : "publish";
+    async function handleBlogPublication() {
+        let actionPubUnpub = props.blog.public ? "unpublished" : "published";
+        let actionPubUnpubPresent = props.blog.public ? "unpublish" : "publish";
 
-        await endpoints.events
-            .updateVisibility(props.event.id, !props.event.public)
+        await endpoints.blogs
+            .update({
+                title: props.blog.title,
+                body: props.blog.body,
+                author: props.blog.author,
+                id: props.blog.id,
+                blogPublic: !props.blog.public,
+            })
             .then(() => {
-                toast.success(`Resource ${actionPubUnpub} successfully!`);
-                let updatedEvent = props.event;
-                updatedEvent.public = !props.event.public;
-                props.handleEventUpdate(updatedEvent);
+                toast.success(`Blog ${actionPubUnpub} successfully!`);
+                let updatedBlog = props.blog;
+                updatedBlog.public = !props.blog.public;
+                props.handleBlogUpdate(updatedBlog);
             })
             .catch(() => {
-                toast.error(`Failed to ${actionPubUnpubPresent} event`);
+                toast.error(`Failed to ${actionPubUnpubPresent} blog`);
             })
             .finally(() => {
                 setShowVisibilityDialogue(false);
@@ -70,26 +76,41 @@ export default function EventActionsModal(props: {
     return (
         <>
             <div className="items-center justify-center align-baseline">
-            {
-                    props.event.public ?
+                <Button
+                    color="secondary"
+                    radius="full"
+                    variant="light"
+                    onClick={() => {
+                        router.push(
+                            `/blogs/editor?blogSlug=${props.blog.slug}`
+                        );
+                    }}
+                >
+                    Edit Blog
+                </Button>
+                {props.blog.public ? (
                     <Button
-                        color="secondary"
+                        color="warning"
                         radius="full"
                         variant="light"
-                        onClick={() => {setShowVisibilityDialogue(true)}}
+                        onClick={() => {
+                            setShowVisibilityDialogue(true);
+                        }}
                     >
                         Unpublish
-                    </Button> :
+                    </Button>
+                ) : (
                     <Button
-                        color="secondary"
+                        color="warning"
                         radius="full"
                         variant="light"
-                        onClick={() => {setShowVisibilityDialogue(true)}}
+                        onClick={() => {
+                            setShowVisibilityDialogue(true);
+                        }}
                     >
                         Publish
                     </Button>
-                }
-                
+                )}
                 <Button
                     color="danger"
                     radius="full"
@@ -101,50 +122,6 @@ export default function EventActionsModal(props: {
                     Delete
                 </Button>
             </div>
-
-            <Modal
-                isOpen={showVisibilityDialogue}
-                onOpenChange={() => setShowVisibilityDialogue(false)}
-            >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                Are you sure?
-                                <small className="text-default-500">
-                                    {props.event.public
-                                        ? "You can always publish again!"
-                                        : "You can always unpublish later"}
-                                </small>
-                            </ModalHeader>
-                            <ModalBody>
-                                <p>
-                                    {props.event.public
-                                        ? `This action will remove the '${props.event.title}' event from public view`
-                                        : `This will make the event '${props.event.title}' publicly available`}
-                                </p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button
-                                    color="primary"
-                                    variant="light"
-                                    onPress={onClose}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    color="danger"
-                                    variant="light"
-                                    onPress={handleEventPublication}
-                                >
-                                    Confirm
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-
             <Modal
                 isOpen={showDeletionDialogue}
                 onOpenChange={() => setShowDeletionDialogue(false)}
@@ -160,9 +137,7 @@ export default function EventActionsModal(props: {
                             </ModalHeader>
                             <ModalBody>
                                 <p>
-                                    This action will permanentely delete the
-                                    event &apos;
-                                    {props.event.title}&apos;!
+                                    This action will permanently delete the blog
                                 </p>
                             </ModalBody>
                             <ModalFooter>
@@ -176,7 +151,50 @@ export default function EventActionsModal(props: {
                                 <Button
                                     color="danger"
                                     variant="light"
-                                    onPress={handleEventDeletion}
+                                    onPress={handleBlogDeletion}
+                                >
+                                    Confirm
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+            <Modal
+                isOpen={showVisibilityDialogue}
+                onOpenChange={() => setShowVisibilityDialogue(false)}
+            >
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">
+                                Are you sure?
+                                <small className="text-default-500">
+                                    {props.blog.public
+                                        ? "You can always publish again!"
+                                        : "You can always unpublish later"}
+                                </small>
+                            </ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    {props.blog.public
+                                        ? `This action will remove the '${props.blog.title}' blog from public view`
+                                        : `This will make the blog '${props.blog.title}' publicly available`}
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button
+                                    color="primary"
+                                    variant="light"
+                                    onPress={onClose}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="danger"
+                                    variant="light"
+                                    onPress={handleBlogPublication}
                                 >
                                     Confirm
                                 </Button>

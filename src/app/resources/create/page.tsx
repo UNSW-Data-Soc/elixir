@@ -156,7 +156,7 @@ export default function CreateResource() {
                         </p>
                         <Tooltip
                             content={
-                                "Link an existing resource or upload an image, pdf, csv or plain text file"
+                                "Link an existing resource OR upload an image, pdf, csv or plain text file"
                             }
                         >
                             <QuestionMarkCircleIcon className="flex items-center justify-center align-baseline w-5" />

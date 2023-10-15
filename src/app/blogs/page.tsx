@@ -4,10 +4,9 @@ import { endpoints } from "../api/backend/endpoints";
 import { type Blog } from "../api/backend/blogs";
 
 import BlogsAddCard from "./blogsAddCard";
-import BlogCard from "./blogCard";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-// import { type BlogBlock, textBlockTypes } from "./editor/blogContentEditor";
+import BlogsList from "./blogList";
 
 export default function Blog() {
   return (
@@ -45,11 +44,8 @@ function BlogsContainer() {
   return (
     <div className="container m-auto flex gap-8 p-10 flex-wrap justify-center">
       {session.status === "authenticated" && <BlogsAddCard />}
-      {blogs
-        .sort((a, b) => b.created_time.localeCompare(a.created_time))
-        .map((blog) => (
-          <BlogCard key={blog.id} {...blog} />
-        ))}
+
+      <BlogsList/>  
 
       {session.status === "unauthenticated" && blogs.length === 0 && (
         <div className="h-full flex justify-center items-center p-10">

@@ -53,9 +53,20 @@ export default function UsersList(props: {tags: Tag[]}) {
     function updateUser(user: User) {
         let new_users: User[] = [];
         for (let u of users) {
-            if (u.id == user.id) {
+            if (u.id === user.id) {
                 new_users.push(user);
             } else {
+                new_users.push(u);
+            }
+        }
+
+        setUsers(new_users);
+    }
+
+    function removeUser(id: string) {
+        let new_users: User[] = [];
+        for (let u of users) {
+            if (u.id !== id) {
                 new_users.push(u);
             }
         }
@@ -113,6 +124,7 @@ export default function UsersList(props: {tags: Tag[]}) {
                             setShowModalUser(null);
                         }}
                         updateUser={updateUser}
+                        removeUser={removeUser}
                     />}
                 </div>
             )}

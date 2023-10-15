@@ -30,11 +30,15 @@ const handler = NextAuth({
           throw new Error("Please enter an email and password to login.");
         }
 
-        const { id, token, admin, exp } = await login({
-          email: credentials?.email,
-          password: credentials?.password,
-        });
-        return { id: id, email: credentials.email, token, admin, exp };
+        try {
+          const { id, token, admin, exp } = await login({
+            email: credentials?.email,
+            password: credentials?.password,
+          });
+          return { id: id, email: credentials.email, token, admin, exp };
+        } catch {
+          return null;
+        }
       },
     }),
   ],
