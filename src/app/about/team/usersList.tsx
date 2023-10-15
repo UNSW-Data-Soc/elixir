@@ -6,7 +6,7 @@ import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
 import { AttachmentInfo } from "@/app/api/backend/tags";
-import { Image, Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar} from "@nextui-org/react";
+import { Image, Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar } from "@nextui-org/react";
 
 const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 
@@ -25,7 +25,7 @@ export default function UsersList() {
             yearsData = yearsData.sort().reverse();
             let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
             setYears(yearsData);
-            if(yearsData.length > 0) {
+            if (yearsData.length > 0) {
                 setSelectedYear(yearsData[0]);
             }
             setUsers(usersData);
@@ -47,7 +47,23 @@ export default function UsersList() {
     // TODO: sort by portfolio
     function sortUsers(a: UserPublic, b: UserPublic): number {
         return a.name.localeCompare(b.name);
+
+
+        /*
+            ORDER
+             - President
+             - VP x5
+             - Secretary
+             - Treasurer
+             - Directors x18 (same next to each other)
+    
+    
+        */
     }
+
+    // function userToValue(user: UserPublic): number {
+    //     if (user)
+    // }
 
     function getUserCardStyle(user: UserPublic): CSSProperties {
         return {
@@ -73,7 +89,7 @@ export default function UsersList() {
         setDisplayUserAbout(true);
         setCurrUserDisplay(user);
     }
-    
+
     async function handleProfileClose() {
         setDisplayUserAbout(false);
         setCurrUserDisplay(undefined);
@@ -92,17 +108,17 @@ export default function UsersList() {
                     <div className="flex gap-5 justify-center">
                         <Tabs
                             aria-label="Dynamic tabs"
-                            items={years.map(y => {return {label: y.toString(), val: y}})}
+                            items={years.map(y => { return { label: y.toString(), val: y } })}
                             selectedKey={selectedYear?.toString()}
                             onSelectionChange={(y) => handleYearChange(Number(y.valueOf()))}
                         >
-                            {(item) => (<Tab key={item.label} title={item.label}/>)}
+                            {(item) => (<Tab key={item.label} title={item.label} />)}
                         </Tabs>
                     </div>
                     <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
                         {users.sort(sortUsers).map((user) => (
                             <>
-                                <Card isBlurred isPressable radius="lg" className="border-none" onPress={() =>{handleProfilePress(user)}}>
+                                <Card isBlurred isPressable radius="lg" className="border-none" onPress={() => { handleProfilePress(user) }}>
                                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                                         <small className="text-default-500">{getUserPortfolio(user) || ZERO_WIDTH_SPACE}</small>
                                         <h4 className="font-bold text-large">{user.name}</h4>
@@ -118,14 +134,14 @@ export default function UsersList() {
                                             // height={240}
                                             height={300}
                                             width={300}
-                                            // sizes="100vw"
+                                        // sizes="100vw"
                                         />
                                     </CardBody>
                                 </Card>
                             </>
                         ))}
                     </div>
-                    {currUserDisplay && <DisplayModal user={currUserDisplay} isOpen={displayUserAbout} portfolio={getUserPortfolio(currUserDisplay)} onOpenChange={handleProfileClose}/>}
+                    {currUserDisplay && <DisplayModal user={currUserDisplay} isOpen={displayUserAbout} portfolio={getUserPortfolio(currUserDisplay)} onOpenChange={handleProfileClose} />}
                 </div>
             )}
         </>
@@ -133,37 +149,37 @@ export default function UsersList() {
 }
 
 
-function DisplayModal(props: {user: UserPublic, isOpen: boolean, onOpenChange: () => void, portfolio: string | undefined}) {
+function DisplayModal(props: { user: UserPublic, isOpen: boolean, onOpenChange: () => void, portfolio: string | undefined }) {
     return (
         <>
             <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
                 <ModalContent>
-                {(onClose) => (
-                    <>
-                    <ModalHeader className="flex flex-col gap-1"></ModalHeader>
-                    <UserAvatar
-                        name={props.user.name}
-                        description={props.portfolio || ZERO_WIDTH_SPACE}
-                        avatarProps={{
-                            isBordered: true,
-                            src: endpoints.users.getUserProfilePicture(props.user.id),
-                            size: "lg",
-                            color: "success",
-                            showFallback: true,
-                        }}
-                    />
-                    <ModalBody>
-                        {
-                            props.user.about || EMPTY_ABOUT_MESSAGE
-                        }
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="warning" variant="light" onPress={onClose}>
-                        Close
-                        </Button>
-                    </ModalFooter>
-                    </>
-                )}
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+                            <UserAvatar
+                                name={props.user.name}
+                                description={props.portfolio || ZERO_WIDTH_SPACE}
+                                avatarProps={{
+                                    isBordered: true,
+                                    src: endpoints.users.getUserProfilePicture(props.user.id),
+                                    size: "lg",
+                                    color: "success",
+                                    showFallback: true,
+                                }}
+                            />
+                            <ModalBody>
+                                {
+                                    props.user.about || EMPTY_ABOUT_MESSAGE
+                                }
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="warning" variant="light" onPress={onClose}>
+                                    Close
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
                 </ModalContent>
             </Modal>
         </>
