@@ -3,10 +3,20 @@ import { getToken } from 'next-auth/jwt';
 import jwt from 'jsonwebtoken';
 
 
-
 // Limit the middleware to paths starting with `/api/`
 export const config = {
-  matcher: ['/blogs/editor', '/blogs/create', '/sponsorships/create', '/jobs/create', '/events/create', '/users/info', '/users/years'],
+  matcher: ['/blogs/editor', 
+  '/blogs/create', 
+  '/sponsorships/create', 
+  '/jobs/create', 
+  '/events/create', 
+  '/users/info', 
+  '/users/years', 
+  '/profile',
+  '/companies/create', 
+  '/settings/coverphoto',
+  '/resources/create'
+  ],
 }
 
 export async function middleware(req: NextRequest, res: NextResponse) {
