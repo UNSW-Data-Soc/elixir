@@ -26,14 +26,14 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
   useEffect(() => {
     const getBlog = async () =>
       await endpoints.blogs.get({ slug, authRequired: session.status === "authenticated" });
-    
+
     getBlog()
       .then((blog) => setBlog(blog))
       .catch((err) => {
         toast.error(parseBackendError(err));
         router.push("/");
       })
-      .finally( () =>  {
+      .finally(() => {
         setLoading(false);
       });
   }, [session.status, slug]);
@@ -51,10 +51,11 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
 
   return (
     <main className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12">
-      {
-        loading ? <Spinner/> : (
-          <>
-            <header className="flex flex-col gap-4">
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <header className="flex flex-col gap-4">
             <h1 className="text-6xl font-light tracking-tighter">{blog.title}</h1>
             <p className="text-[#555] text-xl font-light">
               Written by <span className="italic">{blog.author}</span>
@@ -65,9 +66,8 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
             </div>
           </header>
           <div dangerouslySetInnerHTML={{ __html: content }} className="pt-8"></div>
-          </>
-        )
-      }
+        </>
+      )}
     </main>
   );
 }

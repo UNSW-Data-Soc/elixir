@@ -59,7 +59,8 @@ const BlogsEditor = () => {
   if (!blogSlug || !validBlog) return <BlogsList />; // TODO: show list of blogs to edit
 
   return (
-    <main className="p-20 py-10 px-32 max-w-[900px] mx-auto">
+    <main className="p-20 py-10 px-10 md:px-32 pl-24 max-w-[900px] mx-auto">
+      <BlogsEditInfoForm />
       <div>
         <EditorMenu />
         <EditorContent editor={editorContext.editor} />
@@ -67,7 +68,6 @@ const BlogsEditor = () => {
       <div className="text-sm text-[#555] fixed left-0 bottom-0 p-5 py-3 z-[-1]">
         <p>Click anywhere outside the blog post to save!</p>
       </div>
-      <BlogsEditInfoForm />
     </main>
   );
 };
@@ -105,12 +105,12 @@ const BlogsEditInfoForm = () => {
   return (
     <>
       <div
-        className="fixed right-4 top-20 z-40 p-10 py-6 bg-white hover:bg-[#fafafa] transition-colors cursor-pointer max-w-[calc(50vw-450px)] whitespace-pre-wrap text-right rounded-2xl"
+        className="fixed bottom-0 right-0 xl:right-4 xl:top-20 xl:z-40 sm:p-8 py-6 bg-white hover:bg-[#fafafa] transition-colors cursor-pointer xl:max-w-[calc(50vw-450px)] whitespace-pre-wrap text-right rounded-2xl flex flex-row xl:flex-col"
         onClick={() => onOpen()}
       >
-        <h2 className="text-6xl">{editorContext.get.blogTitle}</h2>
-        <hr className="my-6" />
-        <p className="text-3xl">{editorContext.get.blogAuthor}</p>
+        <h2 className="text-4xl md:text-6xl">{editorContext.get.blogTitle}</h2>
+        <hr className="hidden xl:block my-6" />
+        <p className="text-lg md:text-3xl">{editorContext.get.blogAuthor}</p>
       </div>
       <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
         <ModalContent>
