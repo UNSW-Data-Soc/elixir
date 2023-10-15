@@ -163,12 +163,6 @@ export default function BlogsList() {
   }
 
   function allBlogs() {
-    blogs.forEach((b) =>
-      console.log(
-        JSON.parse(b.body).content.filter((c: any) => c.type === "image")[0]
-          .attrs.src,
-      ),
-    );
     return (
       <>
         <div className="flex flex-wrap items-stretch justify-center gap-5 align-baseline">
@@ -235,7 +229,7 @@ function BlogCard(props: {
   const editedDate = dayjs(Date.parse(props.blog.last_edit_time));
   const firstImageUrl: string | null = JSON.parse(
     props.blog.body,
-  ).content.filter((c: any) => c.type === "image")[0].attrs.src;
+  ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
 
   // only show tags related to this particular blog
   const tagReferences = props.tagReferences.filter((r) => {
@@ -263,8 +257,10 @@ function BlogCard(props: {
         <Image
           removeWrapper
           alt="blog post hero image"
-          className="z-0 h-full w-full object-cover"
-          src={firstImageUrl ?? "/bulletin_board.png"} // TODO: change this to a default image
+          className={`z-0 h-full w-full ${
+            firstImageUrl ? "object-cover" : "object-contain"
+          }`}
+          src={firstImageUrl ?? "/logo.png"} // TODO: change this to a default image
         />
         <CardFooter className="absolute bottom-0 flex w-full flex-col items-start justify-between gap-1 rounded-b-none bg-[#fffc] px-5 py-4">
           <div className="flex w-full flex-col items-start">
