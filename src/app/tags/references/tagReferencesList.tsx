@@ -28,10 +28,16 @@ interface Tab {
   label: string;
 }
 
-export default function TagReferencesList(props: {
+export default function TagReferencesList({
+  styleLarge,
+  showEditingTools,
+  tagReferences,
+  getSmallTagStyle = getSmallTagStyleDefault,
+}: {
   styleLarge: boolean;
   showEditingTools: boolean;
   tagReferences?: TagReferences[];
+  getSmallTagStyle?: (tag_colour: string) => CSSProperties;
 }) {
   const session = useSession();
   const [references, setReferences] = useState<TagReferences[]>([]);
@@ -42,8 +48,8 @@ export default function TagReferencesList(props: {
     async function getReferences() {
       let refs: TagReferences[] = [];
 
-      if (props.tagReferences) {
-        refs = props.tagReferences;
+      if (tagReferences) {
+        refs = tagReferences;
       } else {
         if (session.status === "authenticated") {
           refs = await endpoints.tags.references(true);
@@ -59,7 +65,7 @@ export default function TagReferencesList(props: {
       setReferences(refs);
     }
     getReferences();
-  }, [session.status, props.tagReferences]);
+  }, [session.status, tagReferences]);
 
   async function handleTagUpdate(updatedTagReference: TagReferences) {
     let updatedReferences = [];
@@ -108,10 +114,10 @@ export default function TagReferencesList(props: {
 
   return (
     <>
-      {props.showEditingTools && <TagAddCard handleTagCreation={handleTagCreation} />}
-      <div className="flex items-center justify-center align-baseline flex-wrap gap-2">
+      {showEditingTools && <TagAddCard handleTagCreation={handleTagCreation} />}
+      <div className="flex flex-wrap items-center justify-center gap-2 align-baseline">
         {references.map((r) => {
-          return props.styleLarge ? (
+          return styleLarge ? (
             <Card
               key={r.tags_id}
               isBlurred
@@ -120,9 +126,11 @@ export default function TagReferencesList(props: {
               className="border-none"
               onPress={() => handleTagClick(r)}
             >
-              <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                <h4 className="font-bold text-large">{r.tags_name}</h4>
-                <small className="text-default-500">{getNumReferences(r)} references</small>
+              <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
+                <h4 className="text-large font-bold">{r.tags_name}</h4>
+                <small className="text-default-500">
+                  {getNumReferences(r)} references
+                </small>
               </CardHeader>
               <CardBody className="overflow-visible py-2"></CardBody>
               <CardFooter style={{ backgroundColor: r.tags_colour }} />
@@ -130,7 +138,10 @@ export default function TagReferencesList(props: {
           ) : (
             <>
               <div key={r.tags_id}>
-                <div style={getSmallTagStyle(r.tags_colour)} onClick={() => handleTagClick(r)}>
+                <div
+                  style={getSmallTagStyle(r.tags_colour)}
+                  onClick={() => handleTagClick(r)}
+                >
                   {r.tags_name}
                 </div>
               </div>
@@ -145,7 +156,7 @@ export default function TagReferencesList(props: {
             setOpenRef(undefined);
             setIsModalOpen(false);
           }}
-          showEditingTools={props.showEditingTools}
+          showEditingTools={showEditingTools}
           reference={openRef}
           handleTagDeletion={deleteTag}
           handleTagUpdate={handleTagUpdate}
@@ -192,15 +203,15 @@ function TagInfoModal(props: {
                   >
                     {(item) => <Tab key={item.id} title={item.label} />}
                   </Tabs>
-                  <div className="flex flex-row m-3 gap-3 flex-wrap item-center justify-center align-baseline">
-                    <ScrollShadow className="p-9 h-[400px]">
+                  <div className="item-center m-3 flex flex-row flex-wrap justify-center gap-3 align-baseline">
+                    <ScrollShadow className="h-[400px] p-9">
                       {activeTab &&
                         props.reference[activeTab].map((r) => (
                           <>
                             <div
                               key={r[0]}
                               color="default"
-                              className="p-3 flex flex-row max-w-xs flex-wrap item-center justify-center align-baseline"
+                              className="item-center flex max-w-xs flex-row flex-wrap justify-center p-3 align-baseline"
                             >
                               {r[1]}
                             </div>
@@ -314,13 +325,13 @@ function getTabs(references: TagReferences) {
   return tabs;
 }
 
-function getSmallTagStyle(tag_colour: string): CSSProperties {
+function getSmallTagStyleDefault(tag_colour: string): CSSProperties {
   return {
     backgroundColor: tag_colour,
     color: "#ffffff",
     padding: "5px 10px",
     borderRadius: "4px",
-    // margin: "5px",
+    margin: "5px",
     display: "inline-block",
     whiteSpace: "nowrap",
     width: "auto",

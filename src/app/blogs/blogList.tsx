@@ -213,6 +213,7 @@ function BlogCard(props: {
 }) {
   const [author, setAuthor] = useState("");
   const router = useRouter();
+  const session = useSession();
 
   function getBlogCardStyle(b: Blog): CSSProperties {
     return b.public
@@ -236,10 +237,20 @@ function BlogCard(props: {
     props.blog.body,
   ).content.filter((c: any) => c.type === "image")[0].attrs.src;
 
+  // only show tags related to this particular blog
+  const tagReferences = props.tagReferences.filter((r) => {
+    for (let i of r.blog) {
+      if (i[0] === props.blog.id) {
+        return true;
+      }
+    }
+    return false;
+  });
+
   return (
     <>
       <Card
-        className="aspect-[16/9] min-w-[20rem] sm:w-96"
+        className="group/blogCard aspect-[16/9] min-w-[20rem] sm:w-96"
         style={getBlogCardStyle(props.blog)}
         isPressable // TODO: returns button within button validateDOMNesting error
         onPress={() => {
@@ -255,7 +266,7 @@ function BlogCard(props: {
           className="z-0 h-full w-full object-cover"
           src={firstImageUrl ?? "/bulletin_board.png"} // TODO: change this to a default image
         />
-        <CardFooter className="absolute bottom-0 flex w-full flex-col items-start gap-1 bg-[#fffc] px-5 pt-3">
+        <CardFooter className="absolute bottom-0 flex w-full flex-col items-start justify-between gap-1 rounded-b-none bg-[#fffc] px-5 py-4">
           <div className="flex w-full flex-col items-start">
             <p className="text-lg font-bold">{props.blog.title}</p>
             <div className="flex w-full justify-between">
@@ -263,39 +274,47 @@ function BlogCard(props: {
                 {author === "" ? "UNSW DataSoc" : `Authored by ${author}`}
               </small>
               {/* is the tooltip necessary? */}
-              {/* <Tooltip content={editedDate.format("DD/MM/YYYY HH:mm")}>
-          </Tooltip> */}
+              {/* <Tooltip content={editedDate.format("DD/MM/YYYY HH:mm")}></Tooltip> */}
               <small className="text-default-500">{editedDate.fromNow()}</small>
             </div>
-            <div className="pt-2">
-              <TagReferencesList
-                styleLarge={false}
-                showEditingTools={false}
-                tagReferences={
-                  // only show tags related to this particular blog
-                  props.tagReferences.filter((r) => {
-                    for (let i of r.blog) {
-                      if (i[0] === props.blog.id) {
-                        return true;
-                      }
-                    }
-                    return false;
-                  })
-                }
+            {tagReferences.length > 0 && (
+              <div className="hidden w-full pt-2 group-hover/blogCard:flex">
+                <TagReferencesList
+                  styleLarge={false}
+                  showEditingTools={false}
+                  tagReferences={tagReferences}
+                  getSmallTagStyle={(tagColour: string) => {
+                    return {
+                      backgroundColor: tagColour,
+                      color: "#ffffff",
+                      padding: "2.5px 10px",
+                      borderRadius: "4px",
+                      display: "inline-block",
+                      whiteSpace: "nowrap",
+                      width: "auto",
+                      fontSize: "12px",
+                      cursor: "pointer",
+                      position: "relative",
+                      background: tagColour,
+                    };
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          {session.status === "authenticated" && (
+            <div className="flex w-full items-center justify-center align-baseline">
+              <BlogCardActions
+                blog={props.blog}
+                updateAttachments={props.updateAttachments}
+              />
+              <BlogActionsModal
+                blog={props.blog}
+                handleDeletion={props.handleBlogDeletion}
+                handleBlogUpdate={props.handleBlogUpdate}
               />
             </div>
-          </div>
-          <div className="flex w-full items-center justify-center align-baseline">
-            <BlogCardActions
-              blog={props.blog}
-              updateAttachments={props.updateAttachments}
-            />
-            <BlogActionsModal
-              blog={props.blog}
-              handleDeletion={props.handleBlogDeletion}
-              handleBlogUpdate={props.handleBlogUpdate}
-            />
-          </div>
+          )}
         </CardFooter>
       </Card>
     </>
