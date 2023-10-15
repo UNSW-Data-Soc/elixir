@@ -8,7 +8,13 @@ import { endpoints } from "@/app/api/backend/endpoints";
 import { FormEventHandler, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Blog } from "@/app/api/backend/blogs";
-import { Input, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalContent,
+  useDisclosure,
+} from "@nextui-org/react";
 
 const BlogsEditor = () => {
   const { status, data } = useSession();
@@ -24,7 +30,10 @@ const BlogsEditor = () => {
     const getBlog = async () => {
       if (!blogSlug) return null;
       try {
-        const blog = await endpoints.blogs.get({ slug: blogSlug, authRequired: true });
+        const blog = await endpoints.blogs.get({
+          slug: blogSlug,
+          authRequired: true,
+        });
         return blog;
       } catch (e) {
         return null;
@@ -51,21 +60,22 @@ const BlogsEditor = () => {
   if (status === "unauthenticated") router.push("/auth/login");
   if (!data?.user.admin)
     return (
-      <p className="flex justify-center items-center w-full h-[calc(100vh-10rem)] text-3xl">
-        You do not have permission to edit blogs. Contact IT if you think this is a mistake.
+      <p className="flex h-[calc(100vh-10rem)] w-full items-center justify-center text-3xl">
+        You do not have permission to edit blogs. Contact IT if you think this
+        is a mistake.
       </p>
     );
   if (!editorContext.editor) return <></>;
   if (!blogSlug || !validBlog) return <BlogsList />; // TODO: show list of blogs to edit
 
   return (
-    <main className="p-20 py-10 px-10 md:px-32 pl-24 max-w-[900px] mx-auto">
+    <main className="mx-auto max-w-[900px] p-20 px-10 py-10 pl-24 md:px-32">
       <BlogsEditInfoForm />
       <div>
         <EditorMenu />
         <EditorContent editor={editorContext.editor} />
       </div>
-      <div className="text-sm text-[#555] fixed left-0 bottom-0 p-5 py-3 z-[-1]">
+      <div className="fixed bottom-0 left-0 z-[-1] p-5 py-3 text-sm text-[#555]">
         <p>Click anywhere outside the blog post to save!</p>
       </div>
     </main>
@@ -81,7 +91,8 @@ const BlogsEditInfoForm = () => {
     e.preventDefault();
 
     const updateDatabase = async () => {
-      const { blogId, blogTitle, blogAuthor, blogPublic, blogBody } = editorContext.get;
+      const { blogId, blogTitle, blogAuthor, blogPublic, blogBody } =
+        editorContext.get;
       if (!blogId || !blogTitle || !blogAuthor || !blogPublic || !blogBody) {
         return;
       }
@@ -104,17 +115,32 @@ const BlogsEditInfoForm = () => {
 
   return (
     <>
-      <div
-        className="fixed bottom-0 right-0 xl:right-4 xl:top-20 xl:z-40 sm:p-8 py-6 bg-white hover:bg-[#fafafa] transition-colors cursor-pointer xl:max-w-[calc(50vw-450px)] whitespace-pre-wrap text-right rounded-2xl flex flex-row xl:flex-col"
-        onClick={() => onOpen()}
-      >
-        <h2 className="text-4xl md:text-6xl">{editorContext.get.blogTitle}</h2>
-        <hr className="hidden xl:block my-6" />
-        <p className="text-lg md:text-3xl">{editorContext.get.blogAuthor}</p>
+      <div className="relative flex flex-col gap-4">
+        <h1 className="text-6xl font-light tracking-tighter">
+          {editorContext.get.blogTitle}
+        </h1>
+        <p className="text-xl font-light text-[#555]">
+          Written by{" "}
+          <span className="italic">{editorContext.get.blogAuthor}</span>
+        </p>
+        <Button
+          className="hover:bg-[# absolute bottom-0 right-0 bg-[#0002] backdrop-blur-sm"
+          onClick={() => onOpen()}
+        >
+          edit title / author
+        </Button>
       </div>
-      <Modal isOpen={isOpen} isDismissable={true} backdrop="opaque" onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        isDismissable={true}
+        backdrop="opaque"
+        onClose={onClose}
+      >
         <ModalContent>
-          <form onSubmit={handleFormSubmit} className="p-10 flex flex-col gap-8">
+          <form
+            onSubmit={handleFormSubmit}
+            className="flex flex-col gap-8 p-10"
+          >
             <Input
               type="text"
               label="title"
@@ -150,18 +176,23 @@ const BlogsList = () => {
   }, []);
 
   return (
-    <main className="flex flex-col w-full items-center p-10 gap-5 max-w-[800px] mx-auto">
+    <main className="mx-auto flex w-full max-w-[800px] flex-col items-center gap-5 p-10">
       <p className="text-2xl">
         Seems like you&apos;re trying to edit a blog that doesn&apos;t exist.
       </p>
-      <p className="text-xl font-light">Did you want to edit one of these blogs instead?</p>
+      <p className="text-xl font-light">
+        Did you want to edit one of these blogs instead?
+      </p>
       {blogs.map((blog) => (
         <div
           key={blog.id}
-          className="flex flex-row cursor-pointer bg-[#fafafa] hover:bg-[#eee] p-5 w-full transition-all rounded-lg"
+          className="flex w-full cursor-pointer flex-row rounded-lg bg-[#fafafa] p-5 transition-all hover:bg-[#eee]"
           onClick={() => router.push(`/blogs/editor?blogSlug=${blog.slug}`)}
         >
-          <div style={{ backgroundImage: `/kentosoc.jpeg` }} className="aspect-square h-full" />
+          <div
+            style={{ backgroundImage: `/kentosoc.jpeg` }}
+            className="aspect-square h-full"
+          />
           <div>
             <h3>{blog.title}</h3>
             <p>{blog.author}</p>
