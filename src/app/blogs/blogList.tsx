@@ -171,7 +171,7 @@ export default function BlogsList() {
     );
     return (
       <>
-        <div className="flex flex-wrap items-stretch justify-center gap-3 align-baseline">
+        <div className="flex flex-wrap items-stretch justify-center gap-5 align-baseline">
           {/* TODO: sort these? */}
           {blogs.map((b) => (
             <BlogCard
