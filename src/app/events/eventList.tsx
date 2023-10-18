@@ -196,13 +196,14 @@ function EventsCard(props: {
   ) => void;
 }) {
   const [showEventDescription, setShowEventDescription] = useState(false);
+  const session = useSession();
 
   const startTime = dayjs(Date.parse(props.event.start_date));
   const endTime = dayjs(Date.parse(props.event.end_date));
   const inFuture = endTime.isAfter(Date.now());
 
   function getEventCardStyle(e: Event): CSSProperties {
-    return props.event.public && inFuture
+    return props.event.public // && inFuture TODO: should we have this????
       ? {}
       : {
           opacity: 0.5,
@@ -211,69 +212,87 @@ function EventsCard(props: {
 
   return (
     <>
-      <Card className="max-w-[400px]" style={getEventCardStyle(props.event)}>
-        <CardHeader className="flex gap-3">
-          <div className="flex flex-col">
-            <p className="text-lg font-bold">{props.event.title}</p>
-            <Link
-              isExternal
-              showAnchorIcon
-              href={props.event.link}
-              style={{ cursor: "pointer" }}
-            >
-              View Event
-            </Link>
-            <Tooltip
+      <Card
+        className="max-w-[400px]"
+        style={getEventCardStyle(props.event)}
+        isPressable
+        onClick={() => setShowEventDescription(true)}
+      >
+        <Image
+          src={endpoints.events.getEventPhoto(props.event.id)}
+          alt="Profile picture"
+          className="rounded-b-none rounded-t-xl object-cover"
+          height={Event_PHOTO_Y_PXL * 0.4}
+          width={Event_PHOTO_X_PXL * 0.4}
+        />
+        <CardFooter className="flex w-full flex-col items-center justify-between gap-2 px-7 py-5 pb-6 align-baseline">
+          <div className="flex w-full flex-col justify-start">
+            <div className="flex w-full flex-row justify-between">
+              <p className="text-lg font-bold">{props.event.title}</p>
+              <Link
+                isExternal
+                showAnchorIcon
+                href={props.event.link}
+                style={{ cursor: "pointer" }}
+              >
+                View Event
+              </Link>
+            </div>
+            {/* <Tooltip
               content={
                 inFuture
                   ? startTime.format("DD/MM/YYYY HH:mm")
                   : endTime.format("DD/MM/YYYY HH:mm")
               }
-            >
-              <p className="italic">
-                {inFuture
-                  ? `Starts ${startTime.fromNow()}`
-                  : `Ended ${endTime.toNow(true)} ago`}
-              </p>
-            </Tooltip>
+            > */}
+            <p className="w-full text-left italic">
+              {inFuture
+                ? `Starts ${startTime.fromNow()}`
+                : `Ended ${endTime.toNow(true)} ago`}
+            </p>
+            {/* </Tooltip> */}
           </div>
-        </CardHeader>
-        <Divider />
-        <CardBody
-          onClick={() => setShowEventDescription(true)}
-          className="cursor-pointer"
-        >
-          <Image
-            src={endpoints.events.getEventPhoto(props.event.id)}
-            alt="Profile picture"
-            className="rounded-xl object-cover"
-            height={Event_PHOTO_Y_PXL * 0.4}
-            width={Event_PHOTO_X_PXL * 0.4}
-          />
-        </CardBody>
-        <CardFooter className="flex items-center justify-center align-baseline">
-          <TagReferencesList
-            styleLarge={false}
-            showEditingTools={false}
-            tagReferences={
-              // only show tags related to this particular event
-              props.tagReferences.filter((r) =>
-                r.event.some((i) => i[0] === props.event.id),
-              )
-            }
-          />
+          <div className="flex w-full flex-row justify-start">
+            <TagReferencesList
+              styleLarge={false}
+              showEditingTools={false}
+              tagReferences={
+                // only show tags related to this particular event
+                props.tagReferences.filter((r) =>
+                  r.event.some((i) => i[0] === props.event.id),
+                )
+              }
+              getSmallTagStyle={(tagColour: string) => {
+                return {
+                  backgroundColor: tagColour,
+                  color: "#ffffff",
+                  padding: "2.5px 10px",
+                  borderRadius: "4px",
+                  display: "inline-block",
+                  whiteSpace: "nowrap",
+                  width: "auto",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                  position: "relative",
+                  background: tagColour,
+                };
+              }}
+            />
+          </div>
+          {session.status === "authenticated" && !!session.data.user.admin && (
+            <div className="flex items-center justify-center px-3 align-baseline">
+              <EventActionsModal
+                handleDeletion={props.handleDeletion}
+                event={props.event}
+                handleEventUpdate={props.handleEventUpdate}
+              />
+              <EventCardActions
+                event={props.event}
+                updateAttachments={props.updateAttachments}
+              />
+            </div>
+          )}
         </CardFooter>
-        <div className="flex items-center justify-center p-3 align-baseline">
-          <EventActionsModal
-            handleDeletion={props.handleDeletion}
-            event={props.event}
-            handleEventUpdate={props.handleEventUpdate}
-          />
-          <EventCardActions
-            event={props.event}
-            updateAttachments={props.updateAttachments}
-          />
-        </div>
       </Card>
       {showEventDescription && (
         <EventDescriptionModal
@@ -319,13 +338,11 @@ function EventDescriptionModal(props: {
                 <p>{props.event.description}</p>
               </ScrollShadow>
               <Divider />
-
-              <p className="font-bold">Location</p>
+              <p className="font-bold">Location</p> {/* TODO: add icons */}
               <p>{props.event.location}</p>
-
               <Divider />
-
               <p className="font-bold">Timing</p>
+              {/* TODO: add icons + format date better */}
               <Tooltip
                 content={`${startDate.format(
                   "DD/MM/YYYY HH:mm",
