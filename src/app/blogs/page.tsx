@@ -11,11 +11,12 @@ import BlogsList from "./blogList";
 export default function Blog() {
   return (
     <main className="bg-white">
-      <header className="text-white p-12 bg-[#4799d1] flex flex-col gap-4">
+      <header className="flex flex-col gap-4 bg-[#4799d1] p-12 text-white">
         <h1 className="text-3xl font-semibold">Blog</h1>
         <p>
-          Stay in the loop with our blog posts! From educational guides to opinion articles about
-          data science in the real world, they&apos;re here for you!
+          Stay in the loop with our blog posts! From educational guides to
+          opinion articles about data science in the real world, they&apos;re
+          here for you!
         </p>
       </header>
       <BlogsContainer />
@@ -42,13 +43,13 @@ function BlogsContainer() {
   }, [session.status]);
 
   return (
-    <div className="container m-auto flex gap-8 p-10 flex-wrap justify-center">
+    <div className="m-auto flex flex-wrap justify-center gap-8 px-10 py-10 lg:container md:px-0">
       {session.status === "authenticated" && <BlogsAddCard />}
 
-      <BlogsList/>  
+      <BlogsList />
 
       {session.status === "unauthenticated" && blogs.length === 0 && (
-        <div className="h-full flex justify-center items-center p-10">
+        <div className="flex h-full items-center justify-center p-10">
           <p className="text-center text-[#555]">No blogs yet!</p>
         </div>
       )}

@@ -105,13 +105,13 @@ export default function BlogCreate() {
           <input
             type="text"
             placeholder="title"
-            onBlur={(e) => (blogTitle.current = e.target.value)}
+            onChange={(e) => (blogTitle.current = e.target.value)}
             className="text-xl w-full border-b border-black py-3 outline-none mb-4"
           />
           <input
             type="text"
             placeholder="author"
-            onBlur={(e) => (blogAuthor.current = e.target.value)}
+            onChange={(e) => (blogAuthor.current = e.target.value)}
             className="text-xl w-full border-b border-black py-2 outline-none mb-4"
           />
           <input
