@@ -61,7 +61,7 @@ export default function CreateEvent() {
       return toast.error("The start date cannot occur after the end date!");
     }
 
-    let event: CreateEvent = {
+    const event: CreateEvent = {
       creator: session.data.user.id,
       title: title,
       description: description,
@@ -93,15 +93,12 @@ export default function CreateEvent() {
   }
 
   function isValidURL(text: string) {
-    let url: URL;
-
     try {
-      url = new URL(text);
+      const url = new URL(text);
+      return url.protocol === "http:" || url.protocol === "https:";
     } catch (_) {
       return false;
     }
-
-    return url.protocol === "http:" || url.protocol === "https:";
   }
 
   return (
