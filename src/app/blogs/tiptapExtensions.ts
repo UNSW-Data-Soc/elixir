@@ -17,6 +17,7 @@ import Link from "@tiptap/extension-link";
 
 import { mergeAttributes } from "@tiptap/core";
 import { Node } from "@tiptap/core";
+import BubbleMenu from "@tiptap/extension-bubble-menu";
 
 type Levels = 1 | 2 | 3;
 
@@ -149,4 +150,5 @@ export const TIPTAP_EXTENSIONS = [
   }),
   Embed,
   Script,
+  BubbleMenu,
 ];

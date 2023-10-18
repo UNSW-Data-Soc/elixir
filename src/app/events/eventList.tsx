@@ -38,6 +38,8 @@ import {
   TagReferences,
 } from "../api/backend/tags";
 import TagReferencesList from "../tags/references/tagReferencesList";
+import { TIPTAP_EXTENSIONS } from "../blogs/tiptapExtensions";
+import { generateHTML } from "@tiptap/html";
 
 dayjs.extend(relativeTime);
 
@@ -333,9 +335,16 @@ function EventDescriptionModal(props: {
               </small>
             </ModalHeader>
             <ModalBody>
-              <p className="font-bold">Description</p>
+              {/* <p className="font-bold">Description</p> */}
               <ScrollShadow className="h-[200px]">
-                <p>{props.event.description}</p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: generateHTML(
+                      JSON.parse(props.event.description),
+                      TIPTAP_EXTENSIONS,
+                    ),
+                  }}
+                ></p>
               </ScrollShadow>
               <Divider />
               <p className="font-bold">Location</p> {/* TODO: add icons */}

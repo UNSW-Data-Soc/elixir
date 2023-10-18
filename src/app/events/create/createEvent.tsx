@@ -12,6 +12,25 @@ import PhotoUploader from "@/app/photoUploader";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
+import { TIPTAP_EXTENSIONS } from "@/app/blogs/tiptapExtensions";
+import { BubbleMenu } from "@tiptap/react";
+import {
+  BoldIcon,
+  CodeIcon,
+  H1Icon,
+  H2Icon,
+  H3Icon,
+  ItalicIcon,
+  LinkIcon,
+  OLIcon,
+  QuoteIcon,
+  StrikeIcon,
+  ULIcon,
+  UnderlineIcon,
+  UnlinkIcon,
+} from "@/app/blogs/editor/icons";
+import useClickAway from "@/app/hooks/useClickAway";
 
 export default function CreateEvent() {
   const router = useRouter();
@@ -20,6 +39,18 @@ export default function CreateEvent() {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: "prose max-w-none outline-none border-2 px-4 py-3 rounded-xl",
+      },
+    },
+    extensions: TIPTAP_EXTENSIONS,
+    content:
+      "Description of event... (highlight text to see rich-text options)",
+    autofocus: false,
+    onBlur: ({ editor }) => setDescription(JSON.stringify(editor.getJSON())),
+  });
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [location, setLocation] = useState("");
@@ -123,15 +154,8 @@ export default function CreateEvent() {
             }}
           />
           <p className="py-5  text-2xl font-semibold">Description</p>
-          <input
-            className="rounded-xl border-2 px-4 py-3 transition-all"
-            type="text"
-            placeholder="A short vision statement..."
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-          />
+          <EditorContent editor={editor} />
+          {!!editor && <EditorBubbleMenu editor={editor} />}
 
           <p className="py-5  text-2xl font-semibold">Link </p>
           <input
@@ -204,3 +228,146 @@ export default function CreateEvent() {
     </>
   );
 }
+
+const EditorBubbleMenu = ({ editor }: { editor: Editor }) => {
+  return (
+    <BubbleMenu
+      editor={editor}
+      tippyOptions={{ duration: 100, maxWidth: "none" }}
+      className="flex rounded-lg bg-[#f6f6f6] shadow-xl"
+    >
+      <button
+        className={`p-2 ${
+          editor.isActive("heading", {
+            level: 3,
+          })
+            ? "bg-slate-300"
+            : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+      >
+        <H3Icon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("bold") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+      >
+        <BoldIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("italic") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+      >
+        <ItalicIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("underline") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+      >
+        <UnderlineIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("strike") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+      >
+        <StrikeIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("code") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleCode().run()}
+      >
+        <CodeIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("blockquote") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+      >
+        <QuoteIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("bulletList") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+      >
+        <ULIcon />
+      </button>
+      <button
+        className={`p-2 ${
+          editor.isActive("orderedList") ? "bg-slate-300" : "bg-transparent"
+        } rounded-lg transition-all hover:bg-slate-200`}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <OLIcon />
+      </button>
+      <EditorAddLink editor={editor} />
+    </BubbleMenu>
+  );
+};
+
+const EditorAddLink = ({ editor }: { editor: Editor }) => {
+  const [showLinkAdd, setShowLinkAdd] = useState<boolean>(false);
+  const [link, setLink] = useState<string>("");
+  const clickAwayRef = useClickAway(() => setShowLinkAdd(false));
+  if (!editor) return <></>;
+
+  return (
+    <>
+      <button
+        className={`rounded-lg p-2 transition-all hover:bg-slate-200 ${
+          showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
+        }}`}
+        onClick={() => setShowLinkAdd((prev) => !prev)}
+      >
+        <LinkIcon />
+      </button>
+      <button
+        className={`rounded-lg p-2 transition-all hover:bg-slate-200 ${
+          showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
+        }}`}
+        onClick={() =>
+          editor.chain().focus().extendMarkRange("link").unsetLink().run()
+        }
+      >
+        <UnlinkIcon />
+      </button>
+      <form
+        ref={clickAwayRef}
+        className={`absolute ${
+          showLinkAdd ? "z-30 h-auto w-auto opacity-100" : "z-[-10] opacity-0"
+        } flex translate-x-10 flex-row items-center gap-2 overflow-hidden rounded-md bg-white shadow-xl transition-all`}
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          if (!link) return;
+
+          // editor.chain().focus().extendMarkRange("link").setLink({ href: link, target: "_blank" });
+          editor.commands.setLink({ href: link, target: "_blank" });
+          setShowLinkAdd(false);
+          setLink("");
+        }}
+      >
+        {/* <label>Insert a new image:</label> */}
+        <input
+          type="text"
+          placeholder="link..."
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          className="p-2 px-3 outline-none transition-all focus:bg-[#eee]"
+        />
+      </form>
+    </>
+  );
+};
