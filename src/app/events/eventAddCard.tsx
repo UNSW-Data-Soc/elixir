@@ -15,7 +15,7 @@ export default function EventAddCard() {
       <>
         <Card
           isPressable
-          className="border-[1px] border-black p-5 flex justify-center items-center sm:w-4/12"
+          className="flex aspect-[16/9] min-w-[20rem] items-center justify-center p-5 sm:w-96"
           onPress={() => router.push("/events/create")}
         >
           <PlusIcon className="h-8 w-8" />
