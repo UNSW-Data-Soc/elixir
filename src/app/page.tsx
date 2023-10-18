@@ -1,5 +1,6 @@
-import Image from "next/image";
 import { endpoints } from "./api/backend/endpoints";
+import { Image as NextUIImage } from "@nextui-org/react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   FacebookIcon,
@@ -15,6 +16,8 @@ import {
   DATASOC_GITHUB_LINK,
   DATASOC_YOUTUBE_LINK,
   DATASOC_REGISTRATION_LINK,
+  Event_PHOTO_Y_PXL,
+  Event_PHOTO_X_PXL,
 } from "./utils";
 import LinkButton from "./components/LinkButton";
 
@@ -53,7 +56,18 @@ const SPONSORS = [
   { img: AccentureLogo, url: "https://www.accenture.com/" },
 ];
 
-export default function Home() {
+const NUM_DISPLAY_EVENTS = 3;
+
+export default async function Home() {
+  const events = (await endpoints.events.getAll(false)).slice(
+    0,
+    NUM_DISPLAY_EVENTS,
+  );
+  const blogs = (await endpoints.blogs.getAll({ authRequired: false })).slice(
+    0,
+    NUM_DISPLAY_EVENTS,
+  );
+
   return (
     <>
       <main className="bg-light-rainbow left-0 top-0 z-0 min-h-screen w-full select-none gap-10 pb-48">
@@ -94,21 +108,65 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className="flex items-center justify-center bg-[#9ad6ff] p-12 align-baseline">
+      <div className="flex flex-col items-center justify-center gap-7 bg-[#b6e2ff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Recent Blog Posts</h3>
-        <p className="w-full text-center font-light">
-          Uniting students with a passion for data science,
-          <br />
-          machine learning and artificial intelligence.
-        </p>
+        {blogs.length === 0 && (
+          <p className="w-full text-center font-light">No blogs posts yet!</p>
+        )}
+        <div className="flex flex-row gap-8 p-3">
+          {blogs.length > 0 &&
+            blogs.map((blog) => {
+              return (
+                <div
+                  className="flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  key={blog.id}
+                >
+                  {/* <Image
+                    src={endpoints.events.getEventPhoto(blog.id)}
+                    alt="Profile picture"
+                    className="rounded-xl object-cover"
+                    height={Event_PHOTO_Y_PXL * 0.4}
+                    width={Event_PHOTO_X_PXL * 0.4}
+                  /> */}
+                  <div className="flex h-full flex-col items-center justify-center bg-[#fffa] transition-all">
+                    <p className="w-full text-center">{blog.title}</p>
+                    <p className="w-full text-center">{blog.created_time}</p>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
       </div>
-      <div className="flex items-center justify-center bg-[#fff] p-12 align-baseline">
+      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
-        <p className="w-full text-center font-light">
-          Uniting students with a passion for data science,
-          <br />
-          machine learning and artificial intelligence.
-        </p>
+        {events.length === 0 && (
+          <p className="w-full text-center font-light">
+            No upcoming events! Stay peeled for more!
+          </p>
+        )}
+        <div className="flex flex-row gap-8 p-3">
+          {events.length > 0 &&
+            events.map((event) => {
+              return (
+                <div
+                  className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  key={event.id}
+                >
+                  <Image
+                    src={endpoints.events.getEventPhoto(event.id)}
+                    alt="Profile picture"
+                    className="rounded-xl object-cover"
+                    height={Event_PHOTO_Y_PXL * 0.4}
+                    width={Event_PHOTO_X_PXL * 0.4}
+                  />
+                  <div className="absolute z-10 flex h-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
+                    <p className="w-full text-center">{event.title}</p>
+                    <p className="w-full text-center">{event.start_date}</p>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-5 bg-[#fadcff] p-12 py-20 align-baseline">
         <p className="w-full text-center text-xl">
