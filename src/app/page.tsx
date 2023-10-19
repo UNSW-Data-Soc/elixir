@@ -24,26 +24,6 @@ import LinkButton from "./components/LinkButton";
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
 
-const SPONSORS: any[] = [
-  // { img: QuantiumLogo, url: "https://www.quantium.com/" },
-  // { img: AtlassianLogo, url: "https://www.atlassian.com/" },
-  // {
-  //   img: NABLogo,
-  //   url: "https://www.nab.com.au/about-us/careers/business-areas/technology-digital",
-  // },
-  // { img: ResolutionLifeLogo, url: "https://www.resolutionlife.com/" },
-  // {
-  //   img: AllianzLogo,
-  //   url: "https://careers.allianz.com/AUS/go/Graduates-AUS/8779701/",
-  // },
-  // { img: SynogizeLogo, url: "https://www.synogize.io/" },
-  // { img: AkunaLogo, url: "https://akunacapital.com/" },
-  // { img: AlteryxLogo, url: "https://www.alteryx.com/" },
-  // { img: EYLogo, url: "https://www.ey.com/" },
-  // { img: CitadelLogo, url: "https://www.citadel.com/" },
-  // { img: AccentureLogo, url: "https://www.accenture.com/" },
-];
-
 const NUM_DISPLAY_EVENTS = 3;
 
 export default async function Home() {
@@ -54,6 +34,17 @@ export default async function Home() {
   const blogs = (await endpoints.blogs.getAll({ authRequired: false })).slice(
     0,
     NUM_DISPLAY_EVENTS,
+  );
+  const sponsors = await Promise.all(
+    (await endpoints.sponsorships.getAll(false)).map(async (sponsorship) => {
+      const company = await endpoints.companies.get(sponsorship.company);
+      return {
+        id: company.id,
+        name: company.name,
+        logo: endpoints.companies.getCompanyPhoto(company.id),
+        link: company.website_url,
+      };
+    }),
   );
 
   return (
@@ -177,16 +168,18 @@ export default async function Home() {
       <div className="container mx-auto flex flex-col items-center justify-center bg-[#fff] p-12 align-baseline">
         <h3 className="w-full text-2xl font-light">Proudly sponsored by:</h3>
         <div className="flex flex-row flex-wrap justify-center">
-          {SPONSORS.map((img, index) => (
+          {sponsors.map((company, index) => (
             <div
               key={index}
               className="flex max-w-[19rem] items-center justify-center p-10"
             >
-              <Link href={img.url}>
+              <Link href={company.link}>
                 <Image
-                  src={img.img}
+                  src={company.logo}
                   alt="Sponsor Logo"
                   className="object-contain"
+                  width={500}
+                  height={500}
                 />
               </Link>
             </div>
