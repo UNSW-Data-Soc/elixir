@@ -20,6 +20,7 @@ import {
   Event_PHOTO_X_PXL,
 } from "./utils";
 import LinkButton from "./components/LinkButton";
+import { SponsorshipType } from "./api/backend/sponsorships";
 
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
@@ -35,17 +36,20 @@ export default async function Home() {
     0,
     NUM_DISPLAY_EVENTS,
   );
-  const sponsors = await Promise.all(
-    (await endpoints.sponsorships.getAll(false)).map(async (sponsorship) => {
-      const company = await endpoints.companies.get(sponsorship.company);
-      return {
-        id: company.id,
-        name: company.name,
-        logo: endpoints.companies.getCompanyPhoto(company.id),
-        link: company.website_url,
-      };
-    }),
-  );
+  const sponsors = (
+    await Promise.all(
+      (await endpoints.sponsorships.getAll(false)).map(async (sponsorship) => {
+        const company = await endpoints.companies.get(sponsorship.company);
+        return {
+          id: company.id,
+          name: company.name,
+          logo: endpoints.companies.getCompanyPhoto(company.id),
+          link: company.website_url,
+          type: sponsorshipTypeToPos(sponsorship.sponsorship_type),
+        };
+      }),
+    )
+  ).sort((a, b) => a.type - b.type);
 
   return (
     <>
@@ -212,4 +216,17 @@ function SocialIcons() {
       </div>
     </>
   );
+}
+
+function sponsorshipTypeToPos(type: SponsorshipType): number {
+  switch (type) {
+    case "major":
+      return 0;
+    case "partner":
+      return 1;
+    case "other":
+      return 2;
+    default:
+      return 3;
+  }
 }
