@@ -21,39 +21,27 @@ import {
 } from "./utils";
 import LinkButton from "./components/LinkButton";
 
-import AccentureLogo from "public//sponsorLogos/accenture.png";
-import AkunaLogo from "public//sponsorLogos/akuna.png";
-import AllianzLogo from "public//sponsorLogos/allianz.png";
-import AlteryxLogo from "public//sponsorLogos/alteryx.png";
-import AtlassianLogo from "public//sponsorLogos/atlassian.png";
-import CitadelLogo from "public//sponsorLogos/citadel.png";
-import EYLogo from "public//sponsorLogos/ey.png";
-import NABLogo from "public//sponsorLogos/nab.png";
-import QuantiumLogo from "public//sponsorLogos/quantium.png";
-import ResolutionLifeLogo from "public//sponsorLogos/resolution_life.png";
-import SynogizeLogo from "public//sponsorLogos/synogize.png";
-
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
 
-const SPONSORS = [
-  { img: QuantiumLogo, url: "https://www.quantium.com/" },
-  { img: AtlassianLogo, url: "https://www.atlassian.com/" },
-  {
-    img: NABLogo,
-    url: "https://www.nab.com.au/about-us/careers/business-areas/technology-digital",
-  },
-  { img: ResolutionLifeLogo, url: "https://www.resolutionlife.com/" },
-  {
-    img: AllianzLogo,
-    url: "https://careers.allianz.com/AUS/go/Graduates-AUS/8779701/",
-  },
-  { img: SynogizeLogo, url: "https://www.synogize.io/" },
-  { img: AkunaLogo, url: "https://akunacapital.com/" },
-  { img: AlteryxLogo, url: "https://www.alteryx.com/" },
-  { img: EYLogo, url: "https://www.ey.com/" },
-  { img: CitadelLogo, url: "https://www.citadel.com/" },
-  { img: AccentureLogo, url: "https://www.accenture.com/" },
+const SPONSORS: any[] = [
+  // { img: QuantiumLogo, url: "https://www.quantium.com/" },
+  // { img: AtlassianLogo, url: "https://www.atlassian.com/" },
+  // {
+  //   img: NABLogo,
+  //   url: "https://www.nab.com.au/about-us/careers/business-areas/technology-digital",
+  // },
+  // { img: ResolutionLifeLogo, url: "https://www.resolutionlife.com/" },
+  // {
+  //   img: AllianzLogo,
+  //   url: "https://careers.allianz.com/AUS/go/Graduates-AUS/8779701/",
+  // },
+  // { img: SynogizeLogo, url: "https://www.synogize.io/" },
+  // { img: AkunaLogo, url: "https://akunacapital.com/" },
+  // { img: AlteryxLogo, url: "https://www.alteryx.com/" },
+  // { img: EYLogo, url: "https://www.ey.com/" },
+  // { img: CitadelLogo, url: "https://www.citadel.com/" },
+  // { img: AccentureLogo, url: "https://www.accenture.com/" },
 ];
 
 const NUM_DISPLAY_EVENTS = 3;
