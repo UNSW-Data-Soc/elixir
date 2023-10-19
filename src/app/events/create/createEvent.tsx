@@ -42,7 +42,8 @@ export default function CreateEvent() {
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: "prose max-w-none outline-none border-2 px-4 py-3 rounded-xl",
+        class:
+          "prose max-w-none outline-none border-2 px-4 py-3 rounded-xl min-h-[300px]",
       },
     },
     extensions: TIPTAP_EXTENSIONS,
