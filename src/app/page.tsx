@@ -61,9 +61,8 @@ export default async function Home() {
 
   return (
     <>
-      <main className="bg-light-rainbow left-0 top-0 z-0 min-h-screen w-full select-none gap-10 pb-48">
-        <div className="fade-in-image mix-blend-multiply">
-          <div>
+      <main className="bg-light-rainbow left-0 top-0 z-0 min-h-screen w-full select-none">
+        <div className="fade-in-image mix-blend-multiply" style={{ position: 'relative', height: '100vh' }}>
             <Image
               src={endpoints.file.getCoverPhoto()}
               alt="Cover Photo"
@@ -74,8 +73,8 @@ export default async function Home() {
               }}
               priority
               quality={100}
+              className="coverPhoto"
             />
-          </div>
         </div>
         <div className="flex flex-col items-start justify-center gap-3 pl-48 pt-48 align-baseline text-white brightness-200">
           <div className="text-3xl">Welcome to the</div>
@@ -185,25 +184,30 @@ export default async function Home() {
         </p>
       </div>
       <div className="container mx-auto flex flex-col items-center justify-center bg-[#fff] p-12 align-baseline">
-        <h3 className="w-full text-2xl font-light">Proudly sponsored by:</h3>
-        <div className="flex flex-row flex-wrap justify-center">
-          {sponsors.map((company, index) => (
-            <div
-              key={index}
-              className="flex max-w-[19rem] items-center justify-center p-10"
-            >
-              <Link href={company.link}>
-                <Image
-                  src={company.logo}
-                  alt="Sponsor Logo"
-                  className="object-contain"
-                  width={500}
-                  height={500}
-                />
-              </Link>
+        {
+          sponsors.length > 0 &&
+          <>
+            <h3 className="w-full text-2xl font-light">Proudly sponsored by:</h3>
+            <div className="flex flex-row flex-wrap justify-center">
+              {sponsors.map((company, index) => (
+                <div
+                  key={index}
+                  className="flex max-w-[19rem] items-center justify-center p-10"
+                >
+                  <Link href={company.link}>
+                    <Image
+                      src={company.logo}
+                      alt="Sponsor Logo"
+                      className="object-contain"
+                      width={500}
+                      height={500}
+                    />
+                  </Link>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        }
       </div>
     </>
   );
