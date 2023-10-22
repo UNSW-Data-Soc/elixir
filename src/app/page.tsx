@@ -21,17 +21,25 @@ import {
 } from "./utils";
 import LinkButton from "./components/LinkButton";
 import { SponsorshipType } from "./api/backend/sponsorships";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
 
 const NUM_DISPLAY_EVENTS = 3;
+const BLOG_POST_IMAGE_HEIGHT = 200;
+const BLOG_POST_IMAGE_WIDTH = 400;
+
 
 export default async function Home() {
   const events = (await endpoints.events.getAll(false)).slice(
     0,
     NUM_DISPLAY_EVENTS,
   );
+  const futureEvents = events.filter(e => new Date(e.start_date) > new Date());
+
   const blogs = (await endpoints.blogs.getAll({ authRequired: false })).slice(
     0,
     NUM_DISPLAY_EVENTS,
@@ -98,55 +106,62 @@ export default async function Home() {
         )}
         <div className="flex flex-row gap-8 p-3">
           {blogs.length > 0 &&
-            blogs.map((blog) => {
+              blogs.map((blog) => {
+                const firstImageUrl: string | null = JSON.parse(
+                  blog.body,
+                ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
+              
               return (
+                <Link href={`/blogs/${blog.slug}`}>
                 <div
-                  className="flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                   key={blog.id}
                 >
-                  {/* <Image
-                    src={endpoints.events.getEventPhoto(blog.id)}
-                    alt="Profile picture"
+                   <Image
+                    src={firstImageUrl  ?? "/logo.png"}
+                    alt="Blog post picture"
                     className="rounded-xl object-cover"
-                    height={Event_PHOTO_Y_PXL * 0.4}
-                    width={Event_PHOTO_X_PXL * 0.4}
-                  /> */}
-                  <div className="flex h-full flex-col items-center justify-center bg-[#fffa] transition-all">
+                    height={BLOG_POST_IMAGE_HEIGHT}
+                    width={BLOG_POST_IMAGE_WIDTH}
+                    />
+                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
                     <p className="w-full text-center">{blog.title}</p>
-                    <p className="w-full text-center">{blog.created_time}</p>
+                    <p className="text-xs w-full text-center">{dayjs(Date.parse(blog.created_time)).fromNow()}</p>
                   </div>
                 </div>
+                </Link>
               );
             })}
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
-        {events.length === 0 && (
+        {futureEvents.length === 0 &&
           <p className="w-full text-center font-light">
             No upcoming events! Stay peeled for more!
           </p>
-        )}
+        }
         <div className="flex flex-row gap-8 p-3">
-          {events.length > 0 &&
-            events.map((event) => {
+          {futureEvents.length > 0 && futureEvents.map((event) => {
               return (
-                <div
-                  className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
-                  key={event.id}
-                >
-                  <Image
-                    src={endpoints.events.getEventPhoto(event.id)}
-                    alt="Profile picture"
-                    className="rounded-xl object-cover"
-                    height={Event_PHOTO_Y_PXL * 0.4}
-                    width={Event_PHOTO_X_PXL * 0.4}
-                  />
-                  <div className="absolute z-10 flex h-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
-                    <p className="w-full text-center">{event.title}</p>
-                    <p className="w-full text-center">{event.start_date}</p>
+                <Link href={`/events`}>
+                  <div
+                    className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                    key={event.id}
+                  >
+                    <Image
+                      src={endpoints.events.getEventPhoto(event.id)}
+                      alt="Event picture"
+                      className="rounded-xl object-cover"
+                      height={Event_PHOTO_Y_PXL * 0.4}
+                      width={Event_PHOTO_X_PXL * 0.4}
+                    />
+                    <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
+                      <p className="w-full text-center">{event.title}</p>
+                      <p className="text-xs w-full text-center">{dayjs(Date.parse(event.start_date)).fromNow()}</p>
+                    </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
         </div>
