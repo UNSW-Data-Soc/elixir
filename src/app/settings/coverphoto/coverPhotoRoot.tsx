@@ -2,7 +2,7 @@
 
 import { endpoints } from "@/app/api/backend/endpoints";
 import PhotoUploader from "@/app/photoUploader";
-import { COVER_PHOTO_X_PXL, COVER_PHOTO_Y_PXL, Spinner } from "@/app/utils";
+import { COVER_PHOTO_X_PXL, COVER_PHOTO_Y_PXL, Spinner, parseBackendError } from "@/app/utils";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,16 +22,21 @@ export default function CoverPhotoRoot() {
 
     async function uploadCroppedPhoto(blob: Blob) {
         setLoading(true);
-        let uploaded_photo = await endpoints.file.uploadCoverPhoto(blob);
-
-        if (!uploaded_photo) {
-            toast.error("Failed to upload photo.");
+        try {
+            let uploaded_photo = await endpoints.file.uploadCoverPhoto(blob);
+    
+            if (!uploaded_photo) {
+                toast.error("Failed to upload photo.");
+                setLoading(false);
+                return;
+            }
+            
+            toast.success("Photo uploaded successfully");
+        } catch (e) {
+            toast.error(parseBackendError(e as Error));
+        } finally {
             setLoading(false);
-            return;
         }
-
-        setLoading(false);
-        toast.success("Photo uploaded successfully");
     }
 
     async function cancelUploadingCroppedPhoto() {}
