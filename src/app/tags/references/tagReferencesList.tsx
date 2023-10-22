@@ -140,7 +140,12 @@ export default function TagReferencesList({
               <div key={r.tags_id}>
                 <div
                   style={getSmallTagStyle(r.tags_colour)}
-                  onClick={() => handleTagClick(r)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleTagClick(r);
+                  }}
                 >
                   {r.tags_name}
                 </div>
