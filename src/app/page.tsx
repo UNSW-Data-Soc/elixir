@@ -111,7 +111,7 @@ export default async function Home() {
                 ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
               
               return (
-                <Link href={`/blogs/${blog.slug}`}>
+                <Link key={blog.id} href={`/blogs/${blog.slug}`}>
                 <div
                   className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                   key={blog.id}
@@ -143,7 +143,7 @@ export default async function Home() {
         <div className="flex flex-row gap-8 p-3">
           {futureEvents.length > 0 && futureEvents.map((event) => {
               return (
-                <Link href={`/events`}>
+                <Link key={event.id} href={`/events`}>
                   <div
                     className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                     key={event.id}
