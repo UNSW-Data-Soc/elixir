@@ -21,6 +21,7 @@ import {
 } from "@nextui-org/react";
 import { Company } from "../api/backend/companies";
 import CompanyActions from "./companyActions";
+import { COMPANY_PHOTO_X_PXL, COMPANY_PHOTO_Y_PXL } from "../utils";
 
 export default function CompanyList() {
     const [companies, setCompanies] = useState<Company[]>([]);
@@ -96,8 +97,8 @@ function CompaniesCard(props: {
                         )}
                         alt="Profile picture"
                         className="object-cover rounded-xl"
-                        height={300}
-                        width={300}
+                        height={COMPANY_PHOTO_Y_PXL}
+                        width={COMPANY_PHOTO_X_PXL}
                     />
                 </CardBody>
                 <CardFooter className="flex items-center justify-center align-baseline">
