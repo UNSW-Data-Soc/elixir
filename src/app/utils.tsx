@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 const DEFAULT_ERROR_MESSAGE = "An error occurred";
 
-export const ALL_IMAGE_FILE_TYPES_STR =
+export const ALL_FILE_TYPES_STR =
     "image/png, image/jpg, image/gif, image/jpeg, image/webp, application/pdf, text/csv, text/plain";
 export const IMAGE_FILE_TYPES = [
     "image/png",
@@ -94,7 +94,7 @@ export function FileUploadDropzone(props: {
                     id="dropzone-file"
                     className="hidden"
                     type="file"
-                    accept={ALL_IMAGE_FILE_TYPES_STR}
+                    accept={ALL_FILE_TYPES_STR}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         let files = event.target.files;
                         if (files) {

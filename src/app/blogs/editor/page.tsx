@@ -153,7 +153,7 @@ const BlogsEditInfoForm = () => {
               value={editorContext.get.blogAuthor ?? ""}
               onChange={(e) => editorContext.set.blogAuthor(e.target.value)}
             />
-            <Input type="submit" />
+            <Input type="submit" value="Save changes" style={{ cursor: "pointer" }}/>
           </form>
         </ModalContent>
       </Modal>

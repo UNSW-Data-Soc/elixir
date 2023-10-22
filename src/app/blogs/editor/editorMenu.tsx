@@ -280,6 +280,11 @@ const EditorAddImage = () => {
               onChange={(e) => setImageUrl(e.target.value)}
               className="rounded-lg bg-[#f7f7f7] p-2 px-3 outline-none transition-all focus:bg-[#eee]"
             />
+            <input
+            type="submit"
+            value="Upload"
+            className="cursor-pointer p-3 bg-[#eee] rounded-lg hover:bg-[#ddd] transition-all"
+          />
           </form>
           <label className="text-center">----- OR -----</label>
           <form

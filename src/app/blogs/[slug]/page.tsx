@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Blog } from "@/app/api/backend/blogs";
 import toast from "react-hot-toast";
 import { Spinner, parseBackendError } from "@/app/utils";
+import { Tooltip } from "@nextui-org/react";
 dayjs.extend(relativeTime);
 
 export default function BlogPage({ params }: { params: { slug: string } }) {
@@ -47,8 +48,8 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
     return router.push("/auth/login");
   }
 
-  const createdDate = dayjs(Date.parse(blog.created_time)).fromNow();
-  const editedDate = dayjs(Date.parse(blog.last_edit_time)).fromNow();
+  const createdDate = dayjs(Date.parse(blog.created_time));
+  const editedDate = dayjs(Date.parse(blog.last_edit_time));
 
   const content = generateHTML(JSON.parse(blog.body), TIPTAP_EXTENSIONS);
 
@@ -66,8 +67,16 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
               Written by <span className="italic">{blog.author}</span>
             </p>
             <div className="flex w-full flex-row justify-between">
-              <p className="italic text-[#555]">Published {createdDate}</p>
-              <p className="italic text-[#555]">Edited {editedDate}</p>
+              <Tooltip content={createdDate.format("DD/MM/YYYY HH:mm")}>
+                <p className="italic text-[#555]">
+                  Published {createdDate.fromNow()}
+                </p>
+              </Tooltip>
+              <Tooltip content={editedDate.format("DD/MM/YYYY HH:mm")}>
+                <p className="italic text-[#555]">
+                  Edited {editedDate.fromNow()}
+                </p>
+              </Tooltip>
             </div>
           </header>
           <div
