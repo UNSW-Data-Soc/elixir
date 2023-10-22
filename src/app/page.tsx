@@ -62,7 +62,7 @@ export default async function Home() {
   return (
     <>
       <main className="bg-light-rainbow left-0 top-0 z-0 min-h-screen w-full select-none">
-        <div className="fade-in-image mix-blend-multiply" style={{ position: 'relative', height: '100vh' }}>
+        <div className="fade-in-image mix-blend-multiply">
             <Image
               src={endpoints.file.getCoverPhoto()}
               alt="Cover Photo"
