@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL, Spinner } from "@/app/utils";
+import { DEFAULT_DATEPICKER_INTERVAL, Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL, Spinner } from "@/app/utils";
 import { CreateEvent } from "@/app/api/backend/events";
 import { endpoints } from "@/app/api/backend/endpoints";
 import PhotoUploader from "@/app/photoUploader";
@@ -186,6 +186,7 @@ export default function CreateEvent() {
             showIcon={true}
             showTimeSelect
             selected={startDate}
+            timeIntervals={DEFAULT_DATEPICKER_INTERVAL}
             onChange={(date: Date) => setStartDate(date)}
           />
 
@@ -195,6 +196,7 @@ export default function CreateEvent() {
             showIcon={true}
             showTimeSelect
             selected={endDate}
+            timeIntervals={DEFAULT_DATEPICKER_INTERVAL}
             onChange={(date: Date) => setEndDate(date)}
           />
 

@@ -65,6 +65,8 @@ export const DATASOC_ADDRESS_JSX = (
 
 export const DATASOC_GOOGLE_MAPS_IFRAME_LINK = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1668.9917985536565!2d151.23080794983784!3d-33.91658157788042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b18c619e5679%3A0x70e6b528f4a64879!2sArc%20%40%20UNSW!5e0!3m2!1sen!2sau!4v1590563340784!5m2!1sen!2sau";
 
+export const DEFAULT_DATEPICKER_INTERVAL = 15; // minutes
+
 export function Spinner() {
     return (
         <div className="fadeInOutSpinner z-50 fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex justify-center items-center"></div>

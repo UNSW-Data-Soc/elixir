@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Spinner, JOB_PHOTO_X_PXL, JOB_PHOTO_Y_PXL } from "@/app/utils";
+import { Spinner, JOB_PHOTO_X_PXL, JOB_PHOTO_Y_PXL, DEFAULT_DATEPICKER_INTERVAL } from "@/app/utils";
 import { Company } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { Select, SelectItem } from "@nextui-org/select";
@@ -187,6 +187,7 @@ export default function CreateJob() {
                         showIcon={true}
                         showTimeSelect
                         selected={expirationTime}
+                        timeIntervals={DEFAULT_DATEPICKER_INTERVAL}
                         onChange={(date: Date) => setExpirationTime(date)}
                     />
 
