@@ -35,6 +35,8 @@ export const JOB_PHOTO_Y_PXL = 500;
 export const Event_PHOTO_X_PXL = 1000;
 export const Event_PHOTO_Y_PXL = 500;
 
+
+export const DATASOC_EMAIL = "hello@unswdata.com";
 export const DATASOC_YOUTUBE_LINK = "https://www.youtube.com/channel/UC5xEG38_Jr0251sMBoj8xwQ";
 export const DATASOC_INSTAGRAM_LINK = "https://www.instagram.com/unswdatasoc/";
 export const DATASOC_LINKEDIN_LINK = "https://au.linkedin.com/company/datasoc";
@@ -51,6 +53,17 @@ export const DATASOC_REGISTRATION_LINK = "https://docs.google.com/forms/d/e/1FAI
 export const NEWSLETTER_ARCHIVE_LINK = "https://us19.campaign-archive.com/home/?u=8dc568d0db37b26ed75ba4d94&id=01f8128da2";
 export const DATASOC_CONSTITUION_LINK = "https://docs.google.com/document/d/1cT61Whf3MPnQavT1QmzIIQ4GBZjgZPOlD7EhaOPt2MM/edit?usp=sharing";
 export const DATASOC_SPARC_LINK = "https://member.arc.unsw.edu.au/s/login/?ec=302&startURL=%2Fs%2Fclubdetail%3Fclubid%3D0016f0000371vxdqau";
+
+export const DATASOC_ADDRESS_JSX = (
+  <>
+    <p> UNSW Data Science Society </p>
+    <p> Level 2 Basser College (Entrance through Gate 5 on High St.) </p>
+    <p> University of New South Wales </p>
+    <p> Kensington NSW 2052 </p>
+  </>
+);
+
+export const DATASOC_GOOGLE_MAPS_IFRAME_LINK = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1668.9917985536565!2d151.23080794983784!3d-33.91658157788042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b18c619e5679%3A0x70e6b528f4a64879!2sArc%20%40%20UNSW!5e0!3m2!1sen!2sau!4v1590563340784!5m2!1sen!2sau";
 
 export function Spinner() {
     return (

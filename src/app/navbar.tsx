@@ -105,6 +105,12 @@ const Navbar = () => {
         <NavbarItem>
           <PublicationsDropdown/>
         </NavbarItem>
+
+        <NavbarItem>
+          <Link href='/contact' className=''>
+            <span>Contact Us</span>
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className='hidden sm:flex gap-4' justify='end'>

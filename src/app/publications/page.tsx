@@ -23,7 +23,7 @@ export default function Publications() {
                     className="w-64 p-3 font-bold text-1xl text-black bg-orange-400"
                 />
                 <LinkButton
-                    to="/blog"
+                    to="/blogs"
                     text="Blog"
                     className="w-64 p-3 font-bold text-1xl text-black bg-orange-400"
                 />
