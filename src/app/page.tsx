@@ -23,14 +23,13 @@ import LinkButton from "./components/LinkButton";
 import { SponsorshipType } from "./api/backend/sponsorships";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import BlogImageHomePage from "./components/blogImageHomePage";
 dayjs.extend(relativeTime);
 
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
 
 const NUM_DISPLAY_EVENTS = 3;
-const BLOG_POST_IMAGE_HEIGHT = 200;
-const BLOG_POST_IMAGE_WIDTH = 400;
 
 
 export default async function Home() {
@@ -109,25 +108,20 @@ export default async function Home() {
                 const firstImageUrl: string | null = JSON.parse(
                   blog.body,
                 ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
-              
+
               return (
-                <Link key={blog.id} href={`/blogs/${blog.slug}`}>
-                <div
-                  className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                <Link
                   key={blog.id}
+                  href={`/blogs/${blog.slug}`}
+                  className="group/eventCard relative flex flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                 >
-                   <Image
-                    src={firstImageUrl  ?? "/logo.png"}
-                    alt="Blog post picture"
-                    className="rounded-xl object-cover"
-                    height={BLOG_POST_IMAGE_HEIGHT}
-                    width={BLOG_POST_IMAGE_WIDTH}
+                    <BlogImageHomePage
+                    imgSrc={firstImageUrl ?? "/logo.png"}
                     />
-                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
-                    <p className="w-full text-center">{blog.title}</p>
-                    <p className="text-xs w-full text-center">{dayjs(Date.parse(blog.created_time)).fromNow()}</p>
-                  </div>
-                </div>
+                    <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
+                      <p className="w-full text-center">{blog.title}</p>
+                      <p className="text-xs w-full text-center">{dayjs(Date.parse(blog.created_time)).fromNow()}</p>
+                    </div>
                 </Link>
               );
             })}
