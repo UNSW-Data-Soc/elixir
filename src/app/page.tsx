@@ -77,10 +77,16 @@ export default async function Home() {
             className="coverPhoto"
           />
         </div>
-        <div className="flex flex-col items-start justify-center gap-3 pl-48 pt-48 align-baseline text-white brightness-200">
-          <div className="text-3xl">Welcome to the</div>
-          <div className="text-7xl font-bold">Data Science Society</div>
-          <div className="text-3xl">University of New South Wales</div>
+        <div className="flex flex-col items-center justify-center gap-3 px-8 pt-48 align-baseline  text-white brightness-200 sm:items-start md:pl-20 md:pt-48 lg:pl-36 xl:pl-48">
+          <div className="text-center text-3xl sm:text-left">
+            Welcome to the
+          </div>
+          <div className="text-center text-6xl font-bold sm:text-left sm:text-7xl">
+            Data Science Society
+          </div>
+          <div className="text-center text-3xl sm:text-left">
+            University of New South Wales
+          </div>
           <LinkButton
             to={DATASOC_REGISTRATION_LINK}
             text="Join Us!"
@@ -104,7 +110,7 @@ export default async function Home() {
         {blogs.length === 0 && (
           <p className="w-full text-center font-light">No blogs posts yet!</p>
         )}
-        <div className="flex flex-row gap-8 p-3">
+        <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
           {blogs.length > 0 &&
             blogs.map((blog) => {
               const firstImageUrl: string | null = JSON.parse(
@@ -115,10 +121,10 @@ export default async function Home() {
                 <Link
                   key={blog.id}
                   href={`/blogs/${blog.slug}`}
-                  className="group/eventCard relative flex flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  className="group/eventCard relative flex h-[200px] min-w-[300px] flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                 >
                   <BlogImageHomePage imgSrc={firstImageUrl ?? "/logo.png"} />
-                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
+                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
                     <p className="w-full text-center">{blog.title}</p>
                     <p className="w-full text-center text-xs">
                       {dayjs(Date.parse(blog.created_time)).fromNow()}
