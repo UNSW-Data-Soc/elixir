@@ -31,13 +31,14 @@ const SOCIAL_WIDTH = 25;
 
 const NUM_DISPLAY_EVENTS = 3;
 
-
 export default async function Home() {
   const events = (await endpoints.events.getAll(false)).slice(
     0,
     NUM_DISPLAY_EVENTS,
   );
-  const futureEvents = events.filter(e => new Date(e.start_date) > new Date());
+  const futureEvents = events.filter(
+    (e) => new Date(e.start_date) > new Date(),
+  );
 
   const blogs = (await endpoints.blogs.getAll({ authRequired: false })).slice(
     0,
@@ -60,20 +61,21 @@ export default async function Home() {
 
   return (
     <>
-      <main className="bg-light-rainbow left-0 top-0 z-0 min-h-screen w-full select-none">
+      {/* navbar height hardcoded as 4rem here */}
+      <main className="bg-light-rainbow left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
         <div className="fade-in-image mix-blend-multiply">
-            <Image
-              src={endpoints.file.getCoverPhoto()}
-              alt="Cover Photo"
-              fill
-              sizes="100vw"
-              style={{
-                objectFit: "cover",
-              }}
-              priority
-              quality={100}
-              className="coverPhoto"
-            />
+          <Image
+            src={endpoints.file.getCoverPhoto()}
+            alt="Cover Photo"
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+            }}
+            priority
+            quality={100}
+            className="coverPhoto"
+          />
         </div>
         <div className="flex flex-col items-start justify-center gap-3 pl-48 pt-48 align-baseline text-white brightness-200">
           <div className="text-3xl">Welcome to the</div>
@@ -104,10 +106,10 @@ export default async function Home() {
         )}
         <div className="flex flex-row gap-8 p-3">
           {blogs.length > 0 &&
-              blogs.map((blog) => {
-                const firstImageUrl: string | null = JSON.parse(
-                  blog.body,
-                ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
+            blogs.map((blog) => {
+              const firstImageUrl: string | null = JSON.parse(
+                blog.body,
+              ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
 
               return (
                 <Link
@@ -115,13 +117,13 @@ export default async function Home() {
                   href={`/blogs/${blog.slug}`}
                   className="group/eventCard relative flex flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                 >
-                    <BlogImageHomePage
-                    imgSrc={firstImageUrl ?? "/logo.png"}
-                    />
-                    <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
-                      <p className="w-full text-center">{blog.title}</p>
-                      <p className="text-xs w-full text-center">{dayjs(Date.parse(blog.created_time)).fromNow()}</p>
-                    </div>
+                  <BlogImageHomePage imgSrc={firstImageUrl ?? "/logo.png"} />
+                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
+                    <p className="w-full text-center">{blog.title}</p>
+                    <p className="w-full text-center text-xs">
+                      {dayjs(Date.parse(blog.created_time)).fromNow()}
+                    </p>
+                  </div>
                 </Link>
               );
             })}
@@ -129,13 +131,14 @@ export default async function Home() {
       </div>
       <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
-        {futureEvents.length === 0 &&
+        {futureEvents.length === 0 && (
           <p className="w-full text-center font-light">
             No upcoming events! Stay peeled for more!
           </p>
-        }
+        )}
         <div className="flex flex-row gap-8 p-3">
-          {futureEvents.length > 0 && futureEvents.map((event) => {
+          {futureEvents.length > 0 &&
+            futureEvents.map((event) => {
               return (
                 <Link key={event.id} href={`/events`}>
                   <div
@@ -151,7 +154,9 @@ export default async function Home() {
                     />
                     <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
                       <p className="w-full text-center">{event.title}</p>
-                      <p className="text-xs w-full text-center">{dayjs(Date.parse(event.start_date)).fromNow()}</p>
+                      <p className="w-full text-center text-xs">
+                        {dayjs(Date.parse(event.start_date)).fromNow()}
+                      </p>
                     </div>
                   </div>
                 </Link>
@@ -178,10 +183,11 @@ export default async function Home() {
         </p>
       </div>
       <div className="container mx-auto flex flex-col items-center justify-center bg-[#fff] p-12 align-baseline">
-        {
-          sponsors.length > 0 &&
+        {sponsors.length > 0 && (
           <>
-            <h3 className="w-full text-2xl font-light">Proudly sponsored by:</h3>
+            <h3 className="w-full text-2xl font-light">
+              Proudly sponsored by:
+            </h3>
             <div className="flex flex-row flex-wrap justify-center">
               {sponsors.map((company, index) => (
                 <div
@@ -201,7 +207,7 @@ export default async function Home() {
               ))}
             </div>
           </>
-        }
+        )}
       </div>
     </>
   );
