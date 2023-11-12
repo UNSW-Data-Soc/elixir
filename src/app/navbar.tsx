@@ -187,10 +187,11 @@ function AboutUsDropdown() {
             Our Team
           </DropdownItem>
           <DropdownItem
-            key="careers-guide"
-            onClick={() => router.push(DATASOC_CONSTITUION_LINK)}
+            key="constitution-link"
           >
-            Our Constitution
+            <Link href={DATASOC_CONSTITUION_LINK} className="text-black text-sm">
+              Our Constitution
+            </Link>
           </DropdownItem>
           <DropdownItem
             key="careers-guide"
