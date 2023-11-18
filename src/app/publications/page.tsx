@@ -30,7 +30,7 @@ export default function Publications() {
             </div>
             <div className="m-3 p-3 flex items-stretch justify-center align-baseline gap-12 flex-wrap">
                 <div className="m-5 w-96 p-3 flex flex-col justify-between text-center outline outline-1">
-                    <p className="text-3xl font-bold">2023 First Year Guide</p>
+                    <p className="text-3xl font-bold">2021 First Year Guide</p>
                     <br></br>
                     <p>
                         UNSW has a whole host of different experiences and
