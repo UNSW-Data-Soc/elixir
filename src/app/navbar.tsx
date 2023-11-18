@@ -186,16 +186,18 @@ function AboutUsDropdown() {
           >
             Our Team
           </DropdownItem>
-          <DropdownItem
-            key="constitution-link"
-          >
-            <Link href={DATASOC_CONSTITUION_LINK} className="text-black text-sm">
-              Our Constitution
-            </Link>
+          <DropdownItem key="constitution-link">
+            <Link
+            href={DATASOC_CONSTITUION_LINK}
+            className="text-black text-sm"
+            target="_blank"  // Add this line to open the link in a new tab
+            >
+          Our Constitution
+          </Link>
           </DropdownItem>
           <DropdownItem
             key="careers-guide"
-            onClick={() => router.push(DATASOC_SPARC_LINK)}
+            onClick={() => window.open(DATASOC_SPARC_LINK, '_blank')}
           >
             SpArc
           </DropdownItem>
