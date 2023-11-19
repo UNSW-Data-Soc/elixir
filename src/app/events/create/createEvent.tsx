@@ -4,7 +4,12 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { DEFAULT_DATEPICKER_INTERVAL, Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL, Spinner } from "@/app/utils";
+import {
+  DEFAULT_DATEPICKER_INTERVAL,
+  Event_PHOTO_X_PXL,
+  Event_PHOTO_Y_PXL,
+  Spinner,
+} from "@/app/utils";
 import { CreateEvent } from "@/app/api/backend/events";
 import { endpoints } from "@/app/api/backend/endpoints";
 import PhotoUploader from "@/app/photoUploader";
@@ -31,6 +36,7 @@ import {
   UnlinkIcon,
 } from "@/app/blogs/editor/icons";
 import useClickAway from "@/app/hooks/useClickAway";
+import { Tooltip } from "@nextui-org/react";
 
 export default function CreateEvent() {
   const router = useRouter();
@@ -239,82 +245,117 @@ const EditorBubbleMenu = ({ editor }: { editor: Editor }) => {
       tippyOptions={{ duration: 100, maxWidth: "none" }}
       className="flex rounded-lg bg-[#f6f6f6] shadow-xl"
     >
-      <button
-        className={`p-2 ${
-          editor.isActive("heading", {
-            level: 3,
-          })
-            ? "bg-slate-300"
-            : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+      <Tooltip placement="top" content="Heading" color="default" closeDelay={0}>
+        <button
+          className={`p-2 ${
+            editor.isActive("heading", {
+              level: 3,
+            })
+              ? "bg-slate-300"
+              : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+        >
+          <H3Icon />
+        </button>
+      </Tooltip>
+      <Tooltip placement="top" content="Bold" color="default" closeDelay={0}>
+        <button
+          className={`p-2 ${
+            editor.isActive("bold") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleBold().run()}
+        >
+          <BoldIcon />
+        </button>
+      </Tooltip>
+      <Tooltip placement="top" content="Italic" color="default" closeDelay={0}>
+        <button
+          className={`p-2 ${
+            editor.isActive("italic") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+        >
+          <ItalicIcon />
+        </button>
+      </Tooltip>
+      <Tooltip
+        placement="top"
+        content="Underline"
+        color="default"
+        closeDelay={0}
       >
-        <H3Icon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("bold") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleBold().run()}
+        <button
+          className={`p-2 ${
+            editor.isActive("underline") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+        >
+          <UnderlineIcon />
+        </button>
+      </Tooltip>
+      <Tooltip
+        placement="top"
+        content="Strikethrough"
+        color="default"
+        closeDelay={0}
       >
-        <BoldIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("italic") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
+        <button
+          className={`p-2 ${
+            editor.isActive("strike") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <StrikeIcon />
+        </button>
+      </Tooltip>
+      <Tooltip placement="top" content="Code" color="default" closeDelay={0}>
+        <button
+          className={`p-2 ${
+            editor.isActive("code") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleCode().run()}
+        >
+          <CodeIcon />
+        </button>
+      </Tooltip>
+      <Tooltip placement="top" content="Quote" color="default" closeDelay={0}>
+        <button
+          className={`p-2 ${
+            editor.isActive("blockquote") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        >
+          <QuoteIcon />
+        </button>
+      </Tooltip>
+      <Tooltip placement="top" content="List" color="default" closeDelay={0}>
+        <button
+          className={`p-2 ${
+            editor.isActive("bulletList") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          <ULIcon />
+        </button>
+      </Tooltip>
+      <Tooltip
+        placement="top"
+        content="Numbered List"
+        color="default"
+        closeDelay={0}
       >
-        <ItalicIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("underline") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-      >
-        <UnderlineIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("strike") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-      >
-        <StrikeIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("code") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleCode().run()}
-      >
-        <CodeIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("blockquote") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-      >
-        <QuoteIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("bulletList") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-      >
-        <ULIcon />
-      </button>
-      <button
-        className={`p-2 ${
-          editor.isActive("orderedList") ? "bg-slate-300" : "bg-transparent"
-        } rounded-lg transition-all hover:bg-slate-200`}
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-      >
-        <OLIcon />
-      </button>
+        <button
+          className={`p-2 ${
+            editor.isActive("orderedList") ? "bg-slate-300" : "bg-transparent"
+          } rounded-lg transition-all hover:bg-slate-200`}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          <OLIcon />
+        </button>
+      </Tooltip>
       <EditorAddLink editor={editor} />
     </BubbleMenu>
   );
@@ -328,24 +369,33 @@ const EditorAddLink = ({ editor }: { editor: Editor }) => {
 
   return (
     <>
-      <button
-        className={`rounded-lg p-2 transition-all hover:bg-slate-200 ${
-          showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
-        }}`}
-        onClick={() => setShowLinkAdd((prev) => !prev)}
+      <Tooltip placement="top" content="Link" color="default" closeDelay={0}>
+        <button
+          className={`rounded-lg p-2 transition-all hover:bg-slate-200 ${
+            showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
+          }}`}
+          onClick={() => setShowLinkAdd((prev) => !prev)}
+        >
+          <LinkIcon />
+        </button>
+      </Tooltip>
+      <Tooltip
+        placement="top"
+        content="Remove link"
+        color="default"
+        closeDelay={0}
       >
-        <LinkIcon />
-      </button>
-      <button
-        className={`rounded-lg p-2 transition-all hover:bg-slate-200 ${
-          showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
-        }}`}
-        onClick={() =>
-          editor.chain().focus().extendMarkRange("link").unsetLink().run()
-        }
-      >
-        <UnlinkIcon />
-      </button>
+        <button
+          className={`rounded-lg p-2 transition-all hover:bg-slate-200 ${
+            showLinkAdd || editor.isActive("link") ? "bg-slate-200" : "bg-white"
+          }}`}
+          onClick={() =>
+            editor.chain().focus().extendMarkRange("link").unsetLink().run()
+          }
+        >
+          <UnlinkIcon />
+        </button>
+      </Tooltip>
       <form
         ref={clickAwayRef}
         className={`absolute ${
