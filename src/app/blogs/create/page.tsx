@@ -116,6 +116,7 @@ export default function BlogCreate() {
           />
           <input
             type="submit"
+            value="Start Editing"
             className="cursor-pointer p-3 bg-[#eee] rounded-lg hover:bg-[#ddd] transition-all"
           />
         </form>

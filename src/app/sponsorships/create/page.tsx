@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Spinner } from "@/app/utils";
+import { DEFAULT_DATEPICKER_INTERVAL, Spinner } from "@/app/utils";
 import { Company } from "@/app/api/backend/companies";
 import { endpoints } from "@/app/api/backend/endpoints";
 import { CreateSponsorship, SponsorshipType, isOfTypeSponsorshipType } from "@/app/api/backend/sponsorships";
@@ -173,6 +173,7 @@ export default function CreateSponsorship() {
                         showIcon={true}
                         showTimeSelect
                         selected={expiration}
+                        timeIntervals={DEFAULT_DATEPICKER_INTERVAL}
                         onChange={(date: Date) => setExpiration(date)}
                     />
 

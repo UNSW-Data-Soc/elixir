@@ -14,9 +14,14 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import ListItem from "@tiptap/extension-list-item";
 import Link from "@tiptap/extension-link";
+import History from '@tiptap/extension-history';
+import Typography from '@tiptap/extension-typography';
+import Dropcursor from '@tiptap/extension-dropcursor';
+import Gapcursor from '@tiptap/extension-gapcursor';
 
 import { mergeAttributes } from "@tiptap/core";
 import { Node } from "@tiptap/core";
+import BubbleMenu from "@tiptap/extension-bubble-menu";
 
 type Levels = 1 | 2 | 3;
 
@@ -149,4 +154,9 @@ export const TIPTAP_EXTENSIONS = [
   }),
   Embed,
   Script,
+  BubbleMenu,
+  History,
+  Typography,
+  Dropcursor,
+  Gapcursor
 ];
