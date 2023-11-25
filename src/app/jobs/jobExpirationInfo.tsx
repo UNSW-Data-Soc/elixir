@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { Tooltip } from '@nextui-org/tooltip';
-import { Job } from '../api/backend/jobs';
-import { useEffect, useState } from 'react';
-import { endpoints } from '../api/backend/endpoints';
-import { UserPublic } from '../api/backend/users';
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { Tooltip } from "@nextui-org/tooltip";
+import { Job } from "../api/backend/jobs";
+import { useEffect, useState } from "react";
+import { endpoints } from "../api/backend/endpoints";
+import { UserPublic } from "../api/backend/users";
 dayjs.extend(relativeTime);
 
 export default function JobInformation(props: { job: Job }) {
@@ -31,19 +31,19 @@ export default function JobInformation(props: { job: Job }) {
     getDetails();
   }, [props.job.creator]);
 
-  if (session.status !== 'authenticated' || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 
   return (
     <>
-      <div className='flex flex-col items-start align-baseline'>
-        <Tooltip content={createdTime.format('DD/MM/YYYY HH:mm')}>
+      <div className="flex flex-col items-start align-baseline">
+        <Tooltip content={createdTime.format("DD/MM/YYYY HH:mm")}>
           <p>
             Created {createdTime.fromNow()} {author && <>by {author?.name}</>}
           </p>
         </Tooltip>
-        <Tooltip content={expirationTime.format('DD/MM/YYYY HH:mm')}>
+        <Tooltip content={expirationTime.format("DD/MM/YYYY HH:mm")}>
           <p>
             {expirationPassed
               ? `Expires ${expirationTime.fromNow()}`

@@ -25,7 +25,7 @@ export default function EventActionsModal(props: {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 

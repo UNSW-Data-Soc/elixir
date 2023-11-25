@@ -58,7 +58,7 @@ const BlogsEditor = () => {
 
   if (status === "loading") return <></>;
   if (status === "unauthenticated") router.push("/auth/login");
-  if (!data?.user.admin)
+  if (!data?.user.moderator)
     return (
       <p className="flex h-[calc(100vh-10rem)] w-full items-center justify-center text-3xl">
         You do not have permission to edit blogs. Contact IT if you think this
@@ -153,7 +153,11 @@ const BlogsEditInfoForm = () => {
               value={editorContext.get.blogAuthor ?? ""}
               onChange={(e) => editorContext.set.blogAuthor(e.target.value)}
             />
-            <Input type="submit" value="Save changes" style={{ cursor: "pointer" }}/>
+            <Input
+              type="submit"
+              value="Save changes"
+              style={{ cursor: "pointer" }}
+            />
           </form>
         </ModalContent>
       </Modal>

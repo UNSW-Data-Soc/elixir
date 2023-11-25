@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { Button } from '@nextui-org/button';
-import { Company } from '../api/backend/companies';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { Button } from "@nextui-org/button";
+import { Company } from "../api/backend/companies";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/modal';
-import { endpoints } from '../api/backend/endpoints';
-import toast from 'react-hot-toast';
-import { Job } from '../api/backend/jobs';
+} from "@nextui-org/modal";
+import { endpoints } from "../api/backend/endpoints";
+import toast from "react-hot-toast";
+import { Job } from "../api/backend/jobs";
 
 export default function JobActions(props: {
   job: Job;
@@ -26,7 +26,7 @@ export default function JobActions(props: {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== 'authenticated' || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 
@@ -34,11 +34,11 @@ export default function JobActions(props: {
     await endpoints.jobs
       .remove(props.job.id)
       .then(() => {
-        toast.success('Job deleted successfully!');
+        toast.success("Job deleted successfully!");
         props.handleDeletion(props.job.id);
       })
       .catch(() => {
-        toast.error('Failed to delete job');
+        toast.error("Failed to delete job");
       })
       .finally(() => {
         setShowDeletionDialogue(false);
@@ -48,11 +48,11 @@ export default function JobActions(props: {
 
   return (
     <>
-      <div className='items-center justify-center align-baseline'>
+      <div className="items-center justify-center align-baseline">
         <Button
-          color='danger'
-          radius='full'
-          variant='light'
+          color="danger"
+          radius="full"
+          variant="light"
           onClick={() => {
             setShowDeletionDialogue(true);
           }}
@@ -67,9 +67,9 @@ export default function JobActions(props: {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className='flex flex-col gap-1'>
+              <ModalHeader className="flex flex-col gap-1">
                 Are you sure?
-                <small className='text-default-500'>
+                <small className="text-default-500">
                   This action is permanent and irreversible!
                 </small>
               </ModalHeader>
@@ -80,12 +80,12 @@ export default function JobActions(props: {
                 </p>
               </ModalBody>
               <ModalFooter>
-                <Button color='primary' variant='light' onPress={onClose}>
+                <Button color="primary" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
-                  color='danger'
-                  variant='light'
+                  color="danger"
+                  variant="light"
                   onPress={handleJobDeletion}
                 >
                   Confirm

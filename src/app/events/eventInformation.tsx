@@ -26,7 +26,7 @@ export default function EventInformation(props: { event: Event }) {
     getDetails();
   }, [props.event.creator]);
 
-  if (session.status !== "authenticated" || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 

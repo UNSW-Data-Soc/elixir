@@ -10,12 +10,12 @@ export default function ResourceAddCard() {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status === "authenticated" && session.data.user.admin) {
+  if (session.status === "authenticated" && session.data.user.moderator) {
     return (
       <>
         <Card
           isPressable
-          className="border-[1px] border-black p-5 flex justify-center items-center sm:w-4/12"
+          className="flex items-center justify-center border-[1px] border-black p-5 sm:w-4/12"
           onPress={() => router.push("/resources/create")}
         >
           <PlusIcon className="h-8 w-8" />

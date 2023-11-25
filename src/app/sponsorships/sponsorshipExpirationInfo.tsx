@@ -9,25 +9,28 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Tooltip } from "@nextui-org/tooltip";
 dayjs.extend(relativeTime);
 
-export default function SponsorshipExpirationInfo(props: { sponsorship: Sponsorship }) {
-    const expirationTime = dayjs(
-        Date.parse(props.sponsorship.expiration)
-    );
-    const expirationPassed = expirationTime.isAfter(Date.now());
+export default function SponsorshipExpirationInfo(props: {
+  sponsorship: Sponsorship;
+}) {
+  const expirationTime = dayjs(Date.parse(props.sponsorship.expiration));
+  const expirationPassed = expirationTime.isAfter(Date.now());
 
-    const session = useSession();
-    const router = useRouter();
+  const session = useSession();
+  const router = useRouter();
 
-    if (session.status !== "authenticated" || !session.data.user.admin) {
-        return <></>;
-    }
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
+    return <></>;
+  }
 
-
-    return (
-        <>
-            <Tooltip content={expirationTime.format("DD/MM/YYYY HH:mm")}>
-                <p>{expirationPassed ? `Expires ${expirationTime.fromNow()}` : `Expired ${expirationTime.toNow(true)} ago`}</p>
-            </Tooltip>
-        </>
-    );
+  return (
+    <>
+      <Tooltip content={expirationTime.format("DD/MM/YYYY HH:mm")}>
+        <p>
+          {expirationPassed
+            ? `Expires ${expirationTime.fromNow()}`
+            : `Expired ${expirationTime.toNow(true)} ago`}
+        </p>
+      </Tooltip>
+    </>
+  );
 }

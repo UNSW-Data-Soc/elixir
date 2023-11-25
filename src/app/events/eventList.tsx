@@ -281,19 +281,20 @@ function EventsCard(props: {
               }}
             />
           </div>
-          {session.status === "authenticated" && !!session.data.user.admin && (
-            <div className="flex items-center justify-center px-3 align-baseline">
-              <EventActionsModal
-                handleDeletion={props.handleDeletion}
-                event={props.event}
-                handleEventUpdate={props.handleEventUpdate}
-              />
-              <EventCardActions
-                event={props.event}
-                updateAttachments={props.updateAttachments}
-              />
-            </div>
-          )}
+          {session.status === "authenticated" &&
+            session.data.user.moderator && (
+              <div className="flex items-center justify-center px-3 align-baseline">
+                <EventActionsModal
+                  handleDeletion={props.handleDeletion}
+                  event={props.event}
+                  handleEventUpdate={props.handleEventUpdate}
+                />
+                <EventCardActions
+                  event={props.event}
+                  updateAttachments={props.updateAttachments}
+                />
+              </div>
+            )}
         </CardFooter>
       </Card>
       {showEventDescription && (

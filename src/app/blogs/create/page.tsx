@@ -73,9 +73,13 @@ export default function BlogCreate() {
   const blogAuthor = useRef<string>("");
 
   if (session.status === "loading")
-    return <div className="w-full h-full flex justify-center items-center p-10">Loading...</div>;
+    return (
+      <div className="flex h-full w-full items-center justify-center p-10">
+        Loading...
+      </div>
+    );
   // redirect use if unauthenticated
-  if (session.status === "unauthenticated" || !session.data?.user.admin) {
+  if (session.status === "unauthenticated" || !session.data?.user.moderator) {
     router.push("/auth/login");
   }
 
@@ -98,26 +102,26 @@ export default function BlogCreate() {
   };
 
   return (
-    <main className="flex justify-center items-center top-0 left-0 h-screen w-screen">
-      <div className="px-10 sm:px-0 sm:max-w-[80%] md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%] mx-auto py-12 flex flex-col gap-3">
+    <main className="left-0 top-0 flex h-screen w-screen items-center justify-center">
+      <div className="mx-auto flex flex-col gap-3 px-10 py-12 sm:max-w-[80%] sm:px-0 md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%]">
         <h1 className="text-3xl font-bold">Start working on a new blog!</h1>
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-2">
           <input
             type="text"
             placeholder="title"
             onChange={(e) => (blogTitle.current = e.target.value)}
-            className="text-xl w-full border-b border-black py-3 outline-none mb-4"
+            className="mb-4 w-full border-b border-black py-3 text-xl outline-none"
           />
           <input
             type="text"
             placeholder="author"
             onChange={(e) => (blogAuthor.current = e.target.value)}
-            className="text-xl w-full border-b border-black py-2 outline-none mb-4"
+            className="mb-4 w-full border-b border-black py-2 text-xl outline-none"
           />
           <input
             type="submit"
             value="Start Editing"
-            className="cursor-pointer p-3 bg-[#eee] rounded-lg hover:bg-[#ddd] transition-all"
+            className="cursor-pointer rounded-lg bg-[#eee] p-3 transition-all hover:bg-[#ddd]"
           />
         </form>
       </div>

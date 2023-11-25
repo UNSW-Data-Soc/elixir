@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { Button } from '@nextui-org/button';
-import { Company } from '../api/backend/companies';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { Button } from "@nextui-org/button";
+import { Company } from "../api/backend/companies";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/modal';
-import { Job } from '../api/backend/jobs';
-import ModifyBearerTags from '../modifyBearerTags';
-import { Attachment, AttachmentInfo, Detachment } from '../api/backend/tags';
+} from "@nextui-org/modal";
+import { Job } from "../api/backend/jobs";
+import ModifyBearerTags from "../modifyBearerTags";
+import { Attachment, AttachmentInfo, Detachment } from "../api/backend/tags";
 
 export default function JobActions(props: {
   job: Job;
@@ -22,7 +22,7 @@ export default function JobActions(props: {
   updateAttachments: (
     updatedAttachments: AttachmentInfo[],
     to_attach: Attachment[],
-    to_detach: Detachment[]
+    to_detach: Detachment[],
   ) => void;
 }) {
   const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
@@ -30,7 +30,7 @@ export default function JobActions(props: {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== 'authenticated' || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 
@@ -39,27 +39,27 @@ export default function JobActions(props: {
       <Modal
         isOpen={showModifyTagsDialogue}
         onOpenChange={() => setShowModifyTagsDialogue(false)}
-        className='h-96'
+        className="h-96"
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className='flex flex-col gap-1'>
+              <ModalHeader className="flex flex-col gap-1">
                 Edit tags
-                <small className='text-default-500'>
+                <small className="text-default-500">
                   Add or remove tags from this job
                 </small>
               </ModalHeader>
               <ModalBody>
                 <ModifyBearerTags
-                  bearer='job'
+                  bearer="job"
                   bearer_id={props.job.id}
                   initialOptionsFilter={(ai) => ai.bearer_id === props.job.id}
                   updateAttachments={props.updateAttachments}
                 />
               </ModalBody>
               <ModalFooter>
-                <Button color='success' variant='light' onPress={onClose}>
+                <Button color="success" variant="light" onPress={onClose}>
                   Done
                 </Button>
               </ModalFooter>
@@ -68,11 +68,11 @@ export default function JobActions(props: {
         </ModalContent>
       </Modal>
 
-      <div className='flex gap-5 m-3 items-center justify-between align-baseline'>
+      <div className="m-3 flex items-center justify-between gap-5 align-baseline">
         <Button
-          color='warning'
-          radius='full'
-          variant='light'
+          color="warning"
+          radius="full"
+          variant="light"
           onClick={() => {
             setShowModifyTagsDialogue(true);
           }}
