@@ -281,10 +281,10 @@ const EditorAddImage = () => {
               className="rounded-lg bg-[#f7f7f7] p-2 px-3 outline-none transition-all focus:bg-[#eee]"
             />
             <input
-            type="submit"
-            value="Upload"
-            className="cursor-pointer p-3 bg-[#eee] rounded-lg hover:bg-[#ddd] transition-all"
-          />
+              type="submit"
+              value="Upload"
+              className="cursor-pointer rounded-lg bg-[#eee] p-3 transition-all hover:bg-[#ddd]"
+            />
           </form>
           <label className="text-center">----- OR -----</label>
           <form
@@ -314,7 +314,13 @@ const EditorAddImage = () => {
                 const imageURL = new URL("/file/blog", BACKEND_URL);
                 imageURL.searchParams.append("blog_id", blogId);
                 imageURL.searchParams.append("photo_id", imageId);
-                editor.commands.setImage({ src: imageURL.href });
+
+                editor.commands.setImage({
+                  // @ts-ignore
+                  src: null,
+                  imageId,
+                  blogId,
+                });
 
                 onClose();
                 setImageUrl("");
