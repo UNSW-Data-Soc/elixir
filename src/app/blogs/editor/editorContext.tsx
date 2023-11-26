@@ -27,7 +27,11 @@ type EditorContextType = {
 
 const EditorContext = createContext<EditorContextType | null>(null);
 
-export default function EditorContextProvider({ children }: { children: React.ReactNode }) {
+export default function EditorContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [blogId, setBlogId] = useState<string | null>(null);
   const [blogTitle, setBlogTitle] = useState<string | null>(null);
   const [blogAuthor, setBlogAuthor] = useState<string | null>(null);
@@ -44,7 +48,12 @@ export default function EditorContextProvider({ children }: { children: React.Re
     autofocus: false,
     onBlur: ({ editor }) => {
       console.log(blogId, blogTitle, blogAuthor, blogPublic);
-      if (blogId === null || blogTitle === null || blogAuthor === null || blogPublic === null) {
+      if (
+        blogId === null ||
+        blogTitle === null ||
+        blogAuthor === null ||
+        blogPublic === null
+      ) {
         toast.loading("Blog still loading...", { duration: 3000 });
         return;
       }
@@ -85,14 +94,20 @@ export default function EditorContextProvider({ children }: { children: React.Re
     blogBody: setBlogBody,
   };
 
-  return <EditorContext.Provider value={{ editor, get, set }}>{children}</EditorContext.Provider>;
+  return (
+    <EditorContext.Provider value={{ editor, get, set }}>
+      {children}
+    </EditorContext.Provider>
+  );
 }
 
 export const useEditorContext = () => {
   const context = useContext(EditorContext);
 
   if (!context) {
-    throw new Error("useEditorContext must be used within EditorContextProvider");
+    throw new Error(
+      "useEditorContext must be used within EditorContextProvider",
+    );
   }
 
   return context;

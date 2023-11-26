@@ -14,10 +14,10 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import ListItem from "@tiptap/extension-list-item";
 import Link from "@tiptap/extension-link";
-import History from '@tiptap/extension-history';
-import Typography from '@tiptap/extension-typography';
-import Dropcursor from '@tiptap/extension-dropcursor';
-import Gapcursor from '@tiptap/extension-gapcursor';
+import History from "@tiptap/extension-history";
+import Typography from "@tiptap/extension-typography";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Gapcursor from "@tiptap/extension-gapcursor";
 
 import { mergeAttributes } from "@tiptap/core";
 import { Node } from "@tiptap/core";
@@ -104,6 +104,64 @@ export const Script = Node.create({
   },
 });
 
+export const UploadImage = Image.extend({
+  name: "uploadImage",
+  group: "block",
+  atom: true,
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      blogId: { default: null },
+      imageId: { default: null },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "img",
+      },
+    ];
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    const imageURL = new URL("/file/blog", process.env.NEXT_PUBLIC_BACKEND_URL);
+    imageURL.searchParams.append("blog_id", node.attrs.blogId);
+    imageURL.searchParams.append("photo_id", node.attrs.imageId);
+    return [
+      `img`,
+      mergeAttributes(HTMLAttributes, {
+        src: node.attrs.src ? node.attrs.src : imageURL.href,
+      }),
+    ];
+  },
+  addCommands() {
+    return {
+      setImage:
+        (options: {
+          src?: string;
+          alt?: string;
+          title?: string;
+          blogId?: string;
+          imageId?: string;
+        }) =>
+        ({ tr, dispatch }) => {
+          const { selection } = tr;
+          // @ts-ignore
+          const position = selection.$cursor
+            ? // @ts-ignore
+              selection.$cursor.pos
+            : selection.$to.pos;
+          const node = this.type.create(options);
+
+          if (dispatch) {
+            tr.replaceRangeWith(position, position, node);
+          }
+
+          return true;
+        },
+    };
+  },
+});
+
 export const TIPTAP_EXTENSIONS = [
   Document,
   Paragraph.configure({
@@ -118,7 +176,7 @@ export const TIPTAP_EXTENSIONS = [
   Italic,
   Code,
   Underline,
-  Image.configure({
+  UploadImage.configure({
     HTMLAttributes: {
       class: "w-full",
     },
@@ -158,5 +216,5 @@ export const TIPTAP_EXTENSIONS = [
   History,
   Typography,
   Dropcursor,
-  Gapcursor
+  Gapcursor,
 ];
