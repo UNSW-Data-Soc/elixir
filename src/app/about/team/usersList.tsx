@@ -10,150 +10,220 @@ import { Image, Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalConte
 
 const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 
+enum Portfolio {
+    PRES = "President",
+    VPE = "Vice President (Externals)",
+    VPO = "Vice President (Operations)",
+    VPA = "Vice President (Activities)",
+    VPD = "Vice President (Development)",
+    DA = "Diversity Ambassador",
+    SEC = "Secretary",
+    TRE = "Treasurer",
+    CAREERS_DIR = "Careers Director",
+    SPONSORSHIPS_DIR = "Sponsorships Director",
+    IT_DIR = "IT Director",
+    MARKETING_DIR = "Marketing Director",
+    MEDIA_DIR = "Media Director",
+    HR_DIR = "HR Director",
+    SOCIAL_DIR = "Social Director",
+    EDUCATION_DIR = "Education Director",
+    PHILANTHROPY_PROJECTS_DIR = "Philanthropy & Projects Director",
+}
+
+const portfolioOrder: Portfolio[] = [
+    Portfolio.PRES,
+    Portfolio.VPE,
+    Portfolio.VPO,
+    Portfolio.VPA,
+    Portfolio.VPD,
+    Portfolio.DA,
+    Portfolio.SEC,
+    Portfolio.TRE,
+    Portfolio.CAREERS_DIR,
+    Portfolio.SPONSORSHIPS_DIR,
+    Portfolio.IT_DIR,
+    Portfolio.MARKETING_DIR,
+    Portfolio.MEDIA_DIR,
+    Portfolio.HR_DIR,
+    Portfolio.SOCIAL_DIR,
+    Portfolio.EDUCATION_DIR,
+    Portfolio.PHILANTHROPY_PROJECTS_DIR,
+];
+
+function findPortfolioByString(val: string | undefined): Portfolio | undefined {
+  const enumValue = Object.values(Portfolio).find(
+    (enumItem) => enumItem === val,
+  );
+  
+  return enumValue as Portfolio;
+}
+
+
 export default function UsersList() {
-    const [users, setUsers] = useState<UserPublic[]>([]);
-    const [isLoading, setLoading] = useState(true);
-    const [years, setYears] = useState<Number[]>([]);
-    const [selectedYear, setSelectedYear] = useState<number>();
-    const [portfolioTags, setPortfolioTags] = useState<AttachmentInfo[]>([]);
-    const [displayUserAbout, setDisplayUserAbout] = useState(false);
-    const [currUserDisplay, setCurrUserDisplay] = useState<UserPublic>();
+  const [users, setUsers] = useState<UserPublic[]>([]);
+  const [isLoading, setLoading] = useState(true);
+  const [years, setYears] = useState<Number[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number>();
+  const [portfolioTags, setPortfolioTags] = useState<AttachmentInfo[]>([]);
+  const [displayUserAbout, setDisplayUserAbout] = useState(false);
+  const [currUserDisplay, setCurrUserDisplay] = useState<UserPublic>();
 
-    useEffect(() => {
-        const getData = async () => {
-            let yearsData = await endpoints.users.getYears();
-            yearsData = yearsData.sort().reverse();
-            let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
-            setYears(yearsData);
-            if (yearsData.length > 0) {
-                setSelectedYear(yearsData[0]);
-                let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
-                setYears(yearsData);
-                setUsers(usersData);
-            }
-            setLoading(false);
-
-            // auth doesn't matter for 'portfolio'
-            let tags = await endpoints.tags.attachments('portfolio', false);
-            setPortfolioTags(tags);
-        };
-
-        getData();
-    }, []);
-
-    if (!users) {
-        toast.error("Failed to get users.");
-        return <></>;
-    }
-
-    // TODO: sort by portfolio
-    function sortUsers(a: UserPublic, b: UserPublic): number {
-        return a.name.localeCompare(b.name);
-
-
-        /*
-            ORDER
-             - President
-             - VP x5
-             - Secretary
-             - Treasurer
-             - Directors x18 (same next to each other)
-    
-    
-        */
-    }
-
-    // function userToValue(user: UserPublic): number {
-    //     if (user)
-    // }
-
-    function getUserCardStyle(user: UserPublic): CSSProperties {
-        return {
-            backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
-            backgroundOrigin: "content-box",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-        };
-    }
-
-    async function handleYearChange(year: Number) {
-        if (!years.includes(year)) return toast.error("Invalid year!");
-
-        setLoading(true);
-        let usersData = await endpoints.users.getUsersByYears(year);
-        setSelectedYear(year as number);
+  useEffect(() => {
+    const getData = async () => {
+      let yearsData = await endpoints.users.getYears();
+      yearsData = yearsData.sort().reverse();
+      let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
+      setYears(yearsData);
+      if (yearsData.length > 0) {
+        setSelectedYear(yearsData[0]);
+        let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
+        setYears(yearsData);
         setUsers(usersData);
-        setLoading(false);
-    }
+      }
+      setLoading(false);
 
-    async function handleProfilePress(user: UserPublic) {
-        setDisplayUserAbout(true);
-        setCurrUserDisplay(user);
-    }
+      // auth doesn't matter for 'portfolio'
+      let tags = await endpoints.tags.attachments("portfolio", false);
+      setPortfolioTags(tags);
+    };
 
-    async function handleProfileClose() {
-        setDisplayUserAbout(false);
-        setCurrUserDisplay(undefined);
-    }
+    getData();
+  }, []);
 
-    function getUserPortfolio(user: UserPublic) {
-        return portfolioTags.find(a => a.bearer_id === user.id)?.name;
-    }
+  if (!users) {
+    toast.error("Failed to get users.");
+    return <></>;
+  }
 
-    return (
-        <>
-            {isLoading ? (
-                <Spinner />
-            ) : (
-                <div className="container">
-                    <div className="flex gap-5 justify-center">
-                        <Tabs
-                            aria-label="Dynamic tabs"
-                            items={years.map(y => { return { label: y.toString(), val: y } })}
-                            selectedKey={selectedYear?.toString()}
-                            onSelectionChange={(y) => handleYearChange(Number(y.valueOf()))}
-                        >
-                            {(item) => (<Tab key={item.label} title={item.label} />)}
-                        </Tabs>
-                    </div>
-                    <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
-                        {
-                            users.length > 0 ?
-                                users.sort(sortUsers).map((user) => (
-                                    <>
-                                        <Card isBlurred isPressable radius="lg" className="border-none" onPress={() => { handleProfilePress(user) }}>
-                                            <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                                                <small className="text-default-500">{getUserPortfolio(user) || ZERO_WIDTH_SPACE}</small>
-                                                <h4 className="font-bold text-large">{user.name}</h4>
-                                            </CardHeader>
-                                            <CardBody className="overflow-visible py-2">
-                                                <Image
-                                                    // fill
-                                                    src={endpoints.users.getUserProfilePicture(
-                                                        user.id
-                                                    )}
-                                                    alt="Profile picture"
-                                                    className="object-cover rounded-xl"
-                                                    // height={240}
-                                                    height={300}
-                                                    width={300}
-                                                // sizes="100vw"
-                                                />
-                                            </CardBody>
-                                        </Card>
-                                    </>
-                                ))
-                                :
-                                <div> No team members yet :( </div>
-                        }
-                    </div >
-                    {currUserDisplay && <DisplayModal user={currUserDisplay} isOpen={displayUserAbout} portfolio={getUserPortfolio(currUserDisplay)} onOpenChange={handleProfileClose} />
-                    }
-                </div >
-            )}
-        </>
-    );
+  function sortUsers(a: UserPublic, b: UserPublic): number {
+    const aPort = findPortfolioByString(getUserPortfolio(a));
+    const bPort = findPortfolioByString(getUserPortfolio(b));
+
+    if (aPort !== undefined && bPort !== undefined) {
+      const orderA = portfolioOrder.indexOf(aPort);
+      const orderB = portfolioOrder.indexOf(bPort);
+
+      if (orderA === orderB) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return orderA - orderB;
+      }
+    } else if (aPort !== undefined) {
+      // Move users with a defined portfolio value before those with undefined values
+      return -1;
+    } else if (bPort !== undefined) {
+      // Move users with a defined portfolio value before those with undefined values
+      return 1;
+    } else {
+      // Both portfolios are undefined, no preference
+      return 0;
+    }
+  }
+
+  // function userToValue(user: UserPublic): number {
+  //     if (user)
+  // }
+
+  function getUserCardStyle(user: UserPublic): CSSProperties {
+    return {
+      backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
+      backgroundOrigin: "content-box",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    };
+  }
+
+  async function handleYearChange(year: Number) {
+    if (!years.includes(year)) return toast.error("Invalid year!");
+
+    setLoading(true);
+    let usersData = await endpoints.users.getUsersByYears(year);
+    setSelectedYear(year as number);
+    setUsers(usersData);
+    setLoading(false);
+  }
+
+  async function handleProfilePress(user: UserPublic) {
+    setDisplayUserAbout(true);
+    setCurrUserDisplay(user);
+  }
+
+  async function handleProfileClose() {
+    setDisplayUserAbout(false);
+    setCurrUserDisplay(undefined);
+  }
+
+  function getUserPortfolio(user: UserPublic) {
+    return portfolioTags.find((a) => a.bearer_id === user.id)?.name;
+  }
+
+  return (
+    <>
+      <div className="container">
+        <div className="flex justify-center gap-5">
+          <Tabs
+            aria-label="Dynamic tabs"
+            items={years.map((y) => {
+              return { label: y.toString(), val: y };
+            })}
+            selectedKey={selectedYear?.toString()}
+            onSelectionChange={(y) => handleYearChange(Number(y.valueOf()))}
+          >
+            {(item) => <Tab key={item.label} title={item.label} />}
+          </Tabs>
+        </div>
+        <div className="container m-auto flex flex-wrap justify-center gap-5 p-10">
+          {isLoading ? (
+            <Spinner />
+          ) : users.length > 0 ? (
+            users.sort(sortUsers).map((user) => (
+              <>
+                <Card
+                  isBlurred
+                  isPressable
+                  radius="lg"
+                  className="border-none"
+                  onPress={() => {
+                    handleProfilePress(user);
+                  }}
+                >
+                  <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
+                    <small className="text-default-500">
+                      {getUserPortfolio(user) || ZERO_WIDTH_SPACE}
+                    </small>
+                    <h4 className="text-large font-bold">{user.name}</h4>
+                  </CardHeader>
+                  <CardBody className="overflow-visible py-2">
+                    <Image
+                      // fill
+                      src={endpoints.users.getUserProfilePicture(user.id)}
+                      alt="Profile picture"
+                      className="rounded-xl object-cover"
+                      // height={240}
+                      height={300}
+                      width={300}
+                      // sizes="100vw"
+                    />
+                  </CardBody>
+                </Card>
+              </>
+            ))
+          ) : (
+            <div> No team members yet :( </div>
+          )}
+        </div>
+        {currUserDisplay && (
+          <DisplayModal
+            user={currUserDisplay}
+            isOpen={displayUserAbout}
+            portfolio={getUserPortfolio(currUserDisplay)}
+            onOpenChange={handleProfileClose}
+          />
+        )}
+      </div>
+    </>
+  );
 }
 
 
