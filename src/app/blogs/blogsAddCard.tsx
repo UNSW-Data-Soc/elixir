@@ -10,7 +10,7 @@ export default function BlogsAddCard() {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status === "authenticated" && session.data.user.admin) {
+  if (session.status === "authenticated" && session.data.user.moderator) {
     return (
       <>
         <Card

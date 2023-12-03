@@ -138,6 +138,7 @@ const Navbar = () => {
               <NavbarItem className="flex items-center justify-center align-baseline">
                 <SettingsDropdown
                   is_admin={session.data.user.admin}
+                  is_moderator={session.data.user.moderator}
                   user_id={session.data.user.id}
                 />
               </NavbarItem>
@@ -245,7 +246,7 @@ function PublicationsDropdown() {
   );
 }
 
-function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
+function SettingsDropdown(props: { is_admin: boolean; is_moderator: boolean; user_id: string }) {
   const router = useRouter();
   interface ItemDropdown {
     key: string;
@@ -256,14 +257,19 @@ function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
 
   let items: ItemDropdown[] = [];
 
-  if (props.is_admin) {
-    items = [
+  if(props.is_admin) {
+    items= [
       {
         key: "users",
         label: "Users",
         startContent: <UsersIcon className="h-6 w-6" />,
         link: "/users",
       },
+    ]
+  }
+
+  if (props.is_moderator) {
+    items.push(
       {
         key: "tags",
         label: "Tags",
@@ -282,7 +288,7 @@ function SettingsDropdown(props: { is_admin: boolean; user_id: string }) {
         startContent: <PhotoIcon className="h-6 w-6" />,
         link: "/settings/coverphoto",
       },
-    ];
+    );
   }
 
   items.push({

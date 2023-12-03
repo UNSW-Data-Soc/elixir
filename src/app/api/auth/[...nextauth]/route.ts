@@ -31,11 +31,18 @@ const handler = NextAuth({
         }
 
         try {
-          const { id, token, admin, exp } = await login({
+          const { id, token, admin, moderator, exp } = await login({
             email: credentials?.email,
             password: credentials?.password,
           });
-          return { id: id, email: credentials.email, token, admin, exp };
+          return {
+            id: id,
+            email: credentials.email,
+            token,
+            admin,
+            moderator,
+            exp,
+          };
         } catch {
           return null;
         }

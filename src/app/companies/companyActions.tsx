@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { Button } from '@nextui-org/button';
-import { Company } from '../api/backend/companies';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { Button } from "@nextui-org/button";
+import { Company } from "../api/backend/companies";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/modal';
-import { endpoints } from '../api/backend/endpoints';
-import toast from 'react-hot-toast';
+} from "@nextui-org/modal";
+import { endpoints } from "../api/backend/endpoints";
+import toast from "react-hot-toast";
 
 export default function CompanyActions(props: {
   company: Company;
@@ -24,7 +24,7 @@ export default function CompanyActions(props: {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== 'authenticated' || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 
@@ -32,11 +32,11 @@ export default function CompanyActions(props: {
     await endpoints.companies
       .remove(props.company.id)
       .then(() => {
-        toast.success('Company deleted successfully!');
+        toast.success("Company deleted successfully!");
         props.handleDeletion(props.company.id);
       })
       .catch(() => {
-        toast.error('Failed to delete company');
+        toast.error("Failed to delete company");
       })
       .finally(() => {
         setShowDeletionDialogue(false);
@@ -46,11 +46,11 @@ export default function CompanyActions(props: {
 
   return (
     <>
-      <div className='items-center justify-center align-baseline'>
+      <div className="items-center justify-center align-baseline">
         <Button
-          color='danger'
-          radius='full'
-          variant='light'
+          color="danger"
+          radius="full"
+          variant="light"
           onClick={() => {
             setShowDeletionDialogue(true);
           }}
@@ -65,9 +65,9 @@ export default function CompanyActions(props: {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className='flex flex-col gap-1'>
+              <ModalHeader className="flex flex-col gap-1">
                 Are you sure?
-                <small className='text-default-500'>
+                <small className="text-default-500">
                   This action is permanent and irreversible!
                 </small>
               </ModalHeader>
@@ -79,12 +79,12 @@ export default function CompanyActions(props: {
                 </p>
               </ModalBody>
               <ModalFooter>
-                <Button color='primary' variant='light' onPress={onClose}>
+                <Button color="primary" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
-                  color='danger'
-                  variant='light'
+                  color="danger"
+                  variant="light"
                   onPress={handleCompanyDeletion}
                 >
                   Confirm

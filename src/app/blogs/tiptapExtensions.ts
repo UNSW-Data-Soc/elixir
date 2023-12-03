@@ -105,7 +105,7 @@ export const Script = Node.create({
 });
 
 export const UploadImage = Image.extend({
-  name: "uploadImage",
+  name: "image",
   group: "block",
   atom: true,
   addAttributes() {

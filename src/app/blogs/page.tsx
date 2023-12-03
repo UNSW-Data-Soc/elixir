@@ -41,6 +41,7 @@ function BlogsContainer() {
 
     void getBlogs();
   }, [session.status]);
+  console.log(session);
 
   return (
     <div className="m-auto flex flex-wrap justify-center gap-8 px-10 py-10 lg:container md:px-0">

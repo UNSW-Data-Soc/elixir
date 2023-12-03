@@ -5,7 +5,13 @@ import { Company } from "../api/backend/companies";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/modal";
 import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
 import { Blog } from "../api/backend/blogs";
@@ -21,7 +27,7 @@ export default function BlogActionsModal(props: {
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.admin) {
+  if (session.status !== "authenticated" || !session.data.user.moderator) {
     return <></>;
   }
 
@@ -114,7 +120,10 @@ export default function BlogActionsModal(props: {
           Delete
         </Button>
       </div>
-      <Modal isOpen={showDeletionDialogue} onOpenChange={() => setShowDeletionDialogue(false)}>
+      <Modal
+        isOpen={showDeletionDialogue}
+        onOpenChange={() => setShowDeletionDialogue(false)}
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -131,7 +140,11 @@ export default function BlogActionsModal(props: {
                 <Button color="primary" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="danger" variant="light" onPress={handleBlogDeletion}>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={handleBlogDeletion}
+                >
                   Confirm
                 </Button>
               </ModalFooter>
@@ -140,7 +153,10 @@ export default function BlogActionsModal(props: {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={showVisibilityDialogue} onOpenChange={() => setShowVisibilityDialogue(false)}>
+      <Modal
+        isOpen={showVisibilityDialogue}
+        onOpenChange={() => setShowVisibilityDialogue(false)}
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -163,7 +179,11 @@ export default function BlogActionsModal(props: {
                 <Button color="primary" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="danger" variant="light" onPress={handleBlogPublication}>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={handleBlogPublication}
+                >
                   Confirm
                 </Button>
               </ModalFooter>

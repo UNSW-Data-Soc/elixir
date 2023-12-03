@@ -36,16 +36,16 @@ interface Jwt {
 }
 
 function isInstanceOfLoginFailure(object: any): object is LoginFailure {
-  return 'detail' in object;
+  return "detail" in object;
 }
 
 function parseJwt(token: string): Jwt {
   return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
 }
 
-export const authRegister: (credentials: RegisterCredentials) => Promise<RegisterResponse> = async (
-  credentials
-) => {
+export const authRegister: (
+  credentials: RegisterCredentials,
+) => Promise<RegisterResponse> = async (credentials) => {
   try {
     await endpoints.auth.register(credentials);
 
@@ -57,15 +57,18 @@ export const authRegister: (credentials: RegisterCredentials) => Promise<Registe
   }
 };
 
-export const login: (
-  credentials: LoginCredentials
-) => Promise<{ id: string, token: string; admin: boolean; exp: number }> = async (
-  credentials: LoginCredentials
-) => {
+export const login: (credentials: LoginCredentials) => Promise<{
+  id: string;
+  token: string;
+  admin: boolean;
+  moderator: boolean;
+  exp: number;
+}> = async (credentials: LoginCredentials) => {
   try {
-    const session: Session | LoginFailure = await endpoints.auth.login(credentials);
-    
-    if(isInstanceOfLoginFailure(session)) {
+    const session: Session | LoginFailure =
+      await endpoints.auth.login(credentials);
+
+    if (isInstanceOfLoginFailure(session)) {
       throw new Error(session.detail);
     }
 
@@ -75,6 +78,9 @@ export const login: (
       id: decodedJwt.id,
       token: session.access_token,
       admin: decodedJwt.access_level === "administrator",
+      moderator:
+        decodedJwt.access_level === "moderator" ||
+        decodedJwt.access_level === "administrator",
       exp: decodedJwt.exp,
     };
   } catch (error) {
