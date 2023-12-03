@@ -315,7 +315,7 @@ function EventDescriptionModal(props: {
   const endDate = dayjs(Date.parse(props.event.end_date));
 
   return (
-    <Modal isOpen={true} onOpenChange={props.onOpenChange}>
+    <Modal isOpen={true} onOpenChange={props.onOpenChange} size="full">
       <ModalContent>
         {(onClose) => (
           <>
@@ -337,7 +337,7 @@ function EventDescriptionModal(props: {
             </ModalHeader>
             <ModalBody>
               {/* <p className="font-bold">Description</p> */}
-              <ScrollShadow className="h-[200px]">
+              <ScrollShadow>
                 <p
                   dangerouslySetInnerHTML={{
                     __html: generateHTML(
