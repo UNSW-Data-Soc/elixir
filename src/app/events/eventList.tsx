@@ -218,7 +218,6 @@ function EventsCard(props: {
         className="max-w-[400px]"
         style={getEventCardStyle(props.event)}
         isPressable
-        onClick={() => setShowEventDescription(true)}
       >
         <Image
           src={endpoints.events.getEventPhoto(props.event.id)}
@@ -226,6 +225,7 @@ function EventsCard(props: {
           className="rounded-b-none rounded-t-xl object-cover"
           height={Event_PHOTO_Y_PXL * 0.4}
           width={Event_PHOTO_X_PXL * 0.4}
+          onClick={() => setShowEventDescription(true)}
         />
         <CardFooter className="flex w-full flex-col items-center justify-between gap-2 px-7 py-5 pb-6 align-baseline">
           <div className="flex w-full flex-col justify-start">
