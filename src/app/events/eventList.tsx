@@ -224,7 +224,7 @@ function EventsCard(props: {
           alt="Profile picture"
           className="rounded-b-none rounded-t-xl object-cover"
           height={Event_PHOTO_Y_PXL * 0.4}
-          width={Event_PHOTO_X_PXL * 0.4}
+          width={Event_PHOTO_X_PXL}
           onClick={() => setShowEventDescription(true)}
         />
         <CardFooter className="flex w-full flex-col items-center justify-between gap-2 px-7 py-5 pb-6 align-baseline">
