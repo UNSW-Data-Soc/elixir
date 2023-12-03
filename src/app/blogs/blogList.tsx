@@ -267,7 +267,7 @@ function BlogCard(props: {
             <p className="text-lg font-bold">{props.blog.title}</p>
             <div className="flex w-full justify-between">
               <small className="text-default-500">
-                {author === "" ? "UNSW DataSoc" : `Authored by ${author}`}
+                {`Authored by ${props.blog.author}`}
               </small>
               {/* is the tooltip necessary? */}
               {/* <Tooltip content={editedDate.format("DD/MM/YYYY HH:mm")}></Tooltip> */}
