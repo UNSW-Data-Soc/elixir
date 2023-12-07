@@ -11,6 +11,7 @@ export interface Attachment {
   attach_to: Bearer;
   bearer_id: string;
   tag_id: string;
+  tag_year?: number; // portfolio tags include tag_year
 }
 
 export interface Detachment {
@@ -24,6 +25,7 @@ export interface AttachmentInfo {
   tag_id: string;
   name: string; // tag name
   colour: string; // tag colour
+  tag_year?: number, // portfolio tags include tag_year
 }
 
 export type TagReferenceInfo = [string, string];

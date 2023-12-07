@@ -314,14 +314,25 @@ export default function UserDialogueInfo(props: {
                                         <p className="text-2xl font-semibold py-5">
                                             Portfolio
                                         </p>
-                                        <ModifyBearerTags
-                                            bearer="portfolio"
-                                            bearer_id={props.user.id}
-                                            tagLimit={1}
-                                            initialOptionsFilter={(ai) =>
-                                                ai.bearer_id === props.user.id
-                                            }
-                                        />
+                                        {
+                                            yearsActive.map(y => {
+                                                return (
+                                                    <>
+                                                        <p className="font-semibold">{y.value}</p>
+                                                        <ModifyBearerTags
+                                                            bearer="portfolio"
+                                                            bearer_id={props.user.id}
+                                                            tagLimit={1}
+                                                            initialOptionsFilter={(ai) =>
+                                                                ai.bearer_id === props.user.id && ai.tag_year !== undefined && ai.tag_year === y.value
+                                                            }
+                                                            portfolio_year={y.value}
+                                                        />
+                                                    </>
+                                                );
+                                            })
+                                        }
+
                                         {
                                             session.data && props.user.id !== session.data.user.id &&
                                             <Button

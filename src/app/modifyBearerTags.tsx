@@ -17,6 +17,7 @@ export default function ModifyBearerTags(props: {
     tagLimit?: number,
     initialOptionsFilter?: (a: AttachmentInfo) => boolean,
     updateAttachments?: (updatedAttachments: AttachmentInfo[], to_attach: Attachment[], to_detach: Detachment[]) => void,
+    portfolio_year?: number,
 }) {
     const router = useRouter();
     const [allTagOptions, setAllTagOptions] = useState<OptionTag[]>([]);
@@ -141,11 +142,17 @@ export default function ModifyBearerTags(props: {
                         }
 
                         if(!exists) {
-                            to_attach.push({
+                            let to_push: Attachment =  {
                                 attach_to: props.bearer,
                                 bearer_id: props.bearer_id,
                                 tag_id: uo.value.id,
-                            })
+                            }
+                            
+                            if(props.bearer === "portfolio" && props.portfolio_year) {
+                                to_push.tag_year = props.portfolio_year;
+                            }
+
+                            to_attach.push(to_push);
                         }
                     }
 

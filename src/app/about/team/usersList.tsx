@@ -120,10 +120,6 @@ export default function UsersList() {
     }
   }
 
-  // function userToValue(user: UserPublic): number {
-  //     if (user)
-  // }
-
   function getUserCardStyle(user: UserPublic): CSSProperties {
     return {
       backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
@@ -155,7 +151,7 @@ export default function UsersList() {
   }
 
   function getUserPortfolio(user: UserPublic) {
-    return portfolioTags.find((a) => a.bearer_id === user.id)?.name;
+    return portfolioTags.find((a) => a.bearer_id === user.id && a.tag_year && a.tag_year === selectedYear)?.name;
   }
 
   return (
