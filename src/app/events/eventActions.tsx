@@ -1,10 +1,9 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Event } from "../api/backend/events";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -12,94 +11,80 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { endpoints } from "../api/backend/endpoints";
 import toast from "react-hot-toast";
 
+import { RouterOutputs } from "@/trpc/shared";
+import { api } from "@/trpc/react";
+
+import { isModerator } from "../utils";
+
 export default function EventActionsModal(props: {
-  event: Event;
-  handleDeletion: (id: string) => void;
-  handleEventUpdate: (updatedBlog: Event) => void;
+  event: RouterOutputs["events"]["getAll"][number];
 }) {
+  const session = useSession();
+
   const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
   const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
-  const session = useSession();
-  const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  const utils = api.useUtils();
+
+  const { mutate: deleteEvent } = api.events.delete.useMutation({
+    onMutate: () => {},
+    onSuccess: () => {
+      toast.success("Event deleted successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to delete event");
+    },
+    onSettled: () => {
+      setShowDeletionDialogue(false);
+    },
+  });
+
+  const { mutate: togglePublishEvent } = api.events.togglePublish.useMutation({
+    onMutate: () => {},
+    onSuccess: () => {
+      const actionPubUnpub = props.event.public ? "unpublish" : "publish";
+      toast.success(`Event ${actionPubUnpub}ed successfully!`);
+      void utils.events.invalidate();
+      window.location.reload();
+    },
+    onError: () => {
+      const actionPubUnpub = props.event.public ? "unpublish" : "publish";
+      toast.error(`Failed to ${actionPubUnpub} event`);
+    },
+    onSettled: () => {
+      setShowVisibilityDialogue(false);
+    },
+  });
+
+  if (session.status !== "authenticated" || !isModerator(session.data)) {
     return <></>;
-  }
-
-  async function handleEventDeletion() {
-    await endpoints.events
-      .remove(props.event.id)
-      .then(() => {
-        toast.success("Event deleted successfully!");
-        props.handleDeletion(props.event.id);
-      })
-      .catch(() => {
-        toast.error("Failed to delete event");
-      })
-      .finally(() => {
-        setShowDeletionDialogue(false);
-        return;
-      });
-  }
-
-  async function handleEventPublication() {
-    let actionPubUnpub = props.event.public ? "unpublished" : "published";
-    let actionPubUnpubPresent = props.event.public ? "unpublish" : "publish";
-
-    await endpoints.events
-      .updateVisibility(props.event.id, !props.event.public)
-      .then(() => {
-        toast.success(`Resource ${actionPubUnpub} successfully!`);
-        let updatedEvent = props.event;
-        updatedEvent.public = !props.event.public;
-        props.handleEventUpdate(updatedEvent);
-      })
-      .catch(() => {
-        toast.error(`Failed to ${actionPubUnpubPresent} event`);
-      })
-      .finally(() => {
-        setShowVisibilityDialogue(false);
-      });
   }
 
   return (
     <>
       <div className="items-center justify-center align-baseline">
-        {
-          // TODO: add edit button
-          props.event.public ? (
-            <Button
-              color="secondary"
-              radius="full"
-              variant="light"
-              onClick={() => {
-                setShowVisibilityDialogue(true);
-              }}
-            >
-              Unpublish
-            </Button>
-          ) : (
-            <Button
-              color="secondary"
-              radius="full"
-              variant="light"
-              onClick={() => {
-                setShowVisibilityDialogue(true);
-              }}
-            >
-              Publish
-            </Button>
-          )
-        }
+        <Button
+          color="secondary"
+          radius="full"
+          variant="light"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowVisibilityDialogue(true);
+          }}
+        >
+          {props.event.public ? "Unpublish" : "Publish"}
+        </Button>
 
         <Button
           color="danger"
           radius="full"
           variant="light"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setShowDeletionDialogue(true);
           }}
         >
@@ -136,7 +121,7 @@ export default function EventActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleEventPublication}
+                  onPress={() => togglePublishEvent({ id: props.event.id })}
                 >
                   Confirm
                 </Button>
@@ -172,7 +157,7 @@ export default function EventActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleEventDeletion}
+                  onPress={() => deleteEvent({ id: props.event.id })}
                 >
                   Confirm
                 </Button>

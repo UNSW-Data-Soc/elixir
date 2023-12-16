@@ -1,11 +1,15 @@
 "use client";
 
-import { Editor, useEditor } from "@tiptap/react";
 import { createContext, useContext, useState } from "react";
-import toast from "react-hot-toast";
-import { endpoints } from "@/app/api/backend/endpoints";
+
+import { Editor, useEditor } from "@tiptap/react";
 import { TIPTAP_EXTENSIONS } from "../tiptapExtensions";
-// import Heading1 from "./nodes/heading1";
+
+import toast from "react-hot-toast";
+
+import { api } from "@/trpc/react";
+
+const SAVING_BLOG_TOAST_ID = "saving";
 
 type EditorContextType = {
   editor: Editor | null;
@@ -37,6 +41,20 @@ export default function EditorContextProvider({
   const [blogAuthor, setBlogAuthor] = useState<string | null>(null);
   const [blogPublic, setBlogPublic] = useState<boolean | null>(null);
   const [blogBody, setBlogBody] = useState<string | null>(null);
+  const { mutate: updateBlog } = api.blogs.update.useMutation({
+    onMutate: () => {
+      toast.loading("Saving...", { id: SAVING_BLOG_TOAST_ID });
+    },
+    onSuccess: () => {
+      toast.dismiss(SAVING_BLOG_TOAST_ID);
+      toast.success("Saved!");
+    },
+    onError: () => {
+      toast.dismiss(SAVING_BLOG_TOAST_ID);
+      toast.error("Failed to save blog!");
+    },
+  });
+
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -58,24 +76,14 @@ export default function EditorContextProvider({
         return;
       }
 
-      const updateDatabase = async () => {
-        console.log(JSON.stringify(editor.getJSON(), null, 4));
-        await endpoints.blogs.update({
-          id: blogId,
-          body: JSON.stringify(editor.getJSON()),
-          author: blogAuthor,
-          title: blogTitle,
-          blogPublic,
-        });
-      };
-
-      toast.loading("Saving...", { id: "saving" });
-
-      updateDatabase().then(() => {
-        setTimeout(() => {
-          toast.dismiss("saving");
-        }, 500);
+      updateBlog({
+        id: blogId,
+        body: JSON.stringify(editor.getJSON()),
+        author: blogAuthor,
+        title: blogTitle,
       });
+
+      // console.log(JSON.stringify(editor.getJSON(), null, 4));
     },
   });
 

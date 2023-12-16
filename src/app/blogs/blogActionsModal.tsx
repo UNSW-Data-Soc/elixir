@@ -1,10 +1,9 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Company } from "../api/backend/companies";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
 import {
   Modal,
   ModalBody,
@@ -12,67 +11,61 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { endpoints } from "../api/backend/endpoints";
+import { Button } from "@nextui-org/button";
 import toast from "react-hot-toast";
-import { Blog } from "../api/backend/blogs";
+
+import { RouterOutputs } from "@/trpc/shared";
+import { api } from "@/trpc/react";
+
+import { isModerator } from "../utils";
 
 export default function BlogActionsModal(props: {
-  blog: Blog;
-  handleDeletion: (id: string) => void;
-  handleBlogUpdate: (updatedBlog: Blog) => void;
+  blog: RouterOutputs["blogs"]["getAll"][number];
 }) {
-  const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
-  const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
-
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
+  const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
+
+  const utils = api.useUtils();
+
+  const { mutate: deleteBlog } = api.blogs.delete.useMutation({
+    onMutate: () => {},
+    onSuccess: () => {
+      toast.success("Blog deleted successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to delete blog");
+    },
+    onSettled: () => {
+      setShowDeletionDialogue(false);
+    },
+  });
+
+  const { mutate: togglePublishBlog } = api.blogs.togglePublish.useMutation({
+    onMutate: () => {},
+    onSuccess: () => {
+      const actionPubUnpub = props.blog.public ? "unpublish" : "publish";
+      toast.success(`Blog ${actionPubUnpub}ed successfully!`);
+      void utils.blogs.invalidate();
+      window.location.reload(); // TODO: is there a way to force updates to the blog list? or not since it's server-side rendered
+    },
+    onError: () => {
+      const actionPubUnpub = props.blog.public ? "unpublish" : "publish";
+      toast.error(`Failed to ${actionPubUnpub} blog`);
+    },
+    onSettled: () => {
+      setShowVisibilityDialogue(false);
+    },
+  });
+
+  // if invalid permissions, do not show
+  if (session.status !== "authenticated" || !isModerator(session.data)) {
     return <></>;
   }
 
-  async function handleBlogDeletion() {
-    await endpoints.blogs
-      .deleteBlog({ id: props.blog.id })
-      .then(() => {
-        toast.success("Blog deleted successfully!");
-        props.handleDeletion(props.blog.id);
-      })
-      .catch(() => {
-        toast.error("Failed to delete blog");
-      })
-      .finally(() => {
-        setShowDeletionDialogue(false);
-        return;
-      });
-  }
-
-  async function handleBlogPublication() {
-    let actionPubUnpub = props.blog.public ? "unpublished" : "published";
-    let actionPubUnpubPresent = props.blog.public ? "unpublish" : "publish";
-
-    await endpoints.blogs
-      .update({
-        title: props.blog.title,
-        body: props.blog.body,
-        author: props.blog.author,
-        id: props.blog.id,
-        blogPublic: !props.blog.public,
-      })
-      .then(() => {
-        toast.success(`Blog ${actionPubUnpub} successfully!`);
-        let updatedBlog = props.blog;
-        updatedBlog.public = !props.blog.public;
-        props.handleBlogUpdate(updatedBlog);
-      })
-      .catch(() => {
-        toast.error(`Failed to ${actionPubUnpubPresent} blog`);
-      })
-      .finally(() => {
-        setShowVisibilityDialogue(false);
-      });
-  }
-
+  // TODO: move this into separate components
   return (
     <>
       <div className="flex items-center justify-center align-baseline">
@@ -80,40 +73,33 @@ export default function BlogActionsModal(props: {
           color="secondary"
           radius="full"
           variant="light"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             router.push(`/blogs/editor?blogSlug=${props.blog.slug}`);
           }}
         >
           Edit Blog
         </Button>
-        {props.blog.public ? (
-          <Button
-            color="warning"
-            radius="full"
-            variant="light"
-            onClick={() => {
-              setShowVisibilityDialogue(true);
-            }}
-          >
-            Unpublish
-          </Button>
-        ) : (
-          <Button
-            color="warning"
-            radius="full"
-            variant="light"
-            onClick={() => {
-              setShowVisibilityDialogue(true);
-            }}
-          >
-            Publish
-          </Button>
-        )}
+        <Button
+          color="warning"
+          radius="full"
+          variant="light"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowVisibilityDialogue(true);
+          }}
+        >
+          {props.blog.public ? "Unpublish" : "Publish"}
+        </Button>
         <Button
           color="danger"
           radius="full"
           variant="light"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setShowDeletionDialogue(true);
           }}
         >
@@ -143,7 +129,7 @@ export default function BlogActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleBlogDeletion}
+                  onPress={() => deleteBlog({ id: props.blog.id })}
                 >
                   Confirm
                 </Button>
@@ -182,7 +168,7 @@ export default function BlogActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleBlogPublication}
+                  onPress={() => togglePublishBlog({ id: props.blog.id })}
                 >
                   Confirm
                 </Button>

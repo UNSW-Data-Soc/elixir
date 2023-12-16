@@ -1,12 +1,9 @@
-"use client";
+import { api } from "@/trpc/server";
+import { getServerAuthSession } from "@/server/auth";
+import { isModerator } from "../utils";
 
-import { endpoints } from "../api/backend/endpoints";
-import { type Blog } from "../api/backend/blogs";
-
-import BlogsAddCard from "./blogsAddCard";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import BlogsList from "./blogList";
+import BlogsAddCard from "./blogsAddCard";
 
 export default function Blog() {
   return (
@@ -24,32 +21,17 @@ export default function Blog() {
   );
 }
 
-function BlogsContainer() {
-  const session = useSession();
-
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-
-  useEffect(() => {
-    if (session.status === "loading") return;
-
-    const getBlogs = async () => {
-      const blogs = await endpoints.blogs.getAll({
-        authRequired: session.status === "authenticated",
-      });
-      setBlogs(blogs);
-    };
-
-    void getBlogs();
-  }, [session.status]);
-  console.log(session);
+async function BlogsContainer() {
+  const session = await getServerAuthSession();
+  const blogs = await api.blogs.getAll.query();
 
   return (
     <div className="m-auto flex flex-wrap justify-center gap-8 px-10 py-10 lg:container md:px-0">
-      {session.status === "authenticated" && <BlogsAddCard />}
+      {isModerator(session) && <BlogsAddCard />}
 
       <BlogsList />
 
-      {session.status === "unauthenticated" && blogs.length === 0 && (
+      {!isModerator(session) && blogs.length === 0 && (
         <div className="flex h-full items-center justify-center p-10">
           <p className="text-center text-[#555]">No blogs yet!</p>
         </div>

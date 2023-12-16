@@ -13,22 +13,23 @@ import {
 } from "@nextui-org/modal";
 import ModifyBearerTags from "../modifyBearerTags";
 import { Attachment, AttachmentInfo, Detachment } from "../api/backend/tags";
-import { Blog } from "../api/backend/blogs";
+import { RouterOutputs } from "@/trpc/shared";
+import { isModerator } from "../utils";
 
 export default function BlogCardActions(props: {
-  blog: Blog;
-  updateAttachments: (
-    updatedAttachments: AttachmentInfo[],
-    to_attach: Attachment[],
-    to_detach: Detachment[],
-  ) => void;
+  blog: RouterOutputs["blogs"]["getAll"][number];
+  // updateAttachments: (
+  //   updatedAttachments: AttachmentInfo[],
+  //   to_attach: Attachment[],
+  //   to_detach: Detachment[],
+  // ) => void;
 }) {
   const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
 
   const session = useSession();
   const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  if (session.status !== "authenticated" || !isModerator(session.data)) {
     return <></>;
   }
 
@@ -53,7 +54,7 @@ export default function BlogCardActions(props: {
                   bearer="blog"
                   bearer_id={props.blog.id}
                   initialOptionsFilter={(ai) => ai.bearer_id === props.blog.id}
-                  updateAttachments={props.updateAttachments}
+                  // updateAttachments={props.updateAttachments}
                 />
               </ModalBody>
               <ModalFooter>
@@ -71,7 +72,9 @@ export default function BlogCardActions(props: {
           color="warning"
           radius="full"
           variant="light"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setShowModifyTagsDialogue(true);
           }}
         >

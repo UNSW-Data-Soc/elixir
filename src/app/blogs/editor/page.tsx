@@ -15,50 +15,62 @@ import {
   ModalContent,
   useDisclosure,
 } from "@nextui-org/react";
+import { isModerator } from "@/app/utils";
+import Link from "next/link";
+import { api } from "@/trpc/react";
 
 const BlogsEditor = () => {
-  const { status, data } = useSession();
+  const session = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const editorContext = useEditorContext();
   const searchParams = useSearchParams();
   const blogSlug = searchParams.get("blogSlug");
+
   const [validBlog, setValidBlog] = useState(true);
+
+  const { data: blog } = api.blogs.getBySlug.useQuery({ slug: blogSlug ?? "" });
 
   // initially load blog info + content into the editor
   useEffect(() => {
-    const getBlog = async () => {
-      if (!blogSlug) return null;
-      try {
-        const blog = await endpoints.blogs.get({
-          slug: blogSlug,
-          authRequired: true,
-        });
-        return blog;
-      } catch (e) {
-        return null;
-      }
-    };
-
-    getBlog().then((blog) => {
-      if (!blog) {
-        setValidBlog(false);
-        return;
-      }
-      setValidBlog(true);
-      editorContext.set.blogId(blog.id);
-      editorContext.set.blogTitle(blog.title);
-      editorContext.set.blogAuthor(blog.author);
-      editorContext.set.blogPublic(blog.public);
-      editorContext.set.blogBody(blog.body);
-      editorContext.editor?.commands.setContent(JSON.parse(blog.body));
-    });
+    // const getBlog = async () => {
+    //   if (!blogSlug) return null;
+    //   try {
+    //     const blog = await endpoints.blogs.get({
+    //       slug: blogSlug,
+    //       authRequired: true,
+    //     });
+    //     return blog;
+    //   } catch (e) {
+    //     return null;
+    //   }
+    // };
+    // getBlog().then((blog) => {
+    //   if (!blog) {
+    //     setValidBlog(false);
+    //     return;
+    //   }
+    //   setValidBlog(true);
+    //   editorContext.set.blogId(blog.id);
+    //   editorContext.set.blogTitle(blog.title);
+    //   editorContext.set.blogAuthor(blog.author);
+    //   editorContext.set.blogPublic(blog.public);
+    //   editorContext.set.blogBody(blog.body);
+    //   editorContext.editor?.commands.setContent(JSON.parse(blog.body));
+    // });
+    if (!blog) return;
+    editorContext.set.blogId(blog.id);
+    editorContext.set.blogTitle(blog.title);
+    editorContext.set.blogAuthor(blog.author);
+    editorContext.set.blogPublic(blog.public);
+    editorContext.set.blogBody(blog.body);
+    editorContext.editor?.commands.setContent(JSON.parse(blog.body));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, blogSlug, editorContext.editor]);
+  }, [pathname, blogSlug, editorContext.editor, blog]);
 
-  if (status === "loading") return <></>;
-  if (status === "unauthenticated") router.push("/auth/login");
-  if (!data?.user.moderator)
+  if (session.status === "loading") return <></>;
+  if (session.status === "unauthenticated") router.push("/auth/login");
+  if (!isModerator(session.data))
     return (
       <p className="flex h-[calc(100vh-10rem)] w-full items-center justify-center text-3xl">
         You do not have permission to edit blogs. Contact IT if you think this
@@ -203,6 +215,12 @@ const BlogsList = () => {
           </div>
         </div>
       ))}
+      {blogs.length === 0 && (
+        <p>
+          No blogs to edit! Click <Link href="/blogs/create">here</Link> to
+          create one.
+        </p>
+      )}
     </main>
   );
 };

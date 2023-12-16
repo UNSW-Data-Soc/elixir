@@ -1,163 +1,149 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { logout } from "./api/auth/auth";
+import { useRouter, usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 
 import {
   ArrowLeftOnRectangleIcon,
-  ArrowRightOnRectangleIcon,
-  BoltIcon,
-  ChatBubbleBottomCenterIcon,
-  HomeIcon,
-  UserCircleIcon,
   UsersIcon,
   UserIcon,
-  FaceSmileIcon,
-  Cog6ToothIcon,
   TagIcon,
   PhotoIcon,
   BuildingLibraryIcon,
 } from "@heroicons/react/24/outline";
+import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
+import { Link } from "@nextui-org/link";
 import {
   Navbar as NextUINavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
-  Button,
+  NavbarMenu,
+  NavbarMenuItem,
   NavbarMenuToggle,
-  Avatar,
-} from "@nextui-org/react";
+} from "@nextui-org/navbar";
+
 import { useState } from "react";
 import { endpoints } from "./api/backend/endpoints";
 import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from "./utils";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+
+type ItemDropdown = {
+  key: string;
+  label: string;
+  startContent: JSX.Element;
+  link: string;
+};
+
+const menuItems = [
+  { name: "Home", link: "/" },
+  { name: "About Us", link: "/about" },
+  { name: "Sponsors", link: "/sponsorships" },
+  { name: "Events", link: "/events" },
+  // { name: "Jobs Board", link: "/jobs" }, // TODO: uncomment when jobs board is ready
+  { name: "Blogs", link: "/blogs" },
+  { name: "Resources", link: "/resources" },
+  { name: "Publications", link: "/publications" },
+  { name: "Contact Us", link: "/contact" },
+];
+
+const logout = async (router: AppRouterInstance) => {
+  await signOut();
+  router.push("/");
+};
 
 const Navbar = () => {
   const router = useRouter();
+  const path = usePathname();
   const session = useSession();
 
-  const logoutClick = async () => {
-    if (!session) {
-      router.push("/");
-      return;
-    }
-    const success = await logout();
-    if (success) {
-      router.push("/");
-    }
-  };
-
   return (
-    <NextUINavbar isBordered>
-      <NavbarBrand>
-        <Link href="/" className="">
-          <Image
-            src="/logo.png"
-            width={200}
-            height={200}
-            alt="Picture of the author"
-          />
-        </Link>
-      </NavbarBrand>
-      <NavbarContent className="hidden gap-4 sm:flex" justify="start">
-        <NavbarItem>
-          <Link href="/" className="">
-            <span>Home</span>
+    <NextUINavbar
+      isBordered
+      shouldHideOnScroll={false}
+      className="gap-6 bg-[#fffb]"
+    >
+      {/* mobile navbar */}
+      <NavbarContent className="flex lg:hidden" justify="start">
+        <NavbarBrand>
+          <Link href="/" className="text-[#333]">
+            <Image src="/logo.png" width={100} height={50} alt="society logo" />
           </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <AboutUsDropdown />
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/sponsorships" className="">
-            <span>Sponsors</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/events" className="">
-            <span>Events</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/jobs" className="">
-            <span>Jobs Board</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/blogs" className="">
-            <span>Blogs</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/resources" className="">
-            <span>Resources</span>
-          </Link>
-        </NavbarItem>
-
-        <NavbarItem>
-          <PublicationsDropdown />
-        </NavbarItem>
-
-        <NavbarItem>
-          <Link href="/contact" className="">
-            <span>Contact Us</span>
-          </Link>
-        </NavbarItem>
+        </NavbarBrand>
       </NavbarContent>
-
-      <NavbarContent className="hidden gap-4 sm:flex" justify="end">
-        {session.status === "unauthenticated" && (
-          <>
-            <NavbarItem>
-              <Button
-                as={Link}
-                color="primary"
-                href="#"
-                variant="flat"
-                onClick={() => {
-                  router.push("/auth/login");
-                }}
-              >
-                Login
-              </Button>
-            </NavbarItem>
-          </>
-        )}
-
+      <NavbarContent className="flex lg:hidden" justify="center">
+        <NavbarMenuToggle />
+      </NavbarContent>
+      <NavbarMenu>
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              color={item.link === path ? "primary" : "foreground"}
+              className="w-full p-3"
+              href={item.link}
+              size="lg"
+            >
+              {item.name}
+            </Link>
+          </NavbarMenuItem>
+        ))}
         {session.status === "authenticated" && (
-          <>
-            {
-              <NavbarItem className="flex items-center justify-center align-baseline">
-                <SettingsDropdown
-                  is_admin={session.data.user.admin}
-                  is_moderator={session.data.user.moderator}
-                  user_id={session.data.user.id}
-                />
-              </NavbarItem>
-            }
-            <NavbarItem>
-              <Button
-                as={Link}
-                color="primary"
-                href="#"
-                variant="flat"
-                onClick={logoutClick}
-              >
-                <ArrowLeftOnRectangleIcon className="h-6 w-6" />
-                <span>Logout</span>
-              </Button>
-            </NavbarItem>
-          </>
+          <Link
+            color={"danger"}
+            className="w-full p-3"
+            onClick={() => logout(router)}
+            size="lg"
+          >
+            Logout
+          </Link>
         )}
+      </NavbarMenu>
+
+      {/* desktop navbar */}
+      <NavbarContent className="hidden gap-6 lg:flex" justify="center">
+        <NavbarBrand>
+          <Link href="/" className="text-[#333]">
+            <Image src="/logo.png" width={100} height={50} alt="society logo" />
+          </Link>
+        </NavbarBrand>
+        {menuItems.map((item) => {
+          if (item.name === "About Us") {
+            return <AboutUsDropdown key={item.name} />;
+          } else if (item.name === "Publications") {
+            return <PublicationsDropdown key={item.name} />;
+          }
+          return (
+            <Link
+              color={item.link === path ? "primary" : "foreground"}
+              className="h-full text-[#333]"
+              href={item.link}
+              size="lg"
+              key={item.name}
+            >
+              <NavbarItem>{item.name}</NavbarItem>
+            </Link>
+          );
+        })}
       </NavbarContent>
+
+      {session.status === "authenticated" && (
+        <NavbarContent className="hidden gap-6 lg:flex" justify="start">
+          <NavbarItem className="ml-3 flex items-center justify-center align-baseline">
+            <SettingsDropdown
+              isAdmin={session.data.user.role === "admin"}
+              isModerator={session.data.user.role === "moderator"}
+              userId={session.data.user.id}
+            />
+          </NavbarItem>
+        </NavbarContent>
+      )}
     </NextUINavbar>
   );
 };
@@ -173,7 +159,7 @@ function AboutUsDropdown() {
     >
       <Dropdown isOpen={isOpen}>
         <DropdownTrigger>
-          <Link href="/about" className="">
+          <Link href="/about" className="h-full text-[#333]">
             <span>About Us</span>
           </Link>
         </DropdownTrigger>
@@ -187,10 +173,11 @@ function AboutUsDropdown() {
           >
             Our Team
           </DropdownItem>
-          <DropdownItem
-            key="constitution-link"
-          >
-            <Link href={DATASOC_CONSTITUION_LINK} className="text-black text-sm">
+          <DropdownItem key="constitution-link">
+            <Link
+              href={DATASOC_CONSTITUION_LINK}
+              className="text-sm text-black"
+            >
               Our Constitution
             </Link>
           </DropdownItem>
@@ -217,7 +204,7 @@ function PublicationsDropdown() {
     >
       <Dropdown isOpen={isOpen}>
         <DropdownTrigger>
-          <Link href="/publications" className="">
+          <Link href="/publications" className="text-[#333]">
             <span>Publications</span>
           </Link>
         </DropdownTrigger>
@@ -246,29 +233,27 @@ function PublicationsDropdown() {
   );
 }
 
-function SettingsDropdown(props: { is_admin: boolean; is_moderator: boolean; user_id: string }) {
+function SettingsDropdown(props: {
+  isAdmin: boolean;
+  isModerator: boolean;
+  userId: string;
+}) {
   const router = useRouter();
-  interface ItemDropdown {
-    key: string;
-    label: string;
-    startContent: JSX.Element;
-    link: string;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const items: ItemDropdown[] = [];
+
+  if (props.isAdmin) {
+    items.push({
+      key: "users",
+      label: "Users",
+      startContent: <UsersIcon className="h-6 w-6" />,
+      link: "/users",
+    });
   }
 
-  let items: ItemDropdown[] = [];
-
-  if(props.is_admin) {
-    items= [
-      {
-        key: "users",
-        label: "Users",
-        startContent: <UsersIcon className="h-6 w-6" />,
-        link: "/users",
-      },
-    ]
-  }
-
-  if (props.is_moderator) {
+  if (props.isModerator) {
     items.push(
       {
         key: "tags",
@@ -291,35 +276,46 @@ function SettingsDropdown(props: { is_admin: boolean; is_moderator: boolean; use
     );
   }
 
-  items.push({
-    key: "profile",
-    label: "Profile",
-    startContent: <UserIcon className="h-6 w-6" />,
-    link: `/profile/${props.user_id}`,
-  });
+  items.push(
+    {
+      key: "profile",
+      label: "Profile",
+      startContent: <UserIcon className="h-6 w-6" />,
+      link: `/profile/${props.userId}`,
+    },
+    {
+      key: "logout",
+      label: "Logout",
+      startContent: <ArrowLeftOnRectangleIcon className="h-6 w-6" />,
+      link: "/",
+    },
+  );
 
   return (
-    <Dropdown backdrop="blur">
+    <Dropdown>
       <DropdownTrigger>
         <Avatar
           isBordered
           showFallback
           as="button"
-          src={endpoints.users.getUserProfilePicture(props.user_id)}
+          src={endpoints.users.getUserProfilePicture(props.userId)}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions" items={items}>
         {(item) => {
-          let i = item as ItemDropdown;
           return (
             <DropdownItem
-              key={i.key}
-              startContent={i.startContent}
+              key={item.key}
+              startContent={item.startContent}
               onClick={() => {
-                router.push(i.link);
+                if (item.key === "logout") {
+                  logout(router);
+                  return;
+                }
+                router.push(item.link);
               }}
             >
-              {i.label}
+              {item.label}
             </DropdownItem>
           );
         }}

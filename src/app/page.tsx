@@ -24,6 +24,7 @@ import { SponsorshipType } from "./api/backend/sponsorships";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import BlogImageHomePage from "./components/blogImageHomePage";
+import { api } from "@/trpc/server";
 dayjs.extend(relativeTime);
 
 const SOCIAL_HEIGHT = 25;
@@ -32,18 +33,11 @@ const SOCIAL_WIDTH = 25;
 const NUM_DISPLAY_EVENTS = 3;
 
 export default async function Home() {
-  const events = (await endpoints.events.getAll(false)).slice(
-    0,
-    NUM_DISPLAY_EVENTS,
-  );
-  const futureEvents = events.filter(
-    (e) => new Date(e.start_date) > new Date(),
-  );
+  const futureEvents = await api.events.getUpcoming.query({
+    limit: NUM_DISPLAY_EVENTS,
+  });
+  const blogs = await api.blogs.getRecent.query({ limit: NUM_DISPLAY_EVENTS });
 
-  const blogs = (await endpoints.blogs.getAll({ authRequired: false })).slice(
-    0,
-    NUM_DISPLAY_EVENTS,
-  );
   const sponsors = (
     await Promise.all(
       (await endpoints.sponsorships.getAll(false)).map(async (sponsorship) => {
@@ -127,7 +121,7 @@ export default async function Home() {
                   <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
                     <p className="w-full text-center">{blog.title}</p>
                     <p className="w-full text-center text-xs">
-                      {dayjs(Date.parse(blog.created_time)).fromNow()}
+                      {dayjs(blog.createdTime).fromNow()}
                     </p>
                   </div>
                 </Link>
@@ -161,7 +155,7 @@ export default async function Home() {
                     <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
                       <p className="w-full text-center">{event.title}</p>
                       <p className="w-full text-center text-xs">
-                        {dayjs(Date.parse(event.start_date)).fromNow()}
+                        {dayjs(event.startTime).fromNow()}
                       </p>
                     </div>
                   </div>

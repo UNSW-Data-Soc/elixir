@@ -5,8 +5,9 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 
 import Navbar from "./navbar";
-import SessionProvider from "./NextAuthSession";
 import Footer from "./footer";
+import { Providers } from "./providers";
+import { ServerProviders } from "./serverProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,18 +16,24 @@ export const metadata = {
   description: "Official website of the Data Science Society of UNSW",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider>
-          <Toaster />
-          <Navbar />
-          <div className="flex flex-col h-screen justify-between">
-            {children}
-            <Footer/>
-          </div>
-        </SessionProvider>
+        <ServerProviders>
+          <Providers>
+            <Toaster />
+            <Navbar />
+            <div className="flex h-screen flex-col justify-between">
+              {children}
+              {<Footer />}
+            </div>
+          </Providers>
+        </ServerProviders>
       </body>
     </html>
   );

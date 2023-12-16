@@ -5,8 +5,8 @@ import { FormEventHandler, useEffect, useState } from "react";
 import toast, { useToasterStore } from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
 import { useRouter } from "next/navigation";
-import { authRegister } from "../../api/auth/auth";
 import { signIn } from "next-auth/react";
+import { api } from "@/trpc/react";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -23,6 +23,27 @@ const RegisterForm = () => {
       .filter((_, i) => i >= 3) // Is toast index over limit?
       .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
   }, [toasts]);
+
+  const { mutate: registerMutate, isLoading: isRegistering } =
+    api.auth.register.useMutation({
+      onSuccess: () => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        // toast.remove(TOAST_ID_REGISTER);
+        void toast.success("Register successful!");
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+        } else if (e.message) {
+          toast.error(e.message);
+        } else {
+          toast.error("Failed to register! Please try again later.");
+        }
+      },
+    });
 
   const register: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -41,11 +62,7 @@ const RegisterForm = () => {
       return;
     }
 
-    const res = await authRegister({ name, password, email });
-    if (res.error) {
-      toast.error(res.error);
-      return;
-    }
+    registerMutate({ name, email, password });
 
     const signInResponse = await signIn("credentials", {
       email,
@@ -68,7 +85,7 @@ const RegisterForm = () => {
       <div className="flex flex-col gap-2 pb-3">
         <InputLabel text="Name" />
         <input
-          className="py-3 px-4 border-2 rounded-xl transition-all focus:border-[#aaa] outline-none"
+          className="rounded-xl border-2 px-4 py-3 outline-none transition-all focus:border-[#aaa]"
           type="text"
           placeholder="enter your name..."
           onChange={(e) => setName(e.target.value)}
@@ -79,7 +96,7 @@ const RegisterForm = () => {
         <InputLabel text="Email" />
         <input
           formNoValidate
-          className="py-3 px-4 border-2 rounded-xl transition-all focus:border-[#aaa] outline-none"
+          className="rounded-xl border-2 px-4 py-3 outline-none transition-all focus:border-[#aaa]"
           type="email"
           placeholder="enter your email..."
           onChange={(e) => setEmail(e.target.value)}
@@ -89,7 +106,7 @@ const RegisterForm = () => {
       <div className="flex flex-col gap-2 pb-3">
         <InputLabel text="Password" />
         <input
-          className="py-3 px-4 border-2 rounded-xl transition-all focus:border-[#aaa] outline-none"
+          className="rounded-xl border-2 px-4 py-3 outline-none transition-all focus:border-[#aaa]"
           type="password"
           placeholder="enter your password..."
           onChange={(e) => setPassword(e.target.value)}
@@ -104,7 +121,7 @@ const RegisterForm = () => {
         to proceed.
       </p>
       <input
-        className="py-2 px-4 bg-[#f0f0f0] mt-3 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+        className="mt-3 rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
         type="submit"
         value="Register"
       />

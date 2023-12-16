@@ -422,6 +422,7 @@ const EditorAddLink = () => {
   const [showLinkAdd, setShowLinkAdd] = useState<boolean>(false);
   const [link, setLink] = useState<string>("");
   const clickAwayRef = useClickAway(() => setShowLinkAdd(false));
+
   if (!editor) return <></>;
 
   return (

@@ -1,44 +1,34 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Tooltip } from "@nextui-org/tooltip";
-import { useEffect, useState } from "react";
-import { endpoints } from "../api/backend/endpoints";
-import { UserPublic } from "../api/backend/users";
-import { Event } from "../api/backend/events";
 dayjs.extend(relativeTime);
 
-export default function EventInformation(props: { event: Event }) {
-  const session = useSession();
-  const router = useRouter();
+import { Tooltip } from "@nextui-org/tooltip";
 
-  const [author, setAuthor] = useState<UserPublic>();
+import { RouterOutputs } from "@/trpc/shared";
 
-  useEffect(() => {
-    async function getDetails() {
-      let user = await endpoints.users.get(props.event.creator);
-      setAuthor(user);
-    }
+import { isModerator } from "../utils";
+import { getServerAuthSession } from "@/server/auth";
 
-    getDetails();
-  }, [props.event.creator]);
+export default async function EventInformation(props: {
+  event: RouterOutputs["events"]["getAll"][number];
+}) {
+  const session = await getServerAuthSession();
 
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  const author = { name: "Prayag" }; // TODO: api.users.getById.query({id: props.event.creator});
+
+  if (!isModerator(session)) {
     return <></>;
   }
 
-  const lastEditTime = dayjs(Date.parse(props.event.last_edit_time));
+  const lastEditTime = dayjs(props.event.lastEditTime);
 
   return (
     <>
-      <div className="flex flex-col items-start align-baseline">
+      <div className="flex w-full flex-row items-start justify-between align-baseline">
         {!!author && <p>Created {<>by {author.name}</>}</p>}
-        {/* <Tooltip content={lastEditTime.format("DD/MM/YYYY HH:mm")}> */}
-        <p>Last edited {lastEditTime.toNow(true)} ago</p>
-        {/* </Tooltip> */}
+        <Tooltip content={lastEditTime.format("DD/MM/YYYY HH:mm")}>
+          <p>Last edited {lastEditTime.toNow(true)} ago</p>
+        </Tooltip>
       </div>
     </>
   );

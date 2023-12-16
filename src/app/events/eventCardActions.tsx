@@ -2,7 +2,6 @@
 
 import { Button } from "@nextui-org/button";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   Modal,
@@ -11,27 +10,17 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import ModifyBearerTags from "../modifyBearerTags";
-import { Attachment, AttachmentInfo, Detachment } from "../api/backend/tags";
-import { Event } from "../api/backend/events";
+import { isModerator } from "../utils";
+import { RouterOutputs } from "@/trpc/shared";
 
 export default function EventCardActions(props: {
-  event: Event;
-  updateAttachments: (
-    updatedAttachments: AttachmentInfo[],
-    to_attach: Attachment[],
-    to_detach: Detachment[],
-  ) => void;
+  event: RouterOutputs["events"]["getAll"][number];
 }) {
   const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
 
   const session = useSession();
-  const router = useRouter();
 
-  if (
-    session.status !== "authenticated" ||
-    !(session.data.user.admin || session.data.user.moderator)
-  ) {
+  if (session.status !== "authenticated" || !isModerator(session.data)) {
     return <></>;
   }
 
@@ -51,14 +40,14 @@ export default function EventCardActions(props: {
                   Add or remove tags from this event
                 </small>
               </ModalHeader>
-              <ModalBody>
+              {/* <ModalBody>
                 <ModifyBearerTags
                   bearer="event"
                   bearer_id={props.event.id}
                   initialOptionsFilter={(ai) => ai.bearer_id === props.event.id}
                   updateAttachments={props.updateAttachments}
                 />
-              </ModalBody>
+              </ModalBody> */}
               <ModalFooter>
                 <Button color="success" variant="light" onPress={onClose}>
                   Done
