@@ -63,8 +63,23 @@ export default function CreateEvent() {
   const [photo, setPhoto] = useState<Blob | null>(null);
 
   const { mutate: createEvent } = api.events.create.useMutation({
-    onSuccess: ({ id, slug, photoUpload }) => {
-      // TODO: upload photo
+    onSuccess: async ({ id: eventId, photoId }) => {
+      if (photo) {
+        toast.loading("Uploading photo...");
+
+        const formData = new FormData();
+        formData.append("file", photo);
+        formData.append("key", `events/${eventId}/${photoId}`);
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          toast.error("Failed to upload photo");
+          return;
+        }
+      }
       toast.success("Created event successfully");
       router.push("/events");
     },
@@ -88,9 +103,10 @@ export default function CreateEvent() {
       return toast.error("Please fill all fields");
     }
 
-    if (!photo) {
-      return toast.error("Please upload a photo!");
-    }
+    // TODO: should we force a photo upload?
+    // if (!photo) {
+    //   return toast.error("Please upload a photo!");
+    // }
 
     const start = dayjs(startDate);
     const end = dayjs(endDate);
@@ -106,6 +122,7 @@ export default function CreateEvent() {
       endTime: endDate,
       location,
       link,
+      photo: !!photo,
     });
   }
 

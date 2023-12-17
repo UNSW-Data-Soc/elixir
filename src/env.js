@@ -19,6 +19,11 @@ const envSchema = z.object({
   DATABASE_PASSWORD: z.string().nonempty(),
   DATABASE_URL: z.string().nonempty(),
 
+  S3_USER: z.string().nonempty(),
+  S3_PASSWORD: z.string().nonempty(),
+  S3_BUCKET_NAME: z.string().nonempty(),
+  S3_REGION_NAME: z.string().nonempty(),
+
   SECRET_KEY: z.string().nonempty(),
 });
 

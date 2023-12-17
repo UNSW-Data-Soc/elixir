@@ -47,7 +47,7 @@ export default function EventActionsModal(props: {
       const actionPubUnpub = props.event.public ? "unpublish" : "publish";
       toast.success(`Event ${actionPubUnpub}ed successfully!`);
       void utils.events.invalidate();
-      window.location.reload();
+      window.location.reload(); // TODO: how to update page without full reload
     },
     onError: () => {
       const actionPubUnpub = props.event.public ? "unpublish" : "publish";

@@ -9,6 +9,7 @@ import { events } from "@/server/db/schema";
 import { count, eq, desc, gt, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { hasModeratorPermissions } from "@/server/api/utils";
+import { uploadFile } from "./file";
 
 /** CONSTANTS + PARAMETERS **/
 const DEFAULT_EVENT_CONTENT = {
@@ -120,6 +121,7 @@ export const eventRouter = createTRPCRouter({
         endTime: z.date(),
         location: z.string().optional().default("Earth"),
         link: z.string().optional().default(DEFAULT_EVENT_LINK),
+        photo: z.boolean(),
       }),
     )
     .mutation(
@@ -133,6 +135,7 @@ export const eventRouter = createTRPCRouter({
           endTime,
           eventPublic,
           link,
+          photo,
         },
       }) => {
         // check that startTime is before endTime
@@ -152,6 +155,9 @@ export const eventRouter = createTRPCRouter({
           newSlug = `${slug}-${crypto.randomUUID().slice(0, 4)}`;
         }
 
+        // generate image id
+        const photoId = photo ? crypto.randomUUID().slice(0, 36) : null;
+
         await ctx.db.insert(events).values({
           id,
           slug: newSlug,
@@ -163,12 +169,10 @@ export const eventRouter = createTRPCRouter({
           endTime,
           location,
           link,
+          photo: photoId,
         });
 
-        // TODO: upload photo to s3
-        const photoUpload = "TODO";
-
-        return { id, slug: newSlug, photoUpload };
+        return { id, slug: newSlug, photoId };
       },
     ),
 

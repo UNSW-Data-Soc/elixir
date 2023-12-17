@@ -29,6 +29,7 @@ import {
   ClockIcon,
   MapPinIcon,
 } from "@heroicons/react/24/outline";
+import { env } from "@/env";
 
 function getEventCardStyle(
   event: RouterOutputs["events"]["getAll"][number],
@@ -49,6 +50,14 @@ export async function EventsCard(props: {
   const endTime = dayjs(props.event.endTime);
   const inFuture = endTime.isAfter(Date.now());
 
+  let url: string | undefined;
+  if (props.event.photo) {
+    const res = await fetch(
+      `${env.NEXTAUTH_URL}/api/download?key=events/${props.event.id}/${props.event.photo}`,
+    );
+    url = (await res.json()).url as string;
+  }
+
   return (
     <>
       <EventDescription event={props.event}>
@@ -60,10 +69,13 @@ export async function EventsCard(props: {
             >
               <Image
                 src={
-                  "./logo.png" /*endpoints.events.getEventPhoto(props.event.id)*/
+                  props.event.photo
+                    ? // ? `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION_NAME}.amazonaws.com/events/${props.event.id}/${props.event.photo}`
+                      url
+                    : "./logo.png" /*endpoints.events.getEventPhoto(props.event.id)*/
                 } // TODO: get event photo
                 alt="Profile picture"
-                className="rounded-b-none rounded-t-xl object-cover"
+                className="h-full rounded-b-none rounded-t-xl object-cover"
                 height={Event_PHOTO_Y_PXL * 0.4}
                 width={Event_PHOTO_X_PXL}
               />

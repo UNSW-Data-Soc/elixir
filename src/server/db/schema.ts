@@ -143,7 +143,7 @@ export const events = mysqlTable(
     link: text("link").notNull(),
     public: boolean("public").notNull().default(false),
     lastEditTime: timestamp("lastEditTime").notNull().defaultNow(),
-    photo: boolean("photo").notNull().default(false),
+    photo: varchar("photoId", { length: 36 }),
   },
   (event) => ({
     eventSlugIdx: index("eventSlugIdx").on(event.slug),
