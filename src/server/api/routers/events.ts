@@ -9,7 +9,6 @@ import { events } from "@/server/db/schema";
 import { count, eq, desc, gt, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { hasModeratorPermissions } from "@/server/api/utils";
-import { uploadFile } from "./file";
 
 /** CONSTANTS + PARAMETERS **/
 const DEFAULT_EVENT_CONTENT = {

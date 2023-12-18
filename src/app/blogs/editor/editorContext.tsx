@@ -65,7 +65,6 @@ export default function EditorContextProvider({
     content: blogBody ?? "",
     autofocus: false,
     onBlur: ({ editor }) => {
-      console.log(blogId, blogTitle, blogAuthor, blogPublic);
       if (
         blogId === null ||
         blogTitle === null ||
@@ -76,14 +75,14 @@ export default function EditorContextProvider({
         return;
       }
 
+      const blogContent = editor.getJSON();
+
       updateBlog({
         id: blogId,
-        body: JSON.stringify(editor.getJSON()),
+        body: JSON.stringify(blogContent),
         author: blogAuthor,
         title: blogTitle,
       });
-
-      // console.log(JSON.stringify(editor.getJSON(), null, 4));
     },
   });
 

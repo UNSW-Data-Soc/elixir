@@ -24,6 +24,9 @@ import { FileUploadDropzone, IMAGE_FILE_TYPES } from "@/app/utils";
 import toast from "react-hot-toast";
 import { BACKEND_URL, endpoints } from "@/app/api/backend/endpoints";
 import PhotoUploader from "@/app/photoUploader";
+import { getBlogImageKey, upload } from "@/app/utils/s3";
+
+const TOAST_ID_UPLOADING_PHOTO = "uploading-photo";
 
 export default function EditorMenu() {
   const { editor } = useEditorContext();
@@ -307,13 +310,20 @@ const EditorAddImage = () => {
                   return;
                 }
 
-                const { id: imageId } = await endpoints.blogs.image.upload({
-                  blogId,
-                  file: files[0],
-                });
-                const imageURL = new URL("/file/blog", BACKEND_URL);
-                imageURL.searchParams.append("blog_id", blogId);
-                imageURL.searchParams.append("photo_id", imageId);
+                const imageId = crypto.randomUUID();
+                try {
+                  toast.loading("Uploading image...", {
+                    id: TOAST_ID_UPLOADING_PHOTO,
+                  });
+                  await upload(files[0], getBlogImageKey(blogId, imageId));
+                  toast.dismiss(TOAST_ID_UPLOADING_PHOTO);
+                } catch (err) {
+                  toast.dismiss(TOAST_ID_UPLOADING_PHOTO);
+                  toast.error("Error uploading image!");
+                  return;
+                }
+
+                toast.success("Image uploaded!");
 
                 editor.commands.setImage({
                   // @ts-ignore

@@ -1,7 +1,9 @@
-import { getServerSession } from "next-auth";
-import LoginForm from "./loginForm";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+
+import LoginForm from "./loginForm";
+
+import { getServerSession } from "next-auth";
 
 const Login = async () => {
   const session = await getServerSession();

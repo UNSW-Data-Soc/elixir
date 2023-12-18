@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 
-import { Image } from "@nextui-org/image";
+import Image from "next/image";
 import { Card, CardFooter } from "@nextui-org/card";
 import { Link } from "@nextui-org/link";
 
@@ -20,16 +20,14 @@ import EventInformation from "./eventInformation";
 
 import { Divider } from "@nextui-org/divider";
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
-import { Tooltip } from "@nextui-org/tooltip";
 
 import { generateHTML } from "@tiptap/html";
 import { TIPTAP_EXTENSIONS } from "../blogs/tiptapExtensions";
-import {
-  ArrowLeftOnRectangleIcon,
-  ClockIcon,
-  MapPinIcon,
-} from "@heroicons/react/24/outline";
-import { env } from "@/env";
+import { ClockIcon, MapPinIcon } from "@heroicons/react/24/outline";
+
+import { getEventImageRoute } from "@/app/utils/s3";
+
+const DEFAULT_EVENT_IMAGE = "./logo.png";
 
 function getEventCardStyle(
   event: RouterOutputs["events"]["getAll"][number],
@@ -50,61 +48,58 @@ export async function EventsCard(props: {
   const endTime = dayjs(props.event.endTime);
   const inFuture = endTime.isAfter(Date.now());
 
-  let url: string | undefined;
-  if (props.event.photo) {
-    const res = await fetch(
-      `${env.NEXTAUTH_URL}/api/download?key=events/${props.event.id}/${props.event.photo}`,
-    );
-    url = (await res.json()).url as string;
-  }
-
   return (
     <>
       <EventDescription event={props.event}>
         {{
           trigger: (
             <Card
-              className="flex aspect-video max-w-[400px] cursor-pointer flex-col items-center justify-center gap-2 duration-200 ease-in-out transition-all hover:scale-95 active:scale-90"
+              className={`flex aspect-[16/9] min-w-[20rem] max-w-[400px] cursor-pointer flex-col items-center justify-center gap-2 duration-200 ease-in-out transition-all hover:scale-95 active:scale-90 ${
+                session ? "relative" : ""
+              }`}
               style={getEventCardStyle(props.event)}
             >
               <Image
                 src={
                   props.event.photo
-                    ? // ? `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION_NAME}.amazonaws.com/events/${props.event.id}/${props.event.photo}`
-                      url
-                    : "./logo.png" /*endpoints.events.getEventPhoto(props.event.id)*/
-                } // TODO: get event photo
+                    ? getEventImageRoute(props.event.id, props.event.photo)
+                    : DEFAULT_EVENT_IMAGE
+                }
                 alt="Profile picture"
-                className="h-full rounded-b-none rounded-t-xl object-cover"
+                className={`h-full rounded-b-none rounded-t-xl object-cover ${
+                  session ? "absolute left-0 top-0 z-30 w-full" : ""
+                }`}
                 height={Event_PHOTO_Y_PXL * 0.4}
                 width={Event_PHOTO_X_PXL}
               />
               {!!session && (
-                <CardFooter className="flex w-full flex-col items-center justify-between gap-2 px-7 py-5 pb-6 align-baseline">
-                  <div className="flex w-full flex-col justify-start">
-                    <div className="flex w-full flex-row justify-between">
-                      <p className="text-lg font-bold">{props.event.title}</p>
-                      <Link
-                        isExternal
-                        showAnchorIcon
-                        href={props.event.link}
-                        className="cursor-pointer"
-                      >
-                        View Event
-                      </Link>
+                <CardFooter className="z-50 flex h-full w-full flex-col items-center justify-around gap-2 rounded-none bg-[#fffa] px-7 py-5 pb-6 align-baseline">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex w-full flex-col justify-start">
+                      <div className="flex w-full flex-row justify-between">
+                        <p className="text-lg font-bold">{props.event.title}</p>
+                        <Link
+                          isExternal
+                          showAnchorIcon
+                          href={props.event.link}
+                          className="cursor-pointer"
+                        >
+                          View Event
+                        </Link>
+                      </div>
+                      <p className="w-full text-left italic">
+                        {inFuture
+                          ? `Starts ${startTime.fromNow()}`
+                          : `Ended ${endTime.toNow(true)} ago`}
+                      </p>
                     </div>
-                    <p className="w-full text-left italic">
-                      {inFuture
-                        ? `Starts ${startTime.fromNow()}`
-                        : `Ended ${endTime.toNow(true)} ago`}
-                    </p>
+                    {isModerator(session) && (
+                      <div className="flex items-center justify-center px-3 align-baseline">
+                        <EventActionsModal event={props.event} />
+                        <EventCardActions event={props.event} />
+                      </div>
+                    )}
                   </div>
-                  {isModerator(session) && (
-                    <div className="flex items-center justify-center px-3 align-baseline">
-                      <EventActionsModal event={props.event} />
-                      <EventCardActions event={props.event} />
-                    </div>
-                  )}
                 </CardFooter>
               )}
             </Card>

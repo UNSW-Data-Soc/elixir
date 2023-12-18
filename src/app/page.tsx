@@ -1,30 +1,36 @@
-import { endpoints } from "./api/backend/endpoints";
-import { Image as NextUIImage } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
+
+import { Image as NextUIImage } from "@nextui-org/react";
+
+import { api } from "@/trpc/server";
+
+import { endpoints } from "./api/backend/endpoints";
+import { SponsorshipType } from "./api/backend/sponsorships";
+import LinkButton from "./components/LinkButton";
+import BlogImageHomePage from "./components/blogImageHomePage";
 import {
   FacebookIcon,
+  GitHubIcon,
   InstagramIcon,
   LinkedInIcon,
-  GitHubIcon,
   YouTubeIcon,
 } from "./socialIcons";
 import {
   DATASOC_FACEBOOK_LINK,
+  DATASOC_GITHUB_LINK,
   DATASOC_INSTAGRAM_LINK,
   DATASOC_LINKEDIN_LINK,
-  DATASOC_GITHUB_LINK,
-  DATASOC_YOUTUBE_LINK,
   DATASOC_REGISTRATION_LINK,
-  Event_PHOTO_Y_PXL,
+  DATASOC_YOUTUBE_LINK,
   Event_PHOTO_X_PXL,
+  Event_PHOTO_Y_PXL,
 } from "./utils";
-import LinkButton from "./components/LinkButton";
-import { SponsorshipType } from "./api/backend/sponsorships";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import BlogImageHomePage from "./components/blogImageHomePage";
-import { api } from "@/trpc/server";
+import toast from "react-hot-toast";
+
 dayjs.extend(relativeTime);
 
 const SOCIAL_HEIGHT = 25;

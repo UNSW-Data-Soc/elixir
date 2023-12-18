@@ -36,6 +36,9 @@ import {
 import useClickAway from "@/app/hooks/useClickAway";
 import { Tooltip } from "@nextui-org/react";
 import { api } from "@/trpc/react";
+import { getEventImageKey, upload } from "@/app/utils/s3";
+
+const TOAST_ID_UPLOADING_PHOTO = "uploading-photo";
 
 export default function CreateEvent() {
   const router = useRouter();
@@ -62,21 +65,20 @@ export default function CreateEvent() {
   const [link, setLink] = useState("");
   const [photo, setPhoto] = useState<Blob | null>(null);
 
+  const { mutate: deleteEvent } = api.events.delete.useMutation({});
+
   const { mutate: createEvent } = api.events.create.useMutation({
     onSuccess: async ({ id: eventId, photoId }) => {
-      if (photo) {
-        toast.loading("Uploading photo...");
+      if (photo && photoId) {
+        toast.loading("Uploading photo...", { id: TOAST_ID_UPLOADING_PHOTO });
 
-        const formData = new FormData();
-        formData.append("file", photo);
-        formData.append("key", `events/${eventId}/${photoId}`);
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await upload(photo, getEventImageKey(eventId, photoId));
+
+        toast.dismiss(TOAST_ID_UPLOADING_PHOTO);
 
         if (!res.ok) {
           toast.error("Failed to upload photo");
+          deleteEvent({ id: eventId }); // TODO: should we delete if photo upload fails?
           return;
         }
       }

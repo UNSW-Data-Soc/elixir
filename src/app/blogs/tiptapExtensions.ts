@@ -22,6 +22,7 @@ import Gapcursor from "@tiptap/extension-gapcursor";
 import { mergeAttributes } from "@tiptap/core";
 import { Node } from "@tiptap/core";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
+import { getBlogImageRoute } from "../utils/s3";
 
 type Levels = 1 | 2 | 3;
 
@@ -123,13 +124,12 @@ export const UploadImage = Image.extend({
     ];
   },
   renderHTML({ node, HTMLAttributes }) {
-    const imageURL = new URL("/file/blog", process.env.NEXT_PUBLIC_BACKEND_URL);
-    imageURL.searchParams.append("blog_id", node.attrs.blogId);
-    imageURL.searchParams.append("photo_id", node.attrs.imageId);
     return [
       `img`,
       mergeAttributes(HTMLAttributes, {
-        src: node.attrs.src ? node.attrs.src : imageURL.href,
+        src: node.attrs.src
+          ? node.attrs.src
+          : getBlogImageRoute(node.attrs.blogId, node.attrs.imageId),
       }),
     ];
   },

@@ -1,77 +1,119 @@
 "use client";
 
-import Link from "next/link";
-import {
-    DATASOC_FACEBOOK_LINK,
-    DATASOC_GITHUB_LINK,
-    DATASOC_INSTAGRAM_LINK,
-    DATASOC_LINKEDIN_LINK,
-    DATASOC_YOUTUBE_LINK,
-} from "./utils";
 import Image from "next/image";
-import { FacebookIcon, GitHubIcon, InstagramIcon, LinkedInIcon, YouTubeIcon } from "./socialIcons";
+import Link from "next/link";
+
+import {
+  DATASOC_FACEBOOK_LINK,
+  DATASOC_GITHUB_LINK,
+  DATASOC_INSTAGRAM_LINK,
+  DATASOC_LINKEDIN_LINK,
+  DATASOC_YOUTUBE_LINK,
+} from "@/app/utils";
+
+import {
+  FacebookIcon,
+  GitHubIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  YouTubeIcon,
+} from "./socialIcons";
 
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
 
 export default function Footer() {
-    return (
-        <>
-            <div className="mt-12 pl-3 md:pl-24 pr-3 md:pr-24 pt-12 pb-12 flex items-start justify-between align-baseline gap-6 flex-wrap bg-[#f1f1f1]">
-                <div className="text-[#b4b6b7] text-sm italic flex flex-col items-start justify-start align-start gap-6 sm:w-2/5">
-                    <Image
-                        src="/logo.png"
-                        width={100}
-                        height={100}
-                        alt="Picture of the author"
-                    />
-                    <p>Made with ❤️ by UNSW Data Science Society</p>
-                    <p>Proudly supported by Arc UNSW</p>
-                    <p>
-                        UNSW DataSoc acknowledges the Aboriginal and Torres
-                        Strait Islander peoples as the first inhabitants of this
-                        nation and the Bedegal people as the Traditional
-                        Custodians of the Land where the UNSW Kensington campus
-                        is situated. We pay our respects to all Elders past,
-                        present and future.
-                    </p>
-                </div>
-                <div className="text-[#b4b6b7] flex flex-col items-start justify-start align-baseline gap-1">
-                    <p className="text-[#444e5f] font-bold">DATASOC</p>
-                    <Link href="/">Home</Link>
-                    <Link href="/about">About Us</Link>
-                    <Link href="/sponsorships">Our Sponsors</Link>
-                    <Link href="/events">Our Events</Link>
-                    <Link href="/jobs">Jobs Board</Link>
-                    <Link href="/blogs">Blog</Link>
-                    <Link href="/resources">Resources</Link>
-                    <Link href="/publications">Publications</Link>
-                    <Link href="/contact">Contact Us</Link>
-                </div>
-                <div className="text-[#b4b6b7] flex flex-col items-start justify-start align-baseline gap-1">
-                    <p className="text-[#444e5f] font-bold">GET IN TOUCH</p>
-                    <Link href={DATASOC_FACEBOOK_LINK} className="flex gap-1">
-                        <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT}/>
-                        Facebook
-                    </Link>
-                    <Link href={DATASOC_INSTAGRAM_LINK} className="flex gap-1">
-                        <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT}/>
-                        Instagram
-                    </Link>
-                    <Link href={DATASOC_LINKEDIN_LINK} className="flex gap-1">
-                        <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT}/>
-                        LinkedIn
-                    </Link>
-                    <Link href={DATASOC_GITHUB_LINK} className="flex gap-1">
-                        <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT}/>
-                        GitHub
-                    </Link>
-                    <Link href={DATASOC_YOUTUBE_LINK} className="flex gap-1">
-                        <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT}/>
-                        YouTube
-                    </Link>
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <div className="flex flex-wrap items-start justify-between gap-6 bg-[#f1f1f1] pb-12 pl-3 pr-3 pt-12 align-baseline md:pl-24 md:pr-24">
+        <div className="align-start flex flex-col items-start justify-start gap-6 text-sm text-[#b4b6b7] sm:w-2/5">
+          <Image
+            src="/logo.png"
+            width={100}
+            height={100}
+            alt="Picture of the author"
+          />
+          <p>Made with ❤️ by UNSW Data Science Society</p>
+          <p>Proudly supported by Arc UNSW</p>
+          <p className="text-justify">
+            UNSW DataSoc acknowledges the Aboriginal and Torres Strait Islander
+            peoples as the first inhabitants of this nation and the Bedegal
+            people as the Traditional Custodians of the Land where the UNSW
+            Kensington campus is situated. We pay our respects to all Elders
+            past, present and future.
+          </p>
+        </div>
+        <div className="flex flex-col items-start justify-start gap-1 align-baseline text-[#b4b6b7]">
+          <p className="font-bold uppercase tracking-wide text-[#444e5f]">
+            DataSoc
+          </p>
+          {[
+            { name: "Home", href: "/" },
+            { name: "About Us", href: "/about" },
+            { name: "Our Sponsors", href: "/sponsorships" },
+            { name: "Our Events", href: "/events" },
+            { name: "Jobs Board", href: "/jobs" },
+            { name: "Blog", href: "/blogs" },
+            { name: "Resources", href: "/resources" },
+            { name: "Publications", href: "/publications" },
+            { name: "Contact Us", href: "/contact" },
+          ].map(({ name, href }) => (
+            <Link
+              key={name}
+              className="text-[#aaa] transition-all hover:text-[#888]"
+              href={href}
+            >
+              {name}
+            </Link>
+          ))}
+        </div>
+        <div className="flex flex-col items-start justify-start gap-1 align-baseline text-[#b4b6b7]">
+          <p className="font-bold uppercase tracking-wide text-[#444e5f]">
+            Get In Touch
+          </p>
+          <Link
+            href={DATASOC_FACEBOOK_LINK}
+            className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          >
+            <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
+            Facebook
+          </Link>
+          <Link
+            href={DATASOC_INSTAGRAM_LINK}
+            className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          >
+            <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
+            Instagram
+          </Link>
+          <Link
+            href={DATASOC_LINKEDIN_LINK}
+            className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          >
+            <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
+            LinkedIn
+          </Link>
+          <Link
+            href={DATASOC_GITHUB_LINK}
+            className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          >
+            <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
+            GitHub
+          </Link>
+          <Link
+            href={DATASOC_YOUTUBE_LINK}
+            className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          >
+            <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
+            YouTube
+          </Link>
+          <div className="h-4"></div>
+          <p className="font-bold uppercase tracking-wide text-[#444e5f]">
+            Internals
+          </p>
+          <Link href="/auth/login">Login</Link>
+          <Link href="#">Feedback</Link> {/* // TODO: feedback page */}
+        </div>
+      </div>
+    </>
+  );
 }

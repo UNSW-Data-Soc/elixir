@@ -9,14 +9,12 @@ const uploadFile = async (file: Blob, key: string) => {
   const putCommand = new PutObjectCommand({
     Bucket: env.S3_BUCKET_NAME,
     Key: key,
-    Body: (await file.arrayBuffer()) as any, // TODO: is this right?
+    Body: (await file.arrayBuffer()) as any, // * dumb typecast to make it not complain
   });
   try {
     const res = await s3.send(putCommand);
-    console.log(res);
     return res;
   } catch (err) {
-    console.log(err);
     throw new Error("Error uploading file");
   }
 };
@@ -26,6 +24,7 @@ const schema = zfd.formData({
   key: zfd.text(),
 });
 
+// TODO: more accurate error messages / statuses
 export async function POST(req: Request) {
   const session = await getServerAuthSession();
 
@@ -35,8 +34,12 @@ export async function POST(req: Request) {
 
   try {
     const r = await req.formData();
-    const { file, key } = schema.parse(r);
-    await uploadFile(file, key);
+    try {
+      const { file, key } = schema.parse(r);
+      await uploadFile(file, key);
+    } catch (err) {
+      return new Response("Invalid form data", { status: 400 });
+    }
   } catch (err) {
     return new Response("Error uploading file", { status: 500 });
   }

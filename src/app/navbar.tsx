@@ -1,17 +1,13 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
-import {
-  ArrowLeftOnRectangleIcon,
-  UsersIcon,
-  UserIcon,
-  TagIcon,
-  PhotoIcon,
-  BuildingLibraryIcon,
-} from "@heroicons/react/24/outline";
+import { signOut, useSession } from "next-auth/react";
+
+import { useState } from "react";
+
 import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
@@ -21,19 +17,27 @@ import {
 } from "@nextui-org/dropdown";
 import { Link } from "@nextui-org/link";
 import {
-  Navbar as NextUINavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
+  Navbar as NextUINavbar,
 } from "@nextui-org/navbar";
 
-import { useState } from "react";
-import { endpoints } from "./api/backend/endpoints";
+import { endpoints } from "@/app/api/backend/endpoints";
+
+import {
+  ArrowLeftOnRectangleIcon,
+  BuildingLibraryIcon,
+  PhotoIcon,
+  TagIcon,
+  UserIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
+
 import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from "./utils";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 
 type ItemDropdown = {
   key: string;
@@ -68,7 +72,7 @@ const Navbar = () => {
     <NextUINavbar
       isBordered
       shouldHideOnScroll={false}
-      className="gap-6 bg-[#fffb]"
+      className="gap-6 bg-[#fffb] flex items-center justify-center"
     >
       {/* mobile navbar */}
       <NavbarContent className="flex lg:hidden" justify="start">
@@ -240,8 +244,6 @@ function SettingsDropdown(props: {
 }) {
   const router = useRouter();
 
-  const [isOpen, setIsOpen] = useState(false);
-
   const items: ItemDropdown[] = [];
 
   if (props.isAdmin) {
@@ -253,7 +255,7 @@ function SettingsDropdown(props: {
     });
   }
 
-  if (props.isModerator) {
+  if (props.isModerator || props.isAdmin) {
     items.push(
       {
         key: "tags",
