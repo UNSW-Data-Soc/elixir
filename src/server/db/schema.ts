@@ -1,16 +1,15 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   int,
+  mysqlEnum,
   mysqlTableCreator,
   primaryKey,
   text,
   timestamp,
   varchar,
-  mysqlEnum,
-  boolean,
 } from "drizzle-orm/mysql-core";
-import { type AdapterAccount } from "next-auth/adapters";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -36,7 +35,12 @@ export const users = mysqlTable(
     role: mysqlEnum("userRole", ["admin", "moderator", "user"])
       .default("user")
       .notNull(),
-    // TODO: yearsActive:
+    registeredTime: timestamp("registeredTime", {
+      mode: "date",
+      fsp: 3,
+    })
+      .notNull()
+      .defaultNow(),
     retired: boolean("retired").default(false),
   },
   (user) => ({
@@ -44,39 +48,34 @@ export const users = mysqlTable(
   }),
 );
 
-// export const usersRelations = relations(users, ({ many }) => ({
-//   accounts: many(accounts),
-//   sessions: many(sessions),
-// }));
+export const userYearsActive = mysqlTable(
+  "userYearsActive",
+  {
+    userId: varchar("id", { length: 255 }).notNull(),
+    year: int("year").notNull(),
+    group: mysqlEnum("group", ["exec", "directors", "subcom"]).notNull(),
+    role: text("role"), // either 'role' name for exec or 'portfolio' name for directors/subcom
+  },
+  (r) => ({
+    compoundKey: primaryKey({
+      columns: [r.userId, r.year],
+    }),
+  }),
+);
 
-// export const accounts = mysqlTable(
-//   "account",
-//   {
-//     userId: varchar("userId", { length: 255 }).notNull(),
-//     type: varchar("type", { length: 255 })
-//       .$type<AdapterAccount["type"]>()
-//       .notNull(),
-//     provider: varchar("provider", { length: 255 }).notNull(),
-//     providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
-//     refresh_token: text("refresh_token"),
-//     access_token: text("access_token"),
-//     expires_at: int("expires_at"),
-//     token_type: varchar("token_type", { length: 255 }),
-//     scope: varchar("scope", { length: 255 }),
-//     id_token: text("id_token"),
-//     session_state: varchar("session_state", { length: 255 }),
-//   },
-//   (account) => ({
-//     compoundKey: primaryKey({
-//       columns: [account.provider, account.providerAccountId],
-//     }),
-//     userIdIdx: index("userId_idx").on(account.userId),
-//   }),
-// );
-
-// export const accountsRelations = relations(accounts, ({ one }) => ({
-//   user: one(users, { fields: [accounts.userId], references: [users.id] }),
-// }));
+export const resetTokens = mysqlTable(
+  "resetTokens",
+  {
+    token: varchar("token", { length: 255 }).notNull(),
+    user: varchar("id", { length: 255 }).notNull(), // TODO: .references(() => users.id, {onDelete: "cascade"})
+    expires: timestamp("expires", { mode: "date" }).defaultNow().notNull(),
+  },
+  (t) => ({
+    compoundKey: primaryKey({
+      columns: [t.token, t.user],
+    }),
+  }),
+);
 
 export const sessions = mysqlTable(
   "session",
@@ -149,3 +148,38 @@ export const events = mysqlTable(
     eventSlugIdx: index("eventSlugIdx").on(event.slug),
   }),
 );
+
+export const companies = mysqlTable(
+  "company",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    name: text("name").notNull(),
+    description: text("description"),
+    websiteUrl: text("websiteUrl"),
+    logo: varchar("logoId", { length: 36 }),
+  },
+  (company) => ({
+    companyId: index("companyIdIdx").on(company.id),
+  }),
+);
+
+export const sponsorships = mysqlTable(
+  "sponsorship",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    message: text("message").notNull(),
+    company: varchar("companyId", { length: 255 }), // TODO: add later .references(() => companies.id, {onDelete: "cascade",})
+    public: boolean("public").notNull().default(false),
+    type: mysqlEnum("sponsorshipType", ["major", "partner", "other"]),
+    expiration: timestamp("expiration").notNull(),
+    order: int("order").notNull().default(0),
+  },
+  (sponsorship) => ({
+    sponsorshipId: index("sponsorshipIdIdx").on(sponsorship.id),
+  }),
+);
+
+export const coverPhotos = mysqlTable("coverphoto", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});

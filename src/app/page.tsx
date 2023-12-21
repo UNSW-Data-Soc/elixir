@@ -1,12 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Image as NextUIImage } from "@nextui-org/react";
-
 import { api } from "@/trpc/server";
 
-import { endpoints } from "./api/backend/endpoints";
-import { SponsorshipType } from "./api/backend/sponsorships";
+import { getFirstImageUrl } from "./blogs/utils";
 import LinkButton from "./components/LinkButton";
 import BlogImageHomePage from "./components/blogImageHomePage";
 import {
@@ -26,10 +23,14 @@ import {
   Event_PHOTO_X_PXL,
   Event_PHOTO_Y_PXL,
 } from "./utils";
+import {
+  getCompanyImageRoute,
+  getCoverPhotoRoute,
+  getEventImageRoute,
+} from "./utils/s3";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import toast from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 
@@ -37,27 +38,22 @@ const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
 
 const NUM_DISPLAY_EVENTS = 3;
+const NUM_DISPLAY_BLOGS = 3;
 
 export default async function Home() {
-  const futureEvents = await api.events.getUpcoming.query({
-    limit: NUM_DISPLAY_EVENTS,
-  });
-  const blogs = await api.blogs.getRecent.query({ limit: NUM_DISPLAY_EVENTS });
+  const [futureEvents, blogs, sponsors, coverPhoto] = await Promise.all([
+    api.events.getUpcoming.query({ limit: NUM_DISPLAY_EVENTS }),
+    api.blogs.getRecent.query({ limit: NUM_DISPLAY_BLOGS }),
+    api.sponsorships.getAll.query(),
+    api.coverPhotos.getLatest.query(),
+  ]);
 
-  const sponsors = (
-    await Promise.all(
-      (await endpoints.sponsorships.getAll(false)).map(async (sponsorship) => {
-        const company = await endpoints.companies.get(sponsorship.company);
-        return {
-          id: company.id,
-          name: company.name,
-          logo: endpoints.companies.getCompanyPhoto(company.id),
-          link: company.website_url,
-          type: sponsorshipTypeToPos(sponsorship.sponsorship_type),
-        };
-      }),
-    )
-  ).sort((a, b) => a.type - b.type);
+  // we only care about unique companies
+  const companies = sponsors
+    .map(({ company }) => company)
+    .filter(
+      (item, pos, self) => self.findIndex((c) => c.id === item.id) == pos,
+    );
 
   return (
     <>
@@ -65,7 +61,7 @@ export default async function Home() {
       <main className="bg-light-rainbow left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
         <div className="fade-in-image mix-blend-multiply">
           <Image
-            src={endpoints.file.getCoverPhoto()}
+            src={getCoverPhotoRoute(coverPhoto.id)}
             alt="Cover Photo"
             fill
             sizes="100vw"
@@ -113,17 +109,15 @@ export default async function Home() {
         <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
           {blogs.length > 0 &&
             blogs.map((blog) => {
-              const firstImageUrl: string | null = JSON.parse(
-                blog.body,
-              ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
-
               return (
                 <Link
                   key={blog.id}
                   href={`/blogs/${blog.slug}`}
                   className="group/eventCard relative flex h-[200px] min-w-[300px] flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                 >
-                  <BlogImageHomePage imgSrc={firstImageUrl ?? "/logo.png"} />
+                  <BlogImageHomePage
+                    imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
+                  />
                   <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
                     <p className="w-full text-center">{blog.title}</p>
                     <p className="w-full text-center text-xs">
@@ -152,7 +146,11 @@ export default async function Home() {
                     key={event.id}
                   >
                     <Image
-                      src={endpoints.events.getEventPhoto(event.id)}
+                      src={
+                        event.photo
+                          ? getEventImageRoute(event.id, event.photo)
+                          : "/logo.png" // TODO: is this an ok default image?
+                      }
                       alt="Event picture"
                       className="rounded-xl object-cover"
                       height={Event_PHOTO_Y_PXL * 0.4}
@@ -189,28 +187,31 @@ export default async function Home() {
         </p>
       </div>
       <div className="container mx-auto flex flex-col items-center justify-center bg-[#fff] p-12 align-baseline">
-        {sponsors.length > 0 && (
+        {companies.length > 0 && (
           <>
             <h3 className="w-full text-2xl font-light">
               Proudly sponsored by:
             </h3>
             <div className="flex flex-row flex-wrap justify-center">
-              {sponsors.map((company, index) => (
-                <div
-                  key={index}
-                  className="flex max-w-[19rem] items-center justify-center p-10"
-                >
-                  <Link href={company.link}>
-                    <Image
-                      src={company.logo}
-                      alt="Sponsor Logo"
-                      className="object-contain"
-                      width={500}
-                      height={500}
-                    />
-                  </Link>
-                </div>
-              ))}
+              {companies.map((company, index) => {
+                if (!company.logo || !company.websiteUrl) return <></>;
+                return (
+                  <div
+                    key={index}
+                    className="flex max-w-[19rem] items-center justify-center p-10"
+                  >
+                    <Link href={company.websiteUrl}>
+                      <Image
+                        src={getCompanyImageRoute(company.id, company.logo)}
+                        alt="Sponsor Logo"
+                        className="object-contain"
+                        width={500}
+                        height={500}
+                      />
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           </>
         )}
@@ -243,15 +244,15 @@ function SocialIcons() {
   );
 }
 
-function sponsorshipTypeToPos(type: SponsorshipType): number {
-  switch (type) {
-    case "major":
-      return 0;
-    case "partner":
-      return 1;
-    case "other":
-      return 2;
-    default:
-      return 3;
-  }
-}
+// function sponsorshipTypeToPos(type: SponsorshipType): number {
+//   switch (type) {
+//     case "major":
+//       return 0;
+//     case "partner":
+//       return 1;
+//     case "other":
+//       return 2;
+//     default:
+//       return 3;
+//   }
+// }

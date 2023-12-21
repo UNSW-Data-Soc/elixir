@@ -38,6 +38,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from "./utils";
+import { getUserProfilePicRoute } from "./utils/s3";
+
+import { Session } from "next-auth";
 
 type ItemDropdown = {
   key: string;
@@ -143,7 +146,7 @@ const Navbar = () => {
             <SettingsDropdown
               isAdmin={session.data.user.role === "admin"}
               isModerator={session.data.user.role === "moderator"}
-              userId={session.data.user.id}
+              session={session.data}
             />
           </NavbarItem>
         </NavbarContent>
@@ -240,7 +243,7 @@ function PublicationsDropdown() {
 function SettingsDropdown(props: {
   isAdmin: boolean;
   isModerator: boolean;
-  userId: string;
+  session: Session;
 }) {
   const router = useRouter();
 
@@ -283,7 +286,7 @@ function SettingsDropdown(props: {
       key: "profile",
       label: "Profile",
       startContent: <UserIcon className="h-6 w-6" />,
-      link: `/profile/${props.userId}`,
+      link: `/profile/${props.session.user.id}`,
     },
     {
       key: "logout",
@@ -300,7 +303,14 @@ function SettingsDropdown(props: {
           isBordered
           showFallback
           as="button"
-          src={endpoints.users.getUserProfilePicture(props.userId)}
+          src={
+            props.session.user.image
+              ? getUserProfilePicRoute(
+                  props.session.user.id,
+                  props.session.user.image,
+                )
+              : undefined
+          } // TODO: fix
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions" items={items}>

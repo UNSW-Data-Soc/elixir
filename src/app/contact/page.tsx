@@ -1,5 +1,14 @@
+import Image from "next/image";
 import Link from "next/link";
+
 import LinkButton from "../components/LinkButton";
+import {
+  FacebookIcon,
+  GitHubIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  YouTubeIcon,
+} from "../socialIcons";
 import {
   DATASOC_ADDRESS_JSX,
   DATASOC_EMAIL,
@@ -11,14 +20,6 @@ import {
   DATASOC_REGISTRATION_LINK,
   DATASOC_YOUTUBE_LINK,
 } from "../utils";
-import {
-  FacebookIcon,
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  YouTubeIcon,
-} from "../socialIcons";
-import Image from "next/image";
 import ContactUsQuoteBackground from "/public/contact_us_quote_background.png";
 
 const SOCIAL_HEIGHT = 25;
@@ -62,7 +63,9 @@ export default function Contact() {
             </div>
             <div className="flex flex-wrap gap-1">
               <p className="font-bold">Email:</p>
-              <a className="text-blue-600" href={`mailto: ${DATASOC_EMAIL}`}>{DATASOC_EMAIL}</a>
+              <a className="text-blue-600" href={`mailto: ${DATASOC_EMAIL}`}>
+                {DATASOC_EMAIL}
+              </a>
             </div>
             <div className="flex flex-col flex-wrap gap-0">
               <p className="font-bold">Address:</p>
@@ -87,10 +90,10 @@ export default function Contact() {
           </div>
           <div className="w-full min-h-full">
             <iframe
-                src={DATASOC_GOOGLE_MAPS_IFRAME_LINK}
-                className="w-full h-full"
-                allowFullScreen
-                aria-hidden="false"
+              src={DATASOC_GOOGLE_MAPS_IFRAME_LINK}
+              className="w-full h-full"
+              allowFullScreen
+              aria-hidden="false"
             />
           </div>
         </div>

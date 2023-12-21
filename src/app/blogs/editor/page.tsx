@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
-import { FormEventHandler, useEffect } from "react";
+import { useEffect } from "react";
 
 import {
   Button,
@@ -17,8 +17,6 @@ import {
 
 import { api } from "@/trpc/react";
 
-import { endpoints } from "@/app/api/backend/endpoints";
-
 import { Spinner, isModerator } from "@/app/utils";
 
 import { EditorContent } from "@tiptap/react";
@@ -26,20 +24,21 @@ import { EditorContent } from "@tiptap/react";
 import { useEditorContext } from "./editorContext";
 import EditorMenu from "./editorMenu";
 
+import toast from "react-hot-toast";
+
 const BlogsEditor = () => {
   const session = useSession();
   const router = useRouter();
-  const pathname = usePathname();
   const editorContext = useEditorContext();
   const searchParams = useSearchParams();
-  const blogSlug = searchParams.get("blogSlug");
+  const blogId = searchParams.get("blogId");
 
   const {
     data: blog,
     isLoading: blogLoading,
     isError: blogError,
-  } = api.blogs.getBySlug.useQuery({
-    slug: blogSlug ?? "",
+  } = api.blogs.getById.useQuery({
+    id: blogId ?? "",
   });
 
   // initially load blog info + content into the editor
@@ -51,7 +50,7 @@ const BlogsEditor = () => {
     editorContext.set.blogPublic(blog.public);
     editorContext.set.blogBody(blog.body);
     editorContext.editor?.commands.setContent(JSON.parse(blog.body));
-  }, [pathname, blogSlug, editorContext.editor, blog, editorContext.set]);
+  }, [blog]);
 
   if (session.status === "loading") return <></>;
   if (session.status === "unauthenticated") router.push("/auth/login");
@@ -63,7 +62,7 @@ const BlogsEditor = () => {
       </p>
     );
   if (!editorContext.editor) return <>Error!</>;
-  if (!blogSlug || blogError) return <BlogsList />;
+  if (!blogId || blogError) return <BlogsList />;
 
   return (
     <main className="mx-auto max-w-[900px] p-20 px-10 py-10 pl-24 md:px-32">
@@ -85,34 +84,34 @@ const BlogsEditor = () => {
 };
 
 const BlogsEditInfoForm = () => {
-  const router = useRouter();
   const editorContext = useEditorContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-
-    const updateDatabase = async () => {
-      const { blogId, blogTitle, blogAuthor, blogPublic, blogBody } =
-        editorContext.get;
-      if (!blogId || !blogTitle || !blogAuthor || !blogPublic || !blogBody) {
-        return;
-      }
-      const blog = await endpoints.blogs.update({
-        id: blogId,
-        body: blogBody,
-        author: blogAuthor,
-        title: blogTitle,
-        blogPublic,
-      });
-
+  const { mutate: updateBlog } = api.blogs.update.useMutation({
+    onSuccess: () => {
+      toast.success("Title + author updated!");
+    },
+    onError: () => {
+      toast.error("Failed to update blog title / author.");
+    },
+    onSettled: () => {
       onClose();
+    },
+  });
 
-      // if we change the title, the slug will change, so navigate to the new slug
-      router.push(`/blogs/editor?blogSlug=${blog.slug}`);
-    };
+  const handleFormSubmit = () => {
+    const { blogId, blogTitle, blogAuthor, blogPublic, blogBody } =
+      editorContext.get;
+    if (!blogId || !blogTitle || !blogAuthor || !blogPublic || !blogBody) {
+      return;
+    }
 
-    await updateDatabase();
+    updateBlog({
+      id: blogId,
+      title: blogTitle,
+      body: blogBody,
+      author: blogAuthor,
+    });
   };
 
   return (
@@ -136,11 +135,17 @@ const BlogsEditInfoForm = () => {
         isOpen={isOpen}
         isDismissable={true}
         backdrop="opaque"
-        onClose={onClose}
+        onClose={() => {
+          handleFormSubmit();
+          onClose();
+        }}
       >
         <ModalContent>
           <form
-            onSubmit={handleFormSubmit}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleFormSubmit();
+            }}
             className="flex flex-col gap-8 p-10"
           >
             <Input
@@ -158,7 +163,7 @@ const BlogsEditInfoForm = () => {
             <Input
               type="submit"
               value="Save changes"
-              style={{ cursor: "pointer" }}
+              className="cursor-pointer"
             />
           </form>
         </ModalContent>
@@ -186,12 +191,8 @@ const BlogsList = () => {
           <div
             key={blog.id}
             className="flex w-full cursor-pointer flex-row rounded-lg bg-[#fafafa] p-5 transition-all hover:bg-[#eee]"
-            onClick={() => router.push(`/blogs/editor?blogSlug=${blog.slug}`)}
+            onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
           >
-            <div
-              style={{ backgroundImage: `/kentosoc.jpeg` }}
-              className="aspect-square h-full"
-            />
             <div>
               <h3>{blog.title}</h3>
               <p>{blog.author}</p>

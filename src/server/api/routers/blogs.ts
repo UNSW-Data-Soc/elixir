@@ -1,15 +1,15 @@
-import { z } from "zod";
-
 import {
   createTRPCRouter,
   moderatorProcedure,
-  publicProcedure,
-  // t,
+  publicProcedure, // t,
 } from "@/server/api/trpc";
-import { blogs } from "@/server/db/schema";
-import { count, eq, desc } from "drizzle-orm";
-import { TRPCError } from "@trpc/server";
 import { hasModeratorPermissions } from "@/server/api/utils";
+import { blogs } from "@/server/db/schema";
+
+import { TRPCError } from "@trpc/server";
+
+import { count, desc, eq } from "drizzle-orm";
+import { z } from "zod";
 
 /** CONSTANTS + PARAMETERS **/
 const BLOG_TITLE_MIN_LENGTH = 3;
@@ -129,6 +129,40 @@ export const blogRouter = createTRPCRouter({
         .limit(limit);
     }),
 
+  getById: publicProcedure
+    .input(z.object({ id: z.string().nonempty() }))
+    .query(async ({ ctx, input: { id } }) => {
+      const blogsMatch = await ctx.db
+        .select()
+        .from(blogs)
+        .where(eq(blogs.id, id));
+
+      // no blog found with id
+      if (blogsMatch.length === 0) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Blog not found" });
+      }
+
+      const blog = blogsMatch[0];
+
+      // blog is not public, and user is not logged in
+      if (!blog.public && !ctx.session) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Please log in to view this blog",
+        });
+      }
+
+      // blog is not public, and user is not moderator or admin
+      if (!blog.public && !hasModeratorPermissions(ctx.session)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to view this blog",
+        });
+      }
+
+      return blog;
+    }),
+
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string().nonempty() }))
     .query(async ({ ctx, input: { slug } }) => {
@@ -136,6 +170,8 @@ export const blogRouter = createTRPCRouter({
         .select()
         .from(blogs)
         .where(eq(blogs.slug, slug));
+
+      // TODO: refactor repeated code
 
       // no blog found with slug
       if (blogsMatch.length === 0) {
@@ -166,12 +202,8 @@ export const blogRouter = createTRPCRouter({
   create: moderatorProcedure
     .input(
       z.object({
-        title: z
-          .string()
-          .nonempty()
-          .min(BLOG_TITLE_MIN_LENGTH)
-          .max(BLOG_TITLE_MAX_LENGTH),
-        body: z.string().nonempty().optional(),
+        title: z.string().min(BLOG_TITLE_MIN_LENGTH).max(BLOG_TITLE_MAX_LENGTH),
+        body: z.string().optional(),
         author: z.string(),
       }),
     )

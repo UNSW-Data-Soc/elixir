@@ -1,15 +1,22 @@
+import Image from "next/image";
+import Link from "next/link";
+
 import { CSSProperties } from "react";
+
+import { Card, CardFooter } from "@nextui-org/card";
+
+import { getServerAuthSession } from "@/server/auth";
+
+import { api } from "@/trpc/server";
+import { RouterOutputs } from "@/trpc/shared";
+
+import { isModerator } from "../utils";
+import BlogActionsModal from "./blogActionsModal";
+import BlogCardActions from "./blogCardActions";
+import { getFirstImageUrl } from "./utils";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { isModerator } from "../utils";
-import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
-import { RouterOutputs } from "@/trpc/shared";
-import Link from "next/link";
-import { Card, CardFooter } from "@nextui-org/card";
-import BlogCardActions from "./blogCardActions";
-import BlogActionsModal from "./blogActionsModal";
 
 dayjs.extend(relativeTime);
 
@@ -55,24 +62,24 @@ async function BlogCard({
   const session = await getServerAuthSession();
 
   const editedDate = dayjs(blog.lastEditTime);
-  const firstImageUrl: string | null = JSON.parse(blog.body).content.filter(
-    (c: any) => c.type === "image",
-  )[0]?.attrs.src;
+
+  const firstImage = getFirstImageUrl(JSON.parse(blog.body));
 
   return (
     <>
       <Link href={`/blogs/${blog.slug}`}>
         <Card
-          className="aspect-[16/9] min-w-[20rem] sm:w-96"
+          className="aspect-[16/9] min-w-[20rem] sm:w-96 relative"
           style={getBlogCardStyle(blog)}
         >
           {/* TODO: use next/image */}
-          <img
+          <Image
             alt="blog post hero image"
             className={`z-0 h-full w-full ${
-              firstImageUrl ? "object-cover" : "object-contain"
+              firstImage.found ? "object-cover" : "object-contain"
             }`}
-            src={firstImageUrl ?? "/logo.png"} // TODO: change this to a default image
+            src={firstImage.url}
+            fill={true}
           />
           <CardFooter className="absolute bottom-0 flex w-full flex-col items-start justify-between gap-1 rounded-b-none bg-[#fffc] px-5 py-4">
             <div className="flex w-full flex-col items-start">

@@ -1,10 +1,12 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Company } from "../api/backend/companies";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
+
+import { useState } from "react";
+
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -12,36 +14,42 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { endpoints } from "../api/backend/endpoints";
+
+import { api } from "@/trpc/react";
+import { RouterOutputs } from "@/trpc/shared";
+
+import { isModerator } from "../utils";
+
 import toast from "react-hot-toast";
 
 export default function CompanyActions(props: {
-  company: Company;
-  handleDeletion: (id: string) => void;
+  company: RouterOutputs["companies"]["getAll"][number];
 }) {
   const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
 
   const session = useSession();
-  const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  const ctx = api.useUtils();
+  const { mutate: deleteCompany } = api.companies.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Company deleted successfully!");
+      void ctx.companies.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete company: ${error.message}`);
+    },
+    onSettled: () => {
+      setShowDeletionDialogue(false);
+    },
+  });
+
+  if (session.status === "loading") return <></>;
+  if (!isModerator(session.data)) {
     return <></>;
   }
 
-  async function handleCompanyDeletion() {
-    await endpoints.companies
-      .remove(props.company.id)
-      .then(() => {
-        toast.success("Company deleted successfully!");
-        props.handleDeletion(props.company.id);
-      })
-      .catch(() => {
-        toast.error("Failed to delete company");
-      })
-      .finally(() => {
-        setShowDeletionDialogue(false);
-        return;
-      });
+  function handleCompanyDeletion() {
+    deleteCompany({ id: props.company.id });
   }
 
   return (

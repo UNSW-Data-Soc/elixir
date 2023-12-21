@@ -1,14 +1,15 @@
-import { z } from "zod";
-
 import {
   createTRPCRouter,
   moderatorProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { events } from "@/server/db/schema";
-import { count, eq, desc, gt, and } from "drizzle-orm";
-import { TRPCError } from "@trpc/server";
 import { hasModeratorPermissions } from "@/server/api/utils";
+import { events } from "@/server/db/schema";
+
+import { TRPCError } from "@trpc/server";
+
+import { and, count, desc, eq, gt } from "drizzle-orm";
+import { z } from "zod";
 
 /** CONSTANTS + PARAMETERS **/
 const DEFAULT_EVENT_CONTENT = {
@@ -16,13 +17,6 @@ const DEFAULT_EVENT_CONTENT = {
   content: [],
 };
 const DEFAULT_EVENT_LINK = ""; // TODO: change to default to website link
-const MAX_FILE_SIZE = 2000000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
 
 /** HELPER FUNCTIONS **/
 const createSlug = (str: string) =>

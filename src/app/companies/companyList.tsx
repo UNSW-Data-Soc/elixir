@@ -1,160 +1,148 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { endpoints } from "../api/backend/endpoints";
-import { toast } from "react-hot-toast";
 import {
-    Image,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Divider,
-    Link,
-    Button,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Image,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
 } from "@nextui-org/react";
-import { Company } from "../api/backend/companies";
+
+import { api } from "@/trpc/react";
+import { RouterOutputs } from "@/trpc/shared";
+
+import { COMPANY_PHOTO_X_PXL, COMPANY_PHOTO_Y_PXL, Spinner } from "../utils";
+import { getCompanyImageRoute } from "../utils/s3";
 import CompanyActions from "./companyActions";
-import { COMPANY_PHOTO_X_PXL, COMPANY_PHOTO_Y_PXL } from "../utils";
+
+import { toast } from "react-hot-toast";
 
 export default function CompanyList() {
-    const [companies, setCompanies] = useState<Company[]>([]);
+  const {
+    data: companies,
+    isLoading,
+    isError,
+  } = api.companies.getAll.useQuery();
 
-    useEffect(() => {
-        async function getCompanies() {
-            await endpoints.companies
-                .getAll()
-                .then((companies) => {
-                    setCompanies(companies);
-                })
-                .catch(() => {
-                    return toast.error("Failed to retrieve companies");
-                });
-        }
+  if (isError) {
+    toast.error("Failed to load companies");
+  }
 
-        getCompanies();
-    }, []);
-
-    async function handleDeletion(id: string) {
-        let updatedCompanies: Company[] = [];
-        for (let c of companies) {
-            if (c.id === id) {
-                continue;
-            }
-
-            updatedCompanies.push(c);
-        }
-
-        setCompanies(updatedCompanies);
-    }
-
-    return (
-        <>
-            {companies.map((company) => (
-                <CompaniesCard
-                    key={company.id}
-                    company={company}
-                    handleDeletion={handleDeletion}
-                />
-            ))}
-        </>
-    );
+  return (
+    <>
+      {isLoading && <Spinner />}
+      {!!companies && companies.length === 0 && (
+        <p className="text-lg py-10">
+          No companies yet! Click on the [+] button to add some.
+        </p>
+      )}
+      {!!companies &&
+        !isLoading &&
+        companies.map((company) => (
+          <CompaniesCard key={company.id} company={company} />
+        ))}
+    </>
+  );
 }
 
 function CompaniesCard(props: {
-    company: Company,
-    handleDeletion: (id: string) => void
+  company: RouterOutputs["companies"]["getAll"][number];
 }) {
-    const [showcompanyDescription, setShowcompanyDescription] = useState(false);
+  const [showcompanyDescription, setShowcompanyDescription] = useState(false);
 
-    return (
-        <>
-            <Card className="max-w-[400px]">
-                <CardHeader className="flex gap-3">
-                    <div className="flex flex-col">
-                        <p className="text-lg">{props.company.name}</p>
-                        <Link
-                            isExternal
-                            showAnchorIcon
-                            href={props.company.website_url}
-                            style={{ cursor: "pointer" }}
-                        >
-                            {props.company.website_url}
-                        </Link>
-                    </div>
-                </CardHeader>
-                <Divider />
-                <CardBody onClick={() => setShowcompanyDescription(true)}>
-                    <Image
-                        src={endpoints.companies.getCompanyPhoto(
-                            props.company.id
-                        )}
-                        alt="Profile picture"
-                        className="object-cover rounded-xl"
-                        height={COMPANY_PHOTO_Y_PXL}
-                        width={COMPANY_PHOTO_X_PXL}
-                    />
-                </CardBody>
-                <CardFooter className="flex items-center justify-center align-baseline">
-                    <CompanyActions
-                        handleDeletion={props.handleDeletion}
-                        company={props.company}
-                    />
-                </CardFooter>
-            </Card>
-            {showcompanyDescription && (
-                <CompanyDescriptionModal
-                    company={props.company}
-                    onOpenChange={() => setShowcompanyDescription(false)}
-                />
+  return (
+    <>
+      <Card className="max-w-[400px]">
+        <CardHeader className="flex gap-3">
+          <div className="flex flex-col">
+            <p className="text-lg">{props.company.name}</p>
+            {!!props.company.websiteUrl && (
+              <Link
+                isExternal
+                showAnchorIcon
+                href={props.company.websiteUrl}
+                style={{ cursor: "pointer" }}
+              >
+                {props.company.websiteUrl}
+              </Link>
             )}
-        </>
-    );
+          </div>
+        </CardHeader>
+        <Divider />
+        {!!props.company.logo && (
+          <>
+            <CardBody onClick={() => setShowcompanyDescription(true)}>
+              <Image
+                src={getCompanyImageRoute(props.company.id, props.company.logo)}
+                alt={`${props.company.name} logo`}
+                className="object-cover rounded-xl"
+                height={COMPANY_PHOTO_Y_PXL}
+                width={COMPANY_PHOTO_X_PXL}
+              />
+            </CardBody>
+            <Divider />
+          </>
+        )}
+
+        <CardFooter className="flex items-center justify-center align-baseline">
+          <CompanyActions company={props.company} />
+        </CardFooter>
+      </Card>
+      {showcompanyDescription && (
+        <CompanyDescriptionModal
+          company={props.company}
+          onOpenChange={() => setShowcompanyDescription(false)}
+        />
+      )}
+    </>
+  );
 }
 
 function CompanyDescriptionModal(props: {
-    company: Company;
-    onOpenChange: () => void;
+  company: RouterOutputs["companies"]["getAll"][number];
+  onOpenChange: () => void;
 }) {
-    return (
-        <Modal isOpen={true} onOpenChange={props.onOpenChange}>
-            <ModalContent>
-                {(onClose) => (
-                    <>
-                        <ModalHeader className="flex flex-col gap-1">
-                            {props.company.name}
-                            <small className="text-default-500">
-                                <Link
-                                    isExternal
-                                    showAnchorIcon
-                                    href={props.company.website_url}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    {props.company.website_url}
-                                </Link>
-                            </small>
-                        </ModalHeader>
-                        <ModalBody>
-                            <p>{props.company.description}</p>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button
-                                color="danger"
-                                variant="light"
-                                onPress={onClose}
-                            >
-                                Close
-                            </Button>
-                        </ModalFooter>
-                    </>
-                )}
-            </ModalContent>
-        </Modal>
-    );
+  return (
+    <Modal isOpen={true} onOpenChange={props.onOpenChange}>
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              {props.company.name}
+              {!!props.company.websiteUrl && (
+                <small className="text-default-500">
+                  <Link
+                    isExternal
+                    showAnchorIcon
+                    href={props.company.websiteUrl}
+                    className="cursor-pointer"
+                  >
+                    {props.company.websiteUrl}
+                  </Link>
+                </small>
+              )}
+            </ModalHeader>
+            <ModalBody>
+              <p>{props.company.description}</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+  );
 }

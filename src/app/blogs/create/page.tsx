@@ -1,13 +1,18 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+
+import { useSession } from "next-auth/react";
+
 import { FormEventHandler, useRef } from "react";
-import toast from "react-hot-toast";
 
 import { api } from "@/trpc/react";
 
-import { isModerator } from "@/app/utils";
+import { Spinner, isModerator } from "@/app/utils";
+
+import toast from "react-hot-toast";
+
+const BLOG_TITLE_MIN_LEN = 3;
 
 export default function BlogCreate() {
   const router = useRouter();
@@ -40,7 +45,7 @@ export default function BlogCreate() {
   if (session.status === "loading")
     return (
       <div className="flex h-full w-full items-center justify-center p-10">
-        Loading...
+        <Spinner />
       </div>
     );
 
@@ -52,9 +57,21 @@ export default function BlogCreate() {
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
+    if (blogTitle.current.trim().length < BLOG_TITLE_MIN_LEN) {
+      toast.dismiss();
+      toast.error("Please enter a title.");
+      return;
+    }
+
+    if (blogAuthor.current.trim().length === 0) {
+      toast.dismiss();
+      toast.error("Please enter an author.");
+      return;
+    }
+
     createBlog({
-      title: blogTitle.current,
-      author: blogAuthor.current,
+      title: blogTitle.current.trim(),
+      author: blogAuthor.current.trim(),
     });
   };
 
@@ -80,7 +97,7 @@ export default function BlogCreate() {
           <input
             type="submit"
             value="Start Editing"
-            className="cursor-pointer rounded-lg bg-[#eee] p-3 transition-all hover:bg-[#ddd]"
+            className="cursor-pointer rounded-lg bg-[#eee] p-3 transition-all hover:bg-[#ddd] active:bg-[#ccc]"
             disabled={creatingBlog}
           />
         </form>

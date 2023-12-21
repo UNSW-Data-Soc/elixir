@@ -27,8 +27,8 @@ export default function RootLayout({
         <ServerProviders>
           <Providers>
             <Toaster />
-            <Navbar />
             <div className="flex h-screen flex-col justify-between">
+              <Navbar />
               {children}
               {<Footer />}
             </div>

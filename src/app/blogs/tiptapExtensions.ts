@@ -1,27 +1,27 @@
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import BaseHeading from "@tiptap/extension-heading";
-import Strike from "@tiptap/extension-strike";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Underline from "@tiptap/extension-underline";
-import Code from "@tiptap/extension-code";
-import Image from "@tiptap/extension-image";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import Blockquote from "@tiptap/extension-blockquote";
-import OrderedList from "@tiptap/extension-ordered-list";
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import Link from "@tiptap/extension-link";
-import History from "@tiptap/extension-history";
-import Typography from "@tiptap/extension-typography";
-import Dropcursor from "@tiptap/extension-dropcursor";
-import Gapcursor from "@tiptap/extension-gapcursor";
-
 import { mergeAttributes } from "@tiptap/core";
 import { Node } from "@tiptap/core";
+import Blockquote from "@tiptap/extension-blockquote";
+import Bold from "@tiptap/extension-bold";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
+import BulletList from "@tiptap/extension-bullet-list";
+import Code from "@tiptap/extension-code";
+import Document from "@tiptap/extension-document";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Gapcursor from "@tiptap/extension-gapcursor";
+import BaseHeading from "@tiptap/extension-heading";
+import History from "@tiptap/extension-history";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import Image from "@tiptap/extension-image";
+import Italic from "@tiptap/extension-italic";
+import Link from "@tiptap/extension-link";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Paragraph from "@tiptap/extension-paragraph";
+import Strike from "@tiptap/extension-strike";
+import Text from "@tiptap/extension-text";
+import Typography from "@tiptap/extension-typography";
+import Underline from "@tiptap/extension-underline";
+
 import { getBlogImageRoute } from "../utils/s3";
 
 type Levels = 1 | 2 | 3;

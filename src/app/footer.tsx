@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,8 +23,8 @@ const SOCIAL_WIDTH = 25;
 export default function Footer() {
   return (
     <>
-      <div className="flex flex-wrap items-start justify-between gap-6 bg-[#f1f1f1] pb-12 pl-3 pr-3 pt-12 align-baseline md:pl-24 md:pr-24">
-        <div className="align-start flex flex-col items-start justify-start gap-6 text-sm text-[#b4b6b7] sm:w-2/5">
+      <div className="flex flex-wrap items-start justify-between gap-10 bg-[#f1f1f1] py-7 md:py-12 px-7 align-baseline md:px-12 lg:px-24">
+        <div className="align-start flex flex-col flex-grow-[2] items-start justify-start gap-6 text-sm text-[#b4b6b7] sm:w-2/5 pr-5 md:pr-10">
           <Image
             src="/logo.png"
             width={100}
@@ -35,7 +33,7 @@ export default function Footer() {
           />
           <p>Made with ❤️ by UNSW Data Science Society</p>
           <p>Proudly supported by Arc UNSW</p>
-          <p className="text-justify">
+          <p className="text-justify max-w-[550px]">
             UNSW DataSoc acknowledges the Aboriginal and Torres Strait Islander
             peoples as the first inhabitants of this nation and the Bedegal
             people as the Traditional Custodians of the Land where the UNSW
@@ -43,7 +41,7 @@ export default function Footer() {
             past, present and future.
           </p>
         </div>
-        <div className="flex flex-col items-start justify-start gap-1 align-baseline text-[#b4b6b7]">
+        <div className="flex flex-col items-start flex-grow-[1] justify-start gap-1 align-baseline text-[#b4b6b7]">
           <p className="font-bold uppercase tracking-wide text-[#444e5f]">
             DataSoc
           </p>
@@ -67,7 +65,7 @@ export default function Footer() {
             </Link>
           ))}
         </div>
-        <div className="flex flex-col items-start justify-start gap-1 align-baseline text-[#b4b6b7]">
+        <div className="flex flex-col items-start flex-grow-[1] justify-start gap-1 align-baseline text-[#b4b6b7]">
           <p className="font-bold uppercase tracking-wide text-[#444e5f]">
             Get In Touch
           </p>

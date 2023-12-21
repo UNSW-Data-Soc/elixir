@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 
+import { useState } from "react";
+
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -11,13 +14,13 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { Button } from "@nextui-org/button";
-import toast from "react-hot-toast";
 
-import { RouterOutputs } from "@/trpc/shared";
 import { api } from "@/trpc/react";
+import { RouterOutputs } from "@/trpc/shared";
 
 import { isModerator } from "../utils";
+
+import toast from "react-hot-toast";
 
 export default function BlogActionsModal(props: {
   blog: RouterOutputs["blogs"]["getAll"][number];
@@ -76,7 +79,7 @@ export default function BlogActionsModal(props: {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            router.push(`/blogs/editor?blogSlug=${props.blog.slug}`);
+            router.push(`/blogs/editor?blogId=${props.blog.id}`);
           }}
         >
           Edit Blog

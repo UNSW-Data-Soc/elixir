@@ -1,13 +1,14 @@
-import { api } from "@/trpc/server";
 import { getServerAuthSession } from "@/server/auth";
-import { isModerator } from "../utils";
 
+import { api } from "@/trpc/server";
+
+import { isModerator } from "../utils";
 import BlogsList from "./blogList";
 import BlogsAddCard from "./blogsAddCard";
 
 export default function Blog() {
   return (
-    <main className="bg-white">
+    <main className="bg-white relative flex-grow">
       <header className="flex flex-col gap-4 bg-[#4799d1] p-12 text-white">
         <h1 className="text-3xl font-semibold">Blog</h1>
         <p>
@@ -27,7 +28,11 @@ async function BlogsContainer() {
 
   return (
     <div className="m-auto flex flex-wrap justify-center gap-8 px-10 py-10 lg:container md:px-0">
-      {isModerator(session) && <BlogsAddCard />}
+      {isModerator(session) && (
+        <div className="absolute right-5 bottom-5">
+          <BlogsAddCard />
+        </div>
+      )}
 
       <BlogsList />
 
