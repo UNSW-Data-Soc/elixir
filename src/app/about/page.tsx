@@ -1,16 +1,17 @@
 import Image from "next/image";
 
 import DataSocTimeline from "./timeline";
-import arcLogo from "/public/arc.png";
-import book from "/public/book.png";
-import bulletinBoard from "/public/bulletin_board.png";
-import coffee from "/public/coffee.png";
-import graphicDesign from "/public/graphic_design.png";
-import lightBulbIdea from "/public/lightbulb_idea.png";
-import sunglasses from "/public/sunglasses.png";
-import thumbsUp from "/public/thumbs_up.png";
-import unswMathsLogo from "/public/unswmaths.png";
-import zoom from "/public/zoom.png";
+
+const arcLogo = "/arc.png";
+const book = "/book.png";
+const bulletinBoard = "/bulletin_board.png";
+const coffee = "/coffee.png";
+const graphicDesign = "/graphic_design.png";
+const lightBulbIdea = "/lightbulb_idea.png";
+const sunglasses = "/sunglasses.png";
+const thumbsUp = "/thumbs_up.png";
+const unswMathsLogo = "/unswmaths.png";
+const zoom = "/zoom.png";
 
 export default function About() {
   return (
