@@ -47,7 +47,8 @@ body {
 }
 
 .bg-light-rainbow {
-  background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
     linear-gradient(
         235deg,
         var(--yellow) 20%,
@@ -57,19 +58,6 @@ body {
         var(--blue)
       )
       80%;
-}
-
-.bg-kentosoc {
-  background-image: url("/kentosoc.jpeg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.bg-kentosoc-repeat {
-  background-image: url("/kentosoc.jpeg");
-  /* background-position: center; */
-  background-repeat: repeat;
-  background-size: 200px 300px;
 }
 
 .fadeInOutSpinner {
@@ -84,16 +72,24 @@ body {
 }
 
 @-webkit-keyframes fadeinout {
-0%,100% { opacity: 0; }
-50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeinout {
-0%,100% { opacity: 0; }
-50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
-
-
 
 .fade-in-image {
   animation: fadeIn ease 3s;
@@ -101,47 +97,48 @@ body {
   -moz-animation: fadeIn ease 3s;
   -o-animation: fadeIn ease 3s;
   -ms-animation: fadeIn ease 3s;
-}@keyframes fadeIn {
+}
+@keyframes fadeIn {
   0% {
-    opacity:0;
+    opacity: 0;
   }
   100% {
-    opacity:1;
+    opacity: 1;
   }
 }
 
 @-moz-keyframes fadeIn {
   0% {
-    opacity:0;
+    opacity: 0;
   }
   100% {
-    opacity:1;
+    opacity: 1;
   }
 }
 
 @-webkit-keyframes fadeIn {
   0% {
-    opacity:0;
+    opacity: 0;
   }
   100% {
-    opacity:1;
+    opacity: 1;
   }
 }
 
 @-o-keyframes fadeIn {
   0% {
-    opacity:0;
+    opacity: 0;
   }
   100% {
-    opacity:1;
+    opacity: 1;
   }
 }
 
 @-ms-keyframes fadeIn {
   0% {
-    opacity:0;
+    opacity: 0;
   }
   100% {
-    opacity:1;
-}
+    opacity: 1;
+  }
 }

@@ -1,31 +1,32 @@
+import Image from "next/image";
+
 import { CSSProperties } from "react";
 
-import Image from "next/image";
 import { Card, CardFooter } from "@nextui-org/card";
+import { Divider } from "@nextui-org/divider";
 import { Link } from "@nextui-org/link";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
 
-import EventActionsModal from "./eventActions";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
-
-import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL, isModerator } from "../utils";
-import EventCardActions from "./eventCardActions";
 import { getServerAuthSession } from "@/server/auth";
+
 import { RouterOutputs } from "@/trpc/shared";
 
+import { getEventImageRoute } from "@/app/utils/s3";
+
+import { ClockIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { generateHTML } from "@tiptap/html";
+
+import { TIPTAP_EXTENSIONS } from "../blogs/tiptapExtensions";
+import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL, isModerator } from "../utils";
+import EventActionsModal from "./eventActions";
+import EventCardActions from "./eventCardActions";
 import { EventDescription } from "./eventDescription";
 import EventInformation from "./eventInformation";
 
-import { Divider } from "@nextui-org/divider";
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-import { generateHTML } from "@tiptap/html";
-import { TIPTAP_EXTENSIONS } from "../blogs/tiptapExtensions";
-import { ClockIcon, MapPinIcon } from "@heroicons/react/24/outline";
-
-import { getEventImageRoute } from "@/app/utils/s3";
+dayjs.extend(relativeTime);
 
 const DEFAULT_EVENT_IMAGE = "./logo.png";
 
@@ -54,7 +55,7 @@ export async function EventsCard(props: {
         {{
           trigger: (
             <Card
-              className={`flex aspect-[16/9] min-w-[20rem] max-w-[400px] cursor-pointer flex-col items-center justify-center gap-2 duration-200 ease-in-out transition-all hover:scale-95 active:scale-90 ${
+              className={`flex aspect-[16/9] min-w-[20rem] max-w-[400px] cursor-pointer flex-col items-center justify-center gap-2 duration-200 ease-in-out transition-all hover:scale-[.985] active:scale-95 ${
                 session ? "relative" : ""
               }`}
               style={getEventCardStyle(props.event)}
@@ -65,7 +66,7 @@ export async function EventsCard(props: {
                     ? getEventImageRoute(props.event.id, props.event.photo)
                     : DEFAULT_EVENT_IMAGE
                 }
-                alt="Profile picture"
+                alt="Event Cover Photo"
                 className={`h-full rounded-b-none rounded-t-xl object-cover ${
                   session ? "absolute left-0 top-0 z-30 w-full" : ""
                 }`}

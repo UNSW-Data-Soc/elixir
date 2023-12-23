@@ -1,6 +1,11 @@
 "use client";
 
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+
+import { useSession } from "next-auth/react";
+
+import { useState } from "react";
+
 import {
   Button,
   Card,
@@ -11,12 +16,13 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { PlusIcon } from "@heroicons/react/24/outline";
+
 import { endpoints } from "../api/backend/endpoints";
-import toast from "react-hot-toast";
 import { Tag } from "../api/backend/tags";
+import { isModerator } from "../utils";
+
+import toast from "react-hot-toast";
 
 export const MAX_TAG_NAME_LENGTH = 50;
 
@@ -24,29 +30,26 @@ export default function TagAddCard(props: {
   handleTagCreation: (tag: Tag) => void;
 }) {
   const session = useSession();
-  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
 
-  if (session.status === "authenticated" && session.data.user.moderator) {
-    return (
-      <>
-        <Card
-          isPressable
-          className="flex items-center justify-center border-[1px] border-black p-5 sm:w-4/12"
-          onPress={() => setShowModal(true)}
-        >
-          <PlusIcon className="h-8 w-8" />
-        </Card>
-        <AddTagModal
-          isOpen={showModal}
-          onOpenChange={() => setShowModal(false)}
-          handleTagCreation={props.handleTagCreation}
-        />
-      </>
-    );
-  }
+  if (!isModerator(session.data)) return <></>;
 
-  return <></>;
+  return (
+    <>
+      <Card
+        isPressable
+        className="flex items-center justify-center border-[1px] border-black p-5 sm:w-4/12"
+        onPress={() => setShowModal(true)}
+      >
+        <PlusIcon className="h-8 w-8" />
+      </Card>
+      <AddTagModal
+        isOpen={showModal}
+        onOpenChange={() => setShowModal(false)}
+        handleTagCreation={props.handleTagCreation}
+      />
+    </>
+  );
 }
 
 function AddTagModal(props: {

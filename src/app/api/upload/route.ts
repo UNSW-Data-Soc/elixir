@@ -1,9 +1,16 @@
-import { isModerator } from "@/app/utils";
-import { env } from "@/env";
+import { NextResponse } from "next/server";
+
 import { getServerAuthSession } from "@/server/auth";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { zfd } from "zod-form-data";
+
+import { env } from "@/env";
+
+import { isModerator } from "@/app/utils";
+
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+
 import { s3 } from "../s3";
+
+import { zfd } from "zod-form-data";
 
 const uploadFile = async (file: Blob, key: string) => {
   const putCommand = new PutObjectCommand({
@@ -44,5 +51,5 @@ export async function POST(req: Request) {
     return new Response("Error uploading file", { status: 500 });
   }
 
-  return Response.json({});
+  return NextResponse.json({});
 }

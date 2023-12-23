@@ -1,6 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
+  char,
   index,
   int,
   mysqlEnum,
@@ -183,3 +184,31 @@ export const coverPhotos = mysqlTable("coverphoto", {
   id: varchar("id", { length: 255 }).primaryKey(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
+
+export const resources = mysqlTable("resources", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  link: text("link").notNull(), // either a link to the resource or the S3 resource id
+  public: boolean("public").notNull().default(false),
+  internal: boolean("internal").notNull().default(false), // whether the link is stored internally (S3) or externally (e.g. Google Drive)
+  lastEditTime: timestamp("lastEditTime").notNull().defaultNow(),
+  createdTime: timestamp("createdTime").notNull().defaultNow(),
+});
+
+export const tags = mysqlTable("tags", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  name: varchar("name", { length: 255 }).notNull().unique(),
+  colour: char("colour", { length: 7 }).notNull().default("#000000"),
+});
+
+export const resourceTags = mysqlTable(
+  "resourceTags",
+  {
+    resourceId: varchar("resourceId", { length: 255 }).notNull(), // .references(() => resources.id, {onDelete: "cascade"}),
+    tagId: varchar("tagId", { length: 255 }).notNull(), // .references(() => tags.id, {onDelete: "cascade"}),
+  },
+  (rt) => ({
+    compoundKey: primaryKey({ columns: [rt.resourceId, rt.tagId] }),
+  }),
+);

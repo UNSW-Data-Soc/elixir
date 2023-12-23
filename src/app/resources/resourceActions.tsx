@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { endpoints } from "../api/backend/endpoints";
-import { Resource } from "../api/backend/resources";
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
+
 import { useSession } from "next-auth/react";
-import ModifyBearerTags from "../modifyBearerTags";
+
+import { useState } from "react";
+
 import {
   Button,
   Modal,
@@ -15,12 +14,18 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
+
+import { endpoints } from "../api/backend/endpoints";
+import { Resource } from "../api/backend/resources";
 import {
   Attachment,
   AttachmentInfo,
   Detachment,
   TagReferences,
 } from "../api/backend/tags";
+import ModifyBearerTags from "../modifyBearerTags";
+
+import { toast } from "react-hot-toast";
 
 export default function ResourceActions(props: {
   resource: Resource;

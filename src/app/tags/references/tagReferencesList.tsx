@@ -1,7 +1,9 @@
 "use client";
 
-import { endpoints } from "@/app/api/backend/endpoints";
-import { Bearer, Tag, TagReferences, tags } from "@/app/api/backend/tags";
+import { useSession } from "next-auth/react";
+
+import { CSSProperties, useEffect, useState } from "react";
+
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import {
   Button,
@@ -17,11 +19,14 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
-import { CSSProperties, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import TagActions from "./tagActions";
+
+import { endpoints } from "@/app/api/backend/endpoints";
+import { Bearer, Tag, TagReferences, tags } from "@/app/api/backend/tags";
+
 import TagAddCard from "../tagAddCard";
-import { useSession } from "next-auth/react";
+import TagActions from "./tagActions";
+
+import toast from "react-hot-toast";
 
 interface Tab {
   id: Bearer;
@@ -30,12 +35,10 @@ interface Tab {
 
 export default function TagReferencesList({
   styleLarge,
-  showEditingTools,
   tagReferences,
   getSmallTagStyle = getSmallTagStyleDefault,
 }: {
   styleLarge: boolean;
-  showEditingTools: boolean;
   tagReferences?: TagReferences[];
   getSmallTagStyle?: (tag_colour: string) => CSSProperties;
 }) {

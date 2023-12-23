@@ -44,6 +44,21 @@ export default function SponsorshipsActions({
     },
   });
 
+  const { mutate: togglePublishSpon } =
+    api.sponsorships.togglePublish.useMutation({
+      onSuccess: ({ sponPublic }) => {
+        toast.success(
+          `Sponsorship ${
+            sponPublic ? "published" : "unpublished"
+          } successfully!`,
+        );
+        void ctx.sponsorships.invalidate();
+      },
+      onError: (error) => {
+        toast.error(`Failed to publish sponsorship: ${error.message}`);
+      },
+    });
+
   if (session.status === "loading") return <></>;
   if (!isModerator(session.data)) {
     return <></>;
@@ -65,6 +80,16 @@ export default function SponsorshipsActions({
           }}
         >
           Delete Sponsorship
+        </Button>
+        <Button
+          color="success"
+          radius="full"
+          variant="light"
+          onClick={() => {
+            togglePublishSpon({ id: sponsorship.id });
+          }}
+        >
+          {sponsorship.public ? "Unpublish" : "Publish"}
         </Button>
       </div>
       <Modal

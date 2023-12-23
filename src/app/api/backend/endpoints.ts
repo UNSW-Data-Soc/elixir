@@ -37,32 +37,7 @@ export const callFetch = async (
   }: FetchArguments,
   setContentType = true,
 ) => {
-  return [];
-  const session = await getSession();
-
-  const headers: HeadersInit = setContentType
-    ? { "Content-Type": contentType }
-    : {};
-  if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
-
-  const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
-
-  if (!res.ok) {
-    if (res.status === 401) {
-      if (route === "/login" || route === "/register") {
-        // can't remove token if it doesn't exist
-        return await res.json();
-      }
-      if (session && session.user.token) {
-        await signOut();
-        return redirect("/auth/login");
-      }
-    }
-    const err = await res.text();
-    throw new Error(err);
-  }
-
-  return await res.json();
+  return {} as any;
 };
 
 /**

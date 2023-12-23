@@ -31,6 +31,7 @@ import { endpoints } from "@/app/api/backend/endpoints";
 import {
   ArrowLeftOnRectangleIcon,
   BuildingLibraryIcon,
+  ChevronDownIcon,
   PhotoIcon,
   TagIcon,
   UserIcon,
@@ -114,7 +115,7 @@ const Navbar = () => {
       </NavbarMenu>
 
       {/* desktop navbar */}
-      <NavbarContent className="hidden gap-6 lg:flex" justify="center">
+      <NavbarContent className="hidden gap-6 lg:flex" justify="end">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
             <Image src="/logo.png" width={100} height={50} alt="society logo" />
@@ -138,10 +139,7 @@ const Navbar = () => {
             </Link>
           );
         })}
-      </NavbarContent>
-
-      {session.status === "authenticated" && (
-        <NavbarContent className="hidden gap-6 lg:flex" justify="start">
+        {session.status === "authenticated" && (
           <NavbarItem className="ml-3 flex items-center justify-center align-baseline">
             <SettingsDropdown
               isAdmin={session.data.user.role === "admin"}
@@ -149,8 +147,8 @@ const Navbar = () => {
               session={session.data}
             />
           </NavbarItem>
-        </NavbarContent>
-      )}
+        )}
+      </NavbarContent>
     </NextUINavbar>
   );
 };
@@ -166,8 +164,12 @@ function AboutUsDropdown() {
     >
       <Dropdown isOpen={isOpen}>
         <DropdownTrigger>
-          <Link href="/about" className="h-full text-[#333]">
-            <span>About Us</span>
+          <Link
+            href="/about"
+            className="h-full text-[#333] flex flex-row gap-1"
+          >
+            <span>About Us</span>{" "}
+            <ChevronDownIcon height={15} width={15} color="#333" />
           </Link>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
@@ -211,8 +213,12 @@ function PublicationsDropdown() {
     >
       <Dropdown isOpen={isOpen}>
         <DropdownTrigger>
-          <Link href="/publications" className="text-[#333]">
+          <Link
+            href="/publications"
+            className="text-[#333] flex flex-row gap-1"
+          >
             <span>Publications</span>
+            <ChevronDownIcon height={15} width={15} color="#333" />
           </Link>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">

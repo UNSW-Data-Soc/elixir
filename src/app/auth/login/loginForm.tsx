@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEventHandler, useEffect, useState } from "react";
-import toast, { useToasterStore } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { signIn, useSession } from "next-auth/react";
+
+import { FormEventHandler, useEffect, useState } from "react";
+
+import toast, { useToasterStore } from "react-hot-toast";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -44,8 +46,8 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={submitHandler} noValidate>
-      <div className="flex flex-col gap-2 pb-3">
+    <form onSubmit={submitHandler} noValidate className="flex flex-col gap-5">
+      <div className="flex flex-col gap-2">
         <InputLabel text="Email" />
         <input
           formNoValidate
@@ -56,7 +58,7 @@ const LoginForm = () => {
           value={email}
         />
       </div>
-      <div className="flex flex-col gap-2 pb-3">
+      <div className="flex flex-col gap-2">
         <InputLabel text="Password" />
         <input
           className="rounded-xl border-2 px-4 py-3 outline-none transition-all focus:border-[#aaa]"
@@ -66,20 +68,23 @@ const LoginForm = () => {
           value={password}
         />
       </div>
-      <div className="mt-5 flex justify-between">
-        <Link href="/reset/password" className="text-[#3b7bca] underline">
-          Forgot password
+      <div className="flex justify-between">
+        <Link
+          href="/reset/password"
+          className="text-[#3b7bca] hover:underline hover:text-[#235da4] transition-all"
+        >
+          Forgot password?
         </Link>
-        <span>
+        {/* <span>
           New here?{" "}
           <Link href="/auth/register" className="text-[#3b7bca] underline">
             Register
           </Link>{" "}
           instead.
-        </span>
+        </span> */}
       </div>
       <input
-        className="mt-12 rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
+        className="rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd] cursor-pointer"
         type="submit"
         value="Login"
       />

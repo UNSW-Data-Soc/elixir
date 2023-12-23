@@ -32,7 +32,7 @@ export default function SponsorshipsList() {
     data: sponsorships,
     isError,
     isLoading,
-  } = api.sponsorships.getAll.useQuery();
+  } = api.sponsorships.getAll.useQuery({});
 
   if (isError) {
     toast.error("Failed to load sponsorships");
@@ -111,9 +111,9 @@ function SponsorshipTypeSection({
 function getSponsorshipCardStyle(
   s: RouterOutputs["sponsorships"]["getAll"][number],
 ): CSSProperties {
-  const expirationPassed = dayjs(s.sponsorship.expiration).isAfter(Date.now());
+  const notExpired = dayjs(s.sponsorship.expiration).isAfter(Date.now());
 
-  return expirationPassed
+  return notExpired && s.sponsorship.public
     ? {}
     : {
         opacity: 0.5,

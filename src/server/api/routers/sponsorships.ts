@@ -7,6 +7,8 @@ import { companies, sponsorships } from "@/server/db/schema";
 
 import { isModerator } from "@/app/utils";
 
+import { TRPCError } from "@trpc/server";
+
 import { and, eq, gt, sql } from "drizzle-orm";
 import { z } from "zod";
 
@@ -16,30 +18,35 @@ import { z } from "zod";
 
 /** ROUTER **/
 export const sponsorshipsRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const now = new Date();
+  getAll: publicProcedure
+    .input(z.object({ publicOnly: z.boolean().optional().default(false) }))
+    .query(async ({ ctx, input: { publicOnly } }) => {
+      const now = new Date();
 
-    if (!isModerator(ctx.session)) {
+      if (publicOnly || !isModerator(ctx.session)) {
+        return await ctx.db
+          .select()
+          .from(sponsorships)
+          .innerJoin(companies, eq(sponsorships.company, companies.id))
+          .where(
+            and(
+              eq(sponsorships.public, true),
+              gt(sponsorships.expiration, now),
+            ),
+          ) // only return public, non-expired sponsorships
+          .orderBy(
+            sql`case ${sponsorships.type} when 'major' then 1 when 'partner' then 2 else 3 end, ${sponsorships.order} desc`,
+          );
+      }
+
       return await ctx.db
         .select()
         .from(sponsorships)
         .innerJoin(companies, eq(sponsorships.company, companies.id))
-        .where(
-          and(eq(sponsorships.public, true), gt(sponsorships.expiration, now)),
-        ) // only return public, non-expired sponsorships
         .orderBy(
           sql`case ${sponsorships.type} when 'major' then 1 when 'partner' then 2 else 3 end, ${sponsorships.order} desc`,
         );
-    }
-
-    return await ctx.db
-      .select()
-      .from(sponsorships)
-      .innerJoin(companies, eq(sponsorships.company, companies.id))
-      .orderBy(
-        sql`case ${sponsorships.type} when 'major' then 1 when 'partner' then 2 else 3 end, ${sponsorships.order} desc`,
-      );
-  }),
+    }),
 
   create: moderatorProcedure
     .input(
@@ -81,5 +88,30 @@ export const sponsorshipsRouter = createTRPCRouter({
       await ctx.db.delete(sponsorships).where(eq(sponsorships.id, id));
 
       return { id }; // TODO: change to return number of sponsorships deleted? eh not important
+    }),
+
+  togglePublish: moderatorProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input: { id } }) => {
+      const spons = await ctx.db
+        .select()
+        .from(sponsorships)
+        .where(eq(sponsorships.id, id));
+
+      if (spons.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Sponsorship not found",
+        });
+      }
+
+      const spon = spons[0];
+
+      await ctx.db
+        .update(sponsorships)
+        .set({ public: !spon.public })
+        .where(eq(sponsorships.id, id));
+
+      return { id, sponPublic: !spon.public };
     }),
 });

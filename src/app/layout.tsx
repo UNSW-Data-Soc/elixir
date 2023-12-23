@@ -7,11 +7,12 @@ import Navbar from "./navbar";
 import { Providers } from "./providers";
 import { ServerProviders } from "./serverProviders";
 
+import { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "UNSW DataSoc",
   description: "Official website of the Data Science Society of UNSW",
 };
@@ -22,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} overscroll-y-none`}>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} overscroll-y-none scroll-smooth`}>
         <ServerProviders>
           <Providers>
             <Toaster />

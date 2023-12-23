@@ -23,7 +23,7 @@ const SOCIAL_WIDTH = 25;
 export default function Footer() {
   return (
     <>
-      <div className="flex flex-wrap items-start justify-between gap-10 bg-[#f1f1f1] py-7 md:py-12 px-7 align-baseline md:px-12 lg:px-24">
+      <div className="flex flex-wrap items-start justify-between gap-10 bg-[#f5f5f5] py-7 md:py-12 px-7 align-baseline md:px-12 lg:px-24">
         <div className="align-start flex flex-col flex-grow-[2] items-start justify-start gap-6 text-sm text-[#b4b6b7] sm:w-2/5 pr-5 md:pr-10">
           <Image
             src="/logo.png"
