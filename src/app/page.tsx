@@ -119,28 +119,27 @@ export default async function Home() {
         {blogs.length === 0 && (
           <p className="w-full text-center font-light">No blogs posts yet!</p>
         )}
-        <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
-          {blogs.length > 0 &&
-            blogs.map((blog) => {
-              return (
-                <Link
-                  key={blog.id}
-                  href={`/blogs/${blog.slug}`}
-                  className="group/eventCard relative flex h-[200px] min-w-[300px] flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
-                >
-                  <BlogImageHomePage
-                    imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
-                  />
-                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
-                    <p className="w-full text-center">{blog.title}</p>
-                    <p className="w-full text-center text-xs">
-                      {dayjs(blog.createdTime).fromNow()}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-        </div>
+        {blogs.length > 0 && (
+          <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
+            {blogs.map((blog) => (
+              <Link
+                key={blog.id}
+                href={`/blogs/${blog.slug}`}
+                className="group/eventCard relative flex h-[200px] min-w-[300px] flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+              >
+                <BlogImageHomePage
+                  imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
+                />
+                <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
+                  <p className="w-full text-center">{blog.title}</p>
+                  <p className="w-full text-center text-xs">
+                    {dayjs(blog.createdTime).fromNow()}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
