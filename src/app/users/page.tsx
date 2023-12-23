@@ -10,15 +10,16 @@ export default async function Users() {
   if (!session) {
     return redirect("/auth/login");
   }
+
   if (session?.user.role !== "admin") {
     return (
-      <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center flex-grow">
+      <div className="container m-auto flex flex-grow flex-wrap justify-center gap-5 p-10">
         You do not have permission to view this page.
       </div>
     );
   }
   return (
-    <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
+    <div className="container m-auto flex flex-wrap justify-center gap-5 p-10">
       <UsersList />
     </div>
   );

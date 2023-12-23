@@ -155,3 +155,8 @@ export function isModerator(session: Session | null | undefined) {
   if (!session) return false;
   return session.user.role === "moderator" || session.user.role === "admin";
 }
+
+export function isAdmin(session: Session | null | undefined) {
+  if (!session) return false;
+  return session.user.role === "admin";
+}

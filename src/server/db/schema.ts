@@ -1,3 +1,4 @@
+import { userLevels, userRoleGroups } from "@/trpc/types";
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
@@ -33,9 +34,7 @@ export const users = mysqlTable(
     passwordHash: varchar("passwordHash", { length: 255 }).notNull(),
     about: text("about"),
     image: varchar("image", { length: 255 }),
-    role: mysqlEnum("userRole", ["admin", "moderator", "user"])
-      .default("user")
-      .notNull(),
+    role: mysqlEnum("userRole", userLevels).default("user").notNull(),
     registeredTime: timestamp("registeredTime", {
       mode: "date",
       fsp: 3,
@@ -54,8 +53,8 @@ export const userYearsActive = mysqlTable(
   {
     userId: varchar("id", { length: 255 }).notNull(),
     year: int("year").notNull(),
-    group: mysqlEnum("group", ["exec", "directors", "subcom"]).notNull(),
-    role: text("role"), // either 'role' name for exec or 'portfolio' name for directors/subcom
+    group: mysqlEnum("group", userRoleGroups).notNull(),
+    role: text("role").notNull(), // either 'role' name for exec or 'portfolio' name for directors/subcom
   },
   (r) => ({
     compoundKey: primaryKey({

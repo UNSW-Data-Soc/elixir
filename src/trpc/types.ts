@@ -23,3 +23,45 @@ export type BlogBody = {
   type: string;
   content: BlogNode[];
 };
+
+export const execRoles = [
+  "President",
+  "Vice President (Internals)",
+  "Vice President (Externals)",
+  "Vice President (Operations)",
+  "Vice President (Activities)",
+  "Vice President (Development)",
+  "Diversity Ambassador",
+  "Secretary",
+  "Treasurer",
+] as const;
+export type ExecRole = (typeof execRoles)[number];
+
+export const directorRoles = [
+  "Careers Director",
+  "Sponsorships Director",
+  "IT Director",
+  "Marketing Director",
+  "Media Director",
+  "HR Director",
+  "Social Director",
+  "Education Director",
+  "Philanthropy & Projects Director",
+] as const;
+export type DirectorRole = (typeof directorRoles)[number];
+
+export const subcomRoles = [
+  "Careers Subcom",
+  "Sponsorships Subcom",
+  "IT Subcom",
+  "Marketing Subcom",
+  "Media Subcom",
+  "HR Subcom",
+  "Social Subcom",
+  "Education Subcom",
+  "Philanthropy & Projects Subcom",
+] as const;
+export type SubcomRole = (typeof subcomRoles)[number];
+
+export const userRoleGroups = ["exec", "director", "subcom"] as const;
+export type UserRoleGroup = (typeof userRoleGroups)[number];

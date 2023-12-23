@@ -6,58 +6,39 @@ import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
 import { AttachmentInfo } from "@/app/api/backend/tags";
-import { Image, Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, User as UserAvatar } from "@nextui-org/react";
+import {
+  Image,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Tab,
+  Tabs,
+  User as UserAvatar,
+} from "@nextui-org/react";
+import { DirectorRole, ExecRole, directorRoles, execRoles } from "@/trpc/types";
+
+const boardRoles = [...execRoles, ...directorRoles];
+type BoardRole = ExecRole | DirectorRole;
 
 const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 
-enum Portfolio {
-    PRES = "President",
-    VPE = "Vice President (Externals)",
-    VPO = "Vice President (Operations)",
-    VPA = "Vice President (Activities)",
-    VPD = "Vice President (Development)",
-    DA = "Diversity Ambassador",
-    SEC = "Secretary",
-    TRE = "Treasurer",
-    CAREERS_DIR = "Careers Director",
-    SPONSORSHIPS_DIR = "Sponsorships Director",
-    IT_DIR = "IT Director",
-    MARKETING_DIR = "Marketing Director",
-    MEDIA_DIR = "Media Director",
-    HR_DIR = "HR Director",
-    SOCIAL_DIR = "Social Director",
-    EDUCATION_DIR = "Education Director",
-    PHILANTHROPY_PROJECTS_DIR = "Philanthropy & Projects Director",
+const portfolioOrder = boardRoles.reduce(
+  (acc: { [key: string]: number }, role, idx) => {
+    acc[role] = idx;
+    return acc;
+  },
+  {},
+);
+
+function roleToOrder(role: BoardRole): number {
+  return portfolioOrder[role];
 }
-
-const portfolioOrder: Portfolio[] = [
-    Portfolio.PRES,
-    Portfolio.VPE,
-    Portfolio.VPO,
-    Portfolio.VPA,
-    Portfolio.VPD,
-    Portfolio.DA,
-    Portfolio.SEC,
-    Portfolio.TRE,
-    Portfolio.CAREERS_DIR,
-    Portfolio.SPONSORSHIPS_DIR,
-    Portfolio.IT_DIR,
-    Portfolio.MARKETING_DIR,
-    Portfolio.MEDIA_DIR,
-    Portfolio.HR_DIR,
-    Portfolio.SOCIAL_DIR,
-    Portfolio.EDUCATION_DIR,
-    Portfolio.PHILANTHROPY_PROJECTS_DIR,
-];
-
-function findPortfolioByString(val: string | undefined): Portfolio | undefined {
-  const enumValue = Object.values(Portfolio).find(
-    (enumItem) => enumItem === val,
-  );
-  
-  return enumValue as Portfolio;
-}
-
 
 export default function UsersList() {
   const [users, setUsers] = useState<UserPublic[]>([]);
@@ -151,7 +132,10 @@ export default function UsersList() {
   }
 
   function getUserPortfolio(user: UserPublic) {
-    return portfolioTags.find((a) => a.bearer_id === user.id && a.tag_year && a.tag_year === selectedYear)?.name;
+    return portfolioTags.find(
+      (a) =>
+        a.bearer_id === user.id && a.tag_year && a.tag_year === selectedYear,
+    )?.name;
   }
 
   return (
@@ -222,40 +206,40 @@ export default function UsersList() {
   );
 }
 
-
-function DisplayModal(props: { user: UserPublic, isOpen: boolean, onOpenChange: () => void, portfolio: string | undefined }) {
-    return (
-        <>
-            <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1"></ModalHeader>
-                            <UserAvatar
-                                name={props.user.name}
-                                description={props.portfolio || ZERO_WIDTH_SPACE}
-                                avatarProps={{
-                                    isBordered: true,
-                                    src: endpoints.users.getUserProfilePicture(props.user.id),
-                                    size: "lg",
-                                    color: "success",
-                                    showFallback: true,
-                                }}
-                            />
-                            <ModalBody>
-                                {
-                                    props.user.about || EMPTY_ABOUT_MESSAGE
-                                }
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="warning" variant="light" onPress={onClose}>
-                                    Close
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-        </>
-    );
+function DisplayModal(props: {
+  user: UserPublic;
+  isOpen: boolean;
+  onOpenChange: () => void;
+  portfolio: string | undefined;
+}) {
+  return (
+    <>
+      <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+              <UserAvatar
+                name={props.user.name}
+                description={props.portfolio || ZERO_WIDTH_SPACE}
+                avatarProps={{
+                  isBordered: true,
+                  src: endpoints.users.getUserProfilePicture(props.user.id),
+                  size: "lg",
+                  color: "success",
+                  showFallback: true,
+                }}
+              />
+              <ModalBody>{props.user.about || EMPTY_ABOUT_MESSAGE}</ModalBody>
+              <ModalFooter>
+                <Button color="warning" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }
