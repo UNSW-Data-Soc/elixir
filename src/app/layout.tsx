@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 
 import Footer from "./footer";
 import "./globals.css";
-import "./markdown.css";
 import Navbar from "./navbar";
 import { Providers } from "./providers";
 import { ServerProviders } from "./serverProviders";
