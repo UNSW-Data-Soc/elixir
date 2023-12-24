@@ -1,5 +1,5 @@
 import ResourceAddCard from "./resourceAddCard";
-import ResourcesList from "./resourcesList2";
+import ResourcesList from "./resourcesList";
 
 export default function Resources() {
   return (
