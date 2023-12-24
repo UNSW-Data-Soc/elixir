@@ -1,4 +1,4 @@
-import UsersList from "./usersList2";
+import UsersList from "./usersList";
 
 export default async function Users() {
   return (

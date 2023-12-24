@@ -32,8 +32,13 @@ export default function About() {
         <section className="flex flex-col gap-3 sm:gap-8">
           <SectionHeading>Affiliated with</SectionHeading>
           <div className="flex w-full flex-col items-center gap-5 md:flex-row md:justify-between">
-            <Image src={unswMathsLogo} height={100} alt="UNSW Maths Logo" />
-            <Image src={arcLogo} height={100} alt="Arc Logo" />
+            <Image
+              src={unswMathsLogo}
+              width={500}
+              height={100}
+              alt="UNSW Maths Logo"
+            />
+            <Image src={arcLogo} width={100} height={100} alt="Arc Logo" />
           </div>
         </section>
         <section className="flex flex-col gap-4">
@@ -41,7 +46,12 @@ export default function About() {
           <SectionList>
             <SectionListItem>
               <ListItemIconWrapper>
-                <Image src={lightBulbIdea} width={100} alt="Light Bulb Idea" />
+                <Image
+                  src={lightBulbIdea}
+                  width={100}
+                  height={100}
+                  alt="Light Bulb Idea"
+                />
               </ListItemIconWrapper>
               <ListItemText>
                 DataSoc aims to become Australia&apos;s leading student run
@@ -51,7 +61,12 @@ export default function About() {
             </SectionListItem>
             <SectionListItem>
               <ListItemIconWrapper>
-                <Image src={bulletinBoard} width={100} alt="Bulletin Board" />
+                <Image
+                  src={bulletinBoard}
+                  width={100}
+                  height={100}
+                  alt="Bulletin Board"
+                />
               </ListItemIconWrapper>
               <ListItemText>
                 We strive to create the data science related opportunities for
@@ -62,7 +77,12 @@ export default function About() {
             </SectionListItem>
             <SectionListItem>
               <ListItemIconWrapper>
-                <Image src={graphicDesign} width={100} alt="Graphic Design" />
+                <Image
+                  src={graphicDesign}
+                  width={100}
+                  height={100}
+                  alt="Graphic Design"
+                />
               </ListItemIconWrapper>
               <ListItemText>
                 We aim to enrich students&apos; lives with a sense of community
@@ -73,7 +93,7 @@ export default function About() {
             </SectionListItem>
             <SectionListItem>
               <ListItemIconWrapper>
-                <Image src={zoom} width={100} alt="Zoom" />
+                <Image src={zoom} width={100} height={100} alt="Zoom" />
               </ListItemIconWrapper>
               <ListItemText>
                 We want to support data science students in their studies with
@@ -102,7 +122,7 @@ export default function About() {
           <SectionList>
             <SectionListItem>
               <ListItemIconWrapper>
-                <Image src={book} width={100} alt="Book Icon" />
+                <Image src={book} width={100} height={100} alt="Book Icon" />
               </ListItemIconWrapper>
               <div>
                 <strong>Learn continuously and effectively</strong>
@@ -116,7 +136,12 @@ export default function About() {
             </SectionListItem>
             <SectionListItem>
               <ListItemIconWrapper>
-                <Image src={coffee} width={100} alt="Coffee Icon" />
+                <Image
+                  src={coffee}
+                  width={100}
+                  height={100}
+                  alt="Coffee Icon"
+                />
               </ListItemIconWrapper>
               <ListItemText>
                 <strong>Have a good time</strong>
@@ -133,6 +158,7 @@ export default function About() {
                   src={thumbsUp}
                   className="object-contain"
                   width={100}
+                  height={100}
                   alt="Thumbs Up Icon"
                 />
               </ListItemIconWrapper>
@@ -152,6 +178,7 @@ export default function About() {
                   src={sunglasses}
                   className="object-contain"
                   width={100}
+                  height={100}
                   alt="Sunglasses Icon"
                 />
               </ListItemIconWrapper>

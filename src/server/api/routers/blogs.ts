@@ -130,7 +130,7 @@ export const blogRouter = createTRPCRouter({
     }),
 
   getById: publicProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .query(async ({ ctx, input: { id } }) => {
       const blogsMatch = await ctx.db
         .select()
@@ -164,7 +164,7 @@ export const blogRouter = createTRPCRouter({
     }),
 
   getBySlug: publicProcedure
-    .input(z.object({ slug: z.string().nonempty() }))
+    .input(z.object({ slug: z.string().min(1) }))
     .query(async ({ ctx, input: { slug } }) => {
       const blogsMatch = await ctx.db
         .select()
@@ -233,14 +233,14 @@ export const blogRouter = createTRPCRouter({
   update: moderatorProcedure
     .input(
       z.object({
-        id: z.string().nonempty(),
+        id: z.string().min(1),
         title: z
           .string()
-          .nonempty()
+          .min(1)
           .min(BLOG_TITLE_MIN_LENGTH)
           .max(BLOG_TITLE_MAX_LENGTH),
-        body: z.string().nonempty(),
-        author: z.string().nonempty(),
+        body: z.string().min(1),
+        author: z.string().min(1),
       }),
     )
     .mutation(async ({ ctx, input: { id, title, body, author } }) => {
@@ -259,7 +259,7 @@ export const blogRouter = createTRPCRouter({
     }),
 
   publish: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       await ctx.db.update(blogs).set({ public: true }).where(eq(blogs.id, id));
 
@@ -267,7 +267,7 @@ export const blogRouter = createTRPCRouter({
     }),
 
   unpublish: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       await ctx.db.update(blogs).set({ public: false }).where(eq(blogs.id, id));
 
@@ -275,7 +275,7 @@ export const blogRouter = createTRPCRouter({
     }),
 
   togglePublish: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       const blog = await ctx.db.select().from(blogs).where(eq(blogs.id, id));
 
@@ -294,7 +294,7 @@ export const blogRouter = createTRPCRouter({
     }),
 
   delete: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       await ctx.db.delete(blogs).where(eq(blogs.id, id));
 

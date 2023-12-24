@@ -9,6 +9,7 @@ import { isModerator } from "@/app/utils";
 
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const resourcesRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -54,4 +55,46 @@ export const resourcesRouter = createTRPCRouter({
         return { id, link };
       },
     ),
+
+  delete: moderatorProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input: { id } }) => {
+      await ctx.db.delete(resources).where(eq(resources.id, id));
+      return { id };
+    }),
+
+  togglePublish: moderatorProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input: { id } }) => {
+      const resourceRes = await ctx.db
+        .select()
+        .from(resources)
+        .where(eq(resources.id, id));
+
+      if (resourceRes.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Resource not found",
+        });
+      }
+
+      const resource = resourceRes[0];
+
+      await ctx.db
+        .update(resources)
+        .set({
+          public: !resource.public,
+        })
+        .where(eq(resources.id, id));
+
+      return { id, public: !resource.public };
+    }),
 });

@@ -36,8 +36,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-const SOCIAL_HEIGHT = 25;
-const SOCIAL_WIDTH = 25;
+// const SOCIAL_HEIGHT = 25;
+// const SOCIAL_WIDTH = 25;
 
 const NUM_DISPLAY_EVENTS = 3;
 const NUM_DISPLAY_BLOGS = 3;
@@ -60,7 +60,7 @@ export default async function Home() {
   return (
     <>
       {/* navbar height hardcoded as 4rem here */}
-      <main className="bg-light-rainbow left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none relative">
+      <main className="bg-light-rainbow relative left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
         <div className="fade-in-image mix-blend-multiply">
           <Image
             src={getCoverPhotoRoute(coverPhoto.id)}
@@ -70,17 +70,18 @@ export default async function Home() {
             priority
             quality={100}
             className="coverPhoto object-cover"
+            draggable={false}
           />
         </div>
-        <div className="flex flex-col items-center justify-center gap-5 px-8 pt-48 align-baseline text-white brightness-200 sm:items-start sm:pl-20 md:pt-48 lg:pl-36 xl:pl-48">
+        <div className="flex flex-col items-center justify-center gap-5 px-8 pt-48 align-baseline text-white brightness-200 sm:items-start sm:pl-20 md:pt-48 lg:pl-36 xl:pl-48 2xl:pl-56 2xl:pt-56">
           <div className="flex flex-col gap-3">
             <div className="text-center text-3xl sm:text-left">
               Welcome to the
             </div>
-            <div className="text-center text-6xl font-bold sm:text-left sm:text-8xl">
+            <div className="text-center text-6xl font-bold sm:text-left sm:text-7xl lg:text-8xl">
               Data Science Society
             </div>
-            <div className="text-center text-3xl sm:text-left pt-2">@ UNSW</div>
+            <div className="pt-2 text-center text-3xl sm:text-left">@ UNSW</div>
           </div>
           {/* <div className="text-center text-6xl font-bold sm:text-left sm:text-8xl tracking-wide">
             UNSW <br />
@@ -96,7 +97,7 @@ export default async function Home() {
         </div>
         <a
           href="#main"
-          className="absolute bottom-0 left-[50%] translate-x-[-50%] p-5 flex items-center justify-center"
+          className="absolute bottom-0 left-[50%] flex translate-x-[-50%] items-center justify-center p-5"
         >
           <ChevronDownIcon height={50} color="white" />
         </a>
@@ -144,7 +145,7 @@ export default async function Home() {
       <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
         {futureEvents.length === 0 && (
-          <p className="w-full text-center font-light text-xl">
+          <p className="w-full text-center text-xl font-light">
             No upcoming events! Stay peeled for more!
           </p>
         )}

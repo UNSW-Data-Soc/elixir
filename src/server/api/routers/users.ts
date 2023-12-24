@@ -138,7 +138,7 @@ export const usersRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().optional(),
-        name: z.string().nonempty().optional(),
+        name: z.string().min(1).optional(),
         about: z.string().optional(),
         image: z.boolean().optional().default(false),
       }),

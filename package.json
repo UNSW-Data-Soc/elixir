@@ -64,7 +64,7 @@
     "next": "^14.0.4",
     "next-auth": "^4.24.5",
     "npm": "^9.7.1",
-    "postcss": "8.4.23",
+    "postcss": "^8.4.32",
     "preact": "^10.16.0",
     "react": "^18.2.0",
     "react-contenteditable": "^3.3.7",

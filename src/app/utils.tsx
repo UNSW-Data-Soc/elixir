@@ -151,7 +151,9 @@ export function parseBackendError(err: Error) {
   }
 }
 
-export function isModerator(session: Session | null | undefined) {
+export function isModerator(
+  session: Session | null | undefined,
+): session is Session {
   if (!session) return false;
   return session.user.role === "moderator" || session.user.role === "admin";
 }

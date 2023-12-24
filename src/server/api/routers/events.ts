@@ -68,7 +68,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   getBySlug: publicProcedure
-    .input(z.object({ slug: z.string().nonempty() }))
+    .input(z.object({ slug: z.string().min(1) }))
     .query(async ({ ctx, input: { slug } }) => {
       const eventsMatch = await ctx.db
         .select()
@@ -108,7 +108,7 @@ export const eventRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string().min(1),
-        description: z.string().nonempty().optional(),
+        description: z.string().min(1).optional(),
         eventPublic: z.boolean().optional().default(false),
         startTime: z.date(),
         endTime: z.date(),
@@ -174,7 +174,7 @@ export const eventRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         title: z.string().min(1),
-        description: z.string().nonempty().optional(),
+        description: z.string().min(1).optional(),
         eventPublic: z.boolean().optional().default(false),
         startTime: z.date(),
         endTime: z.date(),
@@ -221,7 +221,7 @@ export const eventRouter = createTRPCRouter({
     ),
 
   publish: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       await ctx.db
         .update(events)
@@ -232,7 +232,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   unpublish: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       await ctx.db
         .update(events)
@@ -243,7 +243,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   togglePublish: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       const event = await ctx.db.select().from(events).where(eq(events.id, id));
 
@@ -262,7 +262,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   delete: moderatorProcedure
-    .input(z.object({ id: z.string().nonempty() }))
+    .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input: { id } }) => {
       await ctx.db.delete(events).where(eq(events.id, id));
 

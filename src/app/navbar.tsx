@@ -1,6 +1,5 @@
 "use client";
 
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -26,8 +25,6 @@ import {
   Navbar as NextUINavbar,
 } from "@nextui-org/navbar";
 
-import { endpoints } from "@/app/api/backend/endpoints";
-
 import {
   ArrowLeftOnRectangleIcon,
   BuildingLibraryIcon,
@@ -42,6 +39,7 @@ import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from "./utils";
 import { getUserProfilePicRoute } from "./utils/s3";
 
 import { Session } from "next-auth";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type ItemDropdown = {
   key: string;
@@ -76,13 +74,19 @@ const Navbar = () => {
     <NextUINavbar
       isBordered
       shouldHideOnScroll={false}
-      className="gap-6 bg-[#fffb] flex items-center justify-center"
+      className="flex items-center justify-center gap-6 bg-[#fffb]"
     >
       {/* mobile navbar */}
       <NavbarContent className="flex lg:hidden" justify="start">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
-            <Image src="/logo.png" width={100} height={50} alt="society logo" />
+            <Image
+              src="/logo.png"
+              width={118}
+              height={32}
+              className="h-[1.8rem] w-auto"
+              alt="society logo"
+            />
           </Link>
         </NavbarBrand>
       </NavbarContent>
@@ -118,7 +122,13 @@ const Navbar = () => {
       <NavbarContent className="hidden gap-6 lg:flex" justify="end">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
-            <Image src="/logo.png" width={100} height={50} alt="society logo" />
+            <Image
+              src="/logo.png"
+              width={118}
+              height={32}
+              className="h-[1.8rem] w-auto"
+              alt="society logo"
+            />
           </Link>
         </NavbarBrand>
         {menuItems.map((item) => {
@@ -166,7 +176,7 @@ function AboutUsDropdown() {
         <DropdownTrigger>
           <Link
             href="/about"
-            className="h-full text-[#333] flex flex-row gap-1"
+            className="flex h-full flex-row gap-1 text-[#333]"
           >
             <span>About Us</span>{" "}
             <ChevronDownIcon height={15} width={15} color="#333" />
@@ -215,7 +225,7 @@ function PublicationsDropdown() {
         <DropdownTrigger>
           <Link
             href="/publications"
-            className="text-[#333] flex flex-row gap-1"
+            className="flex flex-row gap-1 text-[#333]"
           >
             <span>Publications</span>
             <ChevronDownIcon height={15} width={15} color="#333" />

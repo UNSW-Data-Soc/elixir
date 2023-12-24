@@ -58,3 +58,12 @@ export function getUserProfilePicKey(userId: string, imageId: string) {
 export function getUserProfilePicRoute(userId: string, imageId: string) {
   return getImageRoute(getUserProfilePicKey(userId, imageId));
 }
+
+/* RESOURCE FILES */
+export function getResourceFileKey(resourceId: string, fileId: string) {
+  return `resources/${resourceId}/${fileId}`;
+}
+
+export function getResourceFileRoute(resourceId: string, fileId: string) {
+  return getImageRoute(getResourceFileKey(resourceId, fileId));
+}

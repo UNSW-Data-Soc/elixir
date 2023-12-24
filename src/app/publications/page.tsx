@@ -3,7 +3,7 @@ import { NEWSLETTER_ARCHIVE_LINK } from "../utils";
 
 export default function Publications() {
   return (
-    <main className="bg-white">
+    <main className="flex-grow bg-white pb-5">
       <header className="flex flex-col gap-4 bg-[#4799d1] p-12 text-white">
         <h1 className="text-3xl font-semibold">Publications</h1>
         <p>
@@ -11,25 +11,25 @@ export default function Publications() {
           and guides!
         </p>
       </header>
-      <div className="m-6 flex flex-wrap items-center justify-center gap-12 p-3 align-baseline">
+      <div className="flex flex-wrap items-center justify-center gap-5 p-6 align-baseline sm:py-10 lg:gap-12">
         <LinkButton
           to="/contact"
           text="Newsletter Signup"
-          className="text-1xl w-64 bg-orange-400 p-3 font-bold text-black"
+          className="text-1xl w-64 bg-orange-400 p-3 py-6 font-bold text-white shadow-sm"
         />
         <LinkButton
           to={NEWSLETTER_ARCHIVE_LINK}
           text="Newsletter Archive"
-          className="text-1xl w-64 bg-orange-400 p-3 font-bold text-black"
+          className="text-1xl w-64 bg-orange-400 p-3 py-6 font-bold text-white shadow-sm"
         />
         <LinkButton
           to="/blogs"
           text="Blog"
-          className="text-1xl w-64 bg-orange-400 p-3 font-bold text-black"
+          className="text-1xl w-64 bg-orange-400 p-3 py-6 font-bold text-white shadow-sm"
         />
       </div>
-      <div className="m-3 flex flex-wrap items-stretch justify-center gap-12 p-3 align-baseline">
-        <div className="m-5 flex w-96 flex-col justify-between p-3 text-center outline outline-1">
+      <div className="flex flex-wrap items-stretch justify-center gap-12 px-5 py-3 align-baseline lg:gap-24">
+        <div className="flex w-96 flex-col justify-between rounded-lg p-4 text-center outline outline-1 sm:p-7">
           <p className="text-3xl font-bold">2023 First Year Guide</p>
           <br></br>
           <p>
@@ -48,7 +48,7 @@ export default function Publications() {
             className="w-full p-3"
           />
         </div>
-        <div className="m-5 w-96 flex-col justify-between p-3 text-center outline outline-1">
+        <div className="w-96 flex-col justify-between rounded-lg p-4 text-center outline outline-1 sm:p-7">
           <p className="text-3xl font-bold">2021 Careers Guide</p>
           <br></br>
           <p>Data Science can be difficult to navigate career-wise.</p>

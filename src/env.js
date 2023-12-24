@@ -1,30 +1,30 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NEXTAUTH_SECRET: z.string().nonempty(),
-  NEXTAUTH_URL: z.string().nonempty(),
+  NEXTAUTH_SECRET: z.string().min(1),
+  NEXTAUTH_URL: z.string().min(1),
 
-  NEXT_PUBLIC_BACKEND_URL: z.string().nonempty(),
-  NEXT_PUBLIC_PROTOCOL: z.string().nonempty(),
-  NEXT_PUBLIC_HOSTNAME: z.string().nonempty(),
-  NEXT_PUBLIC_BACKEND_PORT: z.string().nonempty(),
-  NEXT_PUBLIC_REMOTE_PATTERN_PATHNAME: z.string().nonempty(),
+  NEXT_PUBLIC_BACKEND_URL: z.string().min(1),
+  NEXT_PUBLIC_PROTOCOL: z.string().min(1),
+  NEXT_PUBLIC_HOSTNAME: z.string().min(1),
+  NEXT_PUBLIC_BACKEND_PORT: z.string().min(1),
+  NEXT_PUBLIC_REMOTE_PATTERN_PATHNAME: z.string().min(1),
 
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
 
-  DATABASE_HOST: z.string().nonempty(),
-  DATABASE_USERNAME: z.string().nonempty(),
-  DATABASE_PASSWORD: z.string().nonempty(),
-  DATABASE_URL: z.string().nonempty(),
+  DATABASE_HOST: z.string().min(1),
+  DATABASE_USERNAME: z.string().min(1),
+  DATABASE_PASSWORD: z.string().min(1),
+  DATABASE_URL: z.string().min(1),
 
-  S3_USER: z.string().nonempty(),
-  S3_PASSWORD: z.string().nonempty(),
-  S3_BUCKET_NAME: z.string().nonempty(),
-  S3_REGION_NAME: z.string().nonempty(),
+  S3_USER: z.string().min(1),
+  S3_PASSWORD: z.string().min(1),
+  S3_BUCKET_NAME: z.string().min(1),
+  S3_REGION_NAME: z.string().min(1),
 
-  SECRET_KEY: z.string().nonempty(),
+  SECRET_KEY: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);

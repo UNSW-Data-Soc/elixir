@@ -1,30 +1,19 @@
-"use client";
-
-import { endpoints } from "../../api/backend/endpoints";
-import { UserPublic } from "../../api/backend/users";
-import { CSSProperties, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
-import { AttachmentInfo } from "@/app/api/backend/tags";
-import {
-  Image,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Tab,
-  Tabs,
-  User as UserAvatar,
-} from "@nextui-org/react";
 import { DirectorRole, ExecRole, directorRoles, execRoles } from "@/trpc/types";
+import { api } from "@/trpc/server";
+import Image from "next/image";
+import { getUserProfilePicRoute } from "@/app/utils/s3";
+import {
+  EnvelopeIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
+import { LinkedInIcon } from "@/app/socialIcons";
+import { RouterOutputs } from "@/trpc/shared";
+import { Tooltip } from "@nextui-org/tooltip";
 
+type User = RouterOutputs["users"]["getTeam"][number];
 const boardRoles = [...execRoles, ...directorRoles];
-type BoardRole = ExecRole | DirectorRole;
 
 const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 
@@ -36,210 +25,122 @@ const portfolioOrder = boardRoles.reduce(
   {},
 );
 
-function roleToOrder(role: BoardRole): number {
-  return portfolioOrder[role];
+function roleToOrder(role: string): number {
+  if (role in portfolioOrder) return portfolioOrder[role];
+  return Infinity;
 }
 
-export default function UsersList() {
-  const [users, setUsers] = useState<UserPublic[]>([]);
-  const [isLoading, setLoading] = useState(true);
-  const [years, setYears] = useState<Number[]>([]);
-  const [selectedYear, setSelectedYear] = useState<number>();
-  const [portfolioTags, setPortfolioTags] = useState<AttachmentInfo[]>([]);
-  const [displayUserAbout, setDisplayUserAbout] = useState(false);
-  const [currUserDisplay, setCurrUserDisplay] = useState<UserPublic>();
+export default async function UsersList() {
+  const users = (await api.users.getTeam.query()).sort(
+    (a, b) =>
+      roleToOrder(a.userYearsActive.role) - roleToOrder(b.userYearsActive.role),
+  );
 
-  useEffect(() => {
-    const getData = async () => {
-      let yearsData = await endpoints.users.getYears();
-      yearsData = yearsData.sort().reverse();
-      let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
-      setYears(yearsData);
-      if (yearsData.length > 0) {
-        setSelectedYear(yearsData[0]);
-        let usersData = await endpoints.users.getUsersByYears(yearsData[0]);
-        setYears(yearsData);
-        setUsers(usersData);
-      }
-      setLoading(false);
-
-      // auth doesn't matter for 'portfolio'
-      let tags = await endpoints.tags.attachments("portfolio", false);
-      setPortfolioTags(tags);
-    };
-
-    getData();
-  }, []);
-
-  if (!users) {
-    toast.error("Failed to get users.");
-    return <></>;
-  }
-
-  function sortUsers(a: UserPublic, b: UserPublic): number {
-    const aPort = findPortfolioByString(getUserPortfolio(a));
-    const bPort = findPortfolioByString(getUserPortfolio(b));
-
-    if (aPort !== undefined && bPort !== undefined) {
-      const orderA = portfolioOrder.indexOf(aPort);
-      const orderB = portfolioOrder.indexOf(bPort);
-
-      if (orderA === orderB) {
-        return a.name.localeCompare(b.name);
-      } else {
-        return orderA - orderB;
-      }
-    } else if (aPort !== undefined) {
-      // Move users with a defined portfolio value before those with undefined values
-      return -1;
-    } else if (bPort !== undefined) {
-      // Move users with a defined portfolio value before those with undefined values
-      return 1;
-    } else {
-      // Both portfolios are undefined, no preference
-      return 0;
-    }
-  }
-
-  function getUserCardStyle(user: UserPublic): CSSProperties {
-    return {
-      backgroundImage: user.photo ? "" : "url(/logo_greyscale.jpeg)",
-      backgroundOrigin: "content-box",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-    };
-  }
-
-  async function handleYearChange(year: Number) {
-    if (!years.includes(year)) return toast.error("Invalid year!");
-
-    setLoading(true);
-    let usersData = await endpoints.users.getUsersByYears(year);
-    setSelectedYear(year as number);
-    setUsers(usersData);
-    setLoading(false);
-  }
-
-  async function handleProfilePress(user: UserPublic) {
-    setDisplayUserAbout(true);
-    setCurrUserDisplay(user);
-  }
-
-  async function handleProfileClose() {
-    setDisplayUserAbout(false);
-    setCurrUserDisplay(undefined);
-  }
-
-  function getUserPortfolio(user: UserPublic) {
-    return portfolioTags.find(
-      (a) =>
-        a.bearer_id === user.id && a.tag_year && a.tag_year === selectedYear,
-    )?.name;
-  }
+  const years = [
+    ...new Set<number>(users.map((user) => user.userYearsActive.year)),
+  ].sort((a, b) => b - a);
+  const currentYear = new Date().getFullYear();
 
   return (
-    <>
-      <div className="container">
-        <div className="flex justify-center gap-5">
-          <Tabs
-            aria-label="Dynamic tabs"
-            items={years.map((y) => {
-              return { label: y.toString(), val: y };
-            })}
-            selectedKey={selectedYear?.toString()}
-            onSelectionChange={(y) => handleYearChange(Number(y.valueOf()))}
-          >
-            {(item) => <Tab key={item.label} title={item.label} />}
-          </Tabs>
-        </div>
-        <div className="container m-auto flex flex-wrap justify-center gap-5 p-10">
-          {isLoading ? (
-            <Spinner />
-          ) : users.length > 0 ? (
-            users.sort(sortUsers).map((user) => (
-              <>
-                <Card
-                  isBlurred
-                  isPressable
-                  radius="lg"
-                  className="border-none"
-                  onPress={() => {
-                    handleProfilePress(user);
-                  }}
-                >
-                  <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
-                    <small className="text-default-500">
-                      {getUserPortfolio(user) || ZERO_WIDTH_SPACE}
-                    </small>
-                    <h4 className="text-large font-bold">{user.name}</h4>
-                  </CardHeader>
-                  <CardBody className="overflow-visible py-2">
-                    <Image
-                      // fill
-                      src={endpoints.users.getUserProfilePicture(user.id)}
-                      alt="Profile picture"
-                      className="rounded-xl object-cover"
-                      // height={240}
-                      height={300}
-                      width={300}
-                      // sizes="100vw"
-                    />
-                  </CardBody>
-                </Card>
-              </>
-            ))
-          ) : (
-            <div> No team members yet :( </div>
-          )}
-        </div>
-        {currUserDisplay && (
-          <DisplayModal
-            user={currUserDisplay}
-            isOpen={displayUserAbout}
-            portfolio={getUserPortfolio(currUserDisplay)}
-            onOpenChange={handleProfileClose}
-          />
-        )}
-      </div>
-    </>
+    <div className="container relative">
+      {years.map(
+        (
+          year,
+          yearIdx, // essentially implementing no-JS tabs
+        ) => (
+          <div key={year}>
+            <input
+              type="radio"
+              name="year"
+              id={year.toString()}
+              className="peer hidden"
+              defaultChecked={year === currentYear}
+            />
+            <label
+              htmlFor={year.toString()}
+              className="absolute top-0 cursor-pointer rounded-xl border p-3 px-5 transition-all peer-checked:bg-[#333] peer-checked:text-white"
+              style={{ left: `${yearIdx * 6}rem` }}
+            >
+              {year}
+            </label>
+            <div className="hidden flex-wrap justify-center gap-5 py-16 peer-checked:flex">
+              {users
+                .filter(({ userYearsActive }) => userYearsActive.year === year)
+                .map((user) => (
+                  <UserCard user={user} key={user.user.id} />
+                ))}
+            </div>
+          </div>
+        ),
+      )}
+    </div>
   );
 }
 
-function DisplayModal(props: {
-  user: UserPublic;
-  isOpen: boolean;
-  onOpenChange: () => void;
-  portfolio: string | undefined;
+function UserCard({
+  user: { user, userYearsActive: yearsActive },
+}: {
+  user: User;
 }) {
   return (
-    <>
-      <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1"></ModalHeader>
-              <UserAvatar
-                name={props.user.name}
-                description={props.portfolio || ZERO_WIDTH_SPACE}
-                avatarProps={{
-                  isBordered: true,
-                  src: endpoints.users.getUserProfilePicture(props.user.id),
-                  size: "lg",
-                  color: "success",
-                  showFallback: true,
-                }}
-              />
-              <ModalBody>{props.user.about || EMPTY_ABOUT_MESSAGE}</ModalBody>
-              <ModalFooter>
-                <Button color="warning" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+    <div
+      key={user.id}
+      className="group flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl transition-all hover:scale-[1.01] hover:shadow-2xl"
+    >
+      <div className="relative flex aspect-square w-[230px] items-center justify-start overflow-hidden rounded-2xl bg-[#eee]">
+        {user.image ? (
+          <Image
+            src={getUserProfilePicRoute(user.id, user.image)}
+            fill={true}
+            className="object-cover"
+            alt="Team Member Portrait"
+          />
+        ) : (
+          <AvatarIcon />
+        )}
+      </div>
+      <div className="flex w-full flex-col items-center gap-2 px-3 py-2">
+        <div className="flex flex-col items-center gap-1">
+          <h4 className="text-lg font-semibold">{user.name}</h4>
+          <p className="font-light">{yearsActive.role}</p>
+        </div>
+        <div className="flex flex-row gap-2">
+          {/* <Tooltip content={<p>{user.email}</p>} placement="bottom"> */}
+          <a href={`mailto:${user.email}`}>
+            <EnvelopeIcon height={20} />
+          </a>
+          {/* </Tooltip> */}
+          {/* <a href={`https://www.linkedin.com/in/${user.linkedin}/`}>
+            <LinkedInIcon height={20} width={20} colour={false} />
+          </a> */}
+          <Tooltip content={<p>{user.about}</p>} placement="bottom">
+            <InformationCircleIcon height={20} />
+          </Tooltip>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AvatarIcon({ height = 90 }: { height?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height={`${height}%`}
+      role="presentation"
+      viewBox="0 0 24 24"
+      width={`${height}%`}
+      className="m-auto"
+    >
+      <path
+        d="M12 2C9.38 2 7.25 4.13 7.25 6.75C7.25 9.32 9.26 11.4 11.88 11.49C11.96 11.48 12.04 11.48 12.1 11.49C12.12 11.49 12.13 11.49 12.15 11.49C12.16 11.49 12.16 11.49 12.17 11.49C14.73 11.4 16.74 9.32 16.75 6.75C16.75 4.13 14.62 2 12 2Z"
+        fill="currentColor"
+      ></path>
+      <path
+        d="M17.0809 14.1489C14.2909 12.2889 9.74094 12.2889 6.93094 14.1489C5.66094 14.9989 4.96094 16.1489 4.96094 17.3789C4.96094 18.6089 5.66094 19.7489 6.92094 20.5889C8.32094 21.5289 10.1609 21.9989 12.0009 21.9989C13.8409 21.9989 15.6809 21.5289 17.0809 20.5889C18.3409 19.7389 19.0409 18.5989 19.0409 17.3589C19.0309 16.1289 18.3409 14.9889 17.0809 14.1489Z"
+        fill="currentColor"
+      ></path>
+    </svg>
   );
 }
