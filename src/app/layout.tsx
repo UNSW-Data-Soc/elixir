@@ -11,6 +11,8 @@ import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "UNSW DataSoc",
   description: "Official website of the Data Science Society of UNSW",
