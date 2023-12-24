@@ -12,7 +12,6 @@ import { RouterOutputs } from "@/trpc/shared";
 
 import { isModerator } from "../utils";
 import BlogActionsModal from "./blogActionsModal";
-import BlogCardActions from "./blogCardActions";
 import { getFirstImageUrl } from "./utils";
 
 import dayjs from "dayjs";
@@ -69,7 +68,7 @@ async function BlogCard({
     <>
       <Link href={`/blogs/${blog.slug}`}>
         <Card
-          className="aspect-[16/9] min-w-[20rem] sm:w-96 relative"
+          className="relative aspect-[16/9] min-w-[20rem] sm:w-96"
           style={getBlogCardStyle(blog)}
         >
           {/* TODO: use next/image */}
@@ -96,7 +95,6 @@ async function BlogCard({
             {isModerator(session) && (
               <div className="flex w-full items-center justify-center align-baseline">
                 <BlogActionsModal blog={blog} />
-                <BlogCardActions blog={blog} />
               </div>
             )}
           </CardFooter>
