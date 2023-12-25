@@ -25,6 +25,8 @@ const envSchema = z.object({
   S3_REGION_NAME: z.string().min(1),
 
   SECRET_KEY: z.string().min(1),
+
+  RESEND_API_KEY: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);

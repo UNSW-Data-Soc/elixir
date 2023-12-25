@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -10,6 +11,8 @@ import { TRPCError } from "@trpc/server";
 
 import { and, countDistinct, eq } from "drizzle-orm";
 import { z } from "zod";
+
+import { Resend } from "resend";
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure
@@ -89,16 +92,27 @@ export const authRouter = createTRPCRouter({
       // if no user exists
       if (user.length === 0) return;
 
+      // TODO: if token generated within the last hour, return
+
       // generate reset token
       const uuid = crypto.randomUUID();
       const token = hash(uuid);
       await ctx.db.insert(resetTokens).values({
         user: user[0].id,
         token,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 2), // 2 hours
       });
 
       // send email to user
       // TODO
+      const resend = new Resend(env.RESEND_API_KEY);
+
+      resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: "hello@unswdata.com",
+        subject: "Hello World",
+        html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
+      });
     }),
 
   resetPassword: publicProcedure
