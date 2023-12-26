@@ -24,12 +24,17 @@ import toast from "react-hot-toast";
 
 export default function BlogActionsModal(props: {
   blog: RouterOutputs["blogs"]["getAll"][number];
+  deleteModal: {
+    isOpen: boolean;
+    onOpenChange: () => void;
+  };
+  visibilityModal: {
+    isOpen: boolean;
+    onOpenChange: () => void;
+  };
 }) {
   const session = useSession();
   const router = useRouter();
-
-  const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
-  const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
 
   const utils = api.useUtils();
 
@@ -41,9 +46,6 @@ export default function BlogActionsModal(props: {
     onError: () => {
       toast.error("Failed to delete blog");
     },
-    onSettled: () => {
-      setShowDeletionDialogue(false);
-    },
   });
 
   const { mutate: togglePublishBlog } = api.blogs.togglePublish.useMutation({
@@ -52,14 +54,10 @@ export default function BlogActionsModal(props: {
       const actionPubUnpub = props.blog.public ? "unpublish" : "publish";
       toast.success(`Blog ${actionPubUnpub}ed successfully!`);
       void utils.blogs.invalidate();
-      window.location.reload(); // TODO: is there a way to force updates to the blog list? or not since it's server-side rendered
     },
     onError: () => {
       const actionPubUnpub = props.blog.public ? "unpublish" : "publish";
       toast.error(`Failed to ${actionPubUnpub} blog`);
-    },
-    onSettled: () => {
-      setShowVisibilityDialogue(false);
     },
   });
 
@@ -71,47 +69,9 @@ export default function BlogActionsModal(props: {
   // TODO: move this into separate components
   return (
     <>
-      <div className="flex items-center justify-center align-baseline">
-        <Button
-          color="secondary"
-          radius="full"
-          variant="light"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            router.push(`/blogs/editor?blogId=${props.blog.id}`);
-          }}
-        >
-          Edit Blog
-        </Button>
-        <Button
-          color="warning"
-          radius="full"
-          variant="light"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowVisibilityDialogue(true);
-          }}
-        >
-          {props.blog.public ? "Unpublish" : "Publish"}
-        </Button>
-        <Button
-          color="danger"
-          radius="full"
-          variant="light"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowDeletionDialogue(true);
-          }}
-        >
-          Delete
-        </Button>
-      </div>
       <Modal
-        isOpen={showDeletionDialogue}
-        onOpenChange={() => setShowDeletionDialogue(false)}
+        isOpen={props.deleteModal.isOpen}
+        onOpenChange={props.deleteModal.onOpenChange}
       >
         <ModalContent>
           {(onClose) => (
@@ -132,7 +92,10 @@ export default function BlogActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={() => deleteBlog({ id: props.blog.id })}
+                  onPress={() => {
+                    deleteBlog({ id: props.blog.id });
+                    onClose();
+                  }}
                 >
                   Confirm
                 </Button>
@@ -143,8 +106,8 @@ export default function BlogActionsModal(props: {
       </Modal>
 
       <Modal
-        isOpen={showVisibilityDialogue}
-        onOpenChange={() => setShowVisibilityDialogue(false)}
+        isOpen={props.visibilityModal.isOpen}
+        onOpenChange={props.visibilityModal.onOpenChange}
       >
         <ModalContent>
           {(onClose) => (
@@ -171,7 +134,10 @@ export default function BlogActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={() => togglePublishBlog({ id: props.blog.id })}
+                  onPress={() => {
+                    togglePublishBlog({ id: props.blog.id });
+                    onClose();
+                  }}
                 >
                   Confirm
                 </Button>

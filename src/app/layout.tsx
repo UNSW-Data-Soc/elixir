@@ -32,7 +32,7 @@ export default function RootLayout({
             <div className="flex h-screen flex-col justify-between">
               <Navbar />
               {children}
-              {<Footer />}
+              <Footer />
             </div>
           </Providers>
         </ServerProviders>

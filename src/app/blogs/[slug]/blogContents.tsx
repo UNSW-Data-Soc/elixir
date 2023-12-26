@@ -1,21 +1,31 @@
+import { notFound, redirect } from "next/navigation";
+
+import { Tooltip } from "@nextui-org/tooltip";
+
+import { getServerAuthSession } from "@/server/auth";
+
+import { api } from "@/trpc/server";
+
+import { isModerator } from "@/app/utils";
+
+import { generateHTML } from "@tiptap/html";
+
+import { TIPTAP_EXTENSIONS } from "../tiptapExtensions";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { redirect } from "next/navigation";
-import { generateHTML } from "@tiptap/html";
-import { TIPTAP_EXTENSIONS } from "../tiptapExtensions";
-import { Spinner, isModerator, parseBackendError } from "@/app/utils";
-import { Tooltip } from "@nextui-org/tooltip";
-import { api } from "@/trpc/server";
-import { getServerAuthSession } from "@/server/auth";
 dayjs.extend(relativeTime);
 
 export default async function BlogContent({ slug }: { slug: string }) {
   const session = await getServerAuthSession();
 
-  const blog = await api.blogs.getBySlug.query({ slug });
-
-  // if (!blog) return <Spinner />; // TODO: handle NULL blog with server error message
+  let blog = null;
+  try {
+    blog = await api.blogs.getBySlug.query({ slug });
+  } catch (e) {
+    return notFound();
+  }
 
   if (!isModerator(session) && !blog.public) {
     redirect("/auth/login");

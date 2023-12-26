@@ -1,5 +1,8 @@
 import { Session } from "next-auth";
 
+/**
+ * @deprecated use "isModerator" from "@/app/utils" instead
+ */
 export const hasModeratorPermissions = (
   session: Session | null | undefined,
 ) => {

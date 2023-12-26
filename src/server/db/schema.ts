@@ -211,3 +211,25 @@ export const resourceTags = mysqlTable(
     compoundKey: primaryKey({ columns: [rt.resourceId, rt.tagId] }),
   }),
 );
+
+export const blogTags = mysqlTable(
+  "blogTags",
+  {
+    blogId: varchar("blogId", { length: 255 }).notNull(), // .references(() => blogs.id, {onDelete: "cascade"}),
+    tagId: varchar("tagId", { length: 255 }).notNull(), // .references(() => tags.id, {onDelete: "cascade"}),
+  },
+  (bt) => ({
+    compoundKey: primaryKey({ columns: [bt.blogId, bt.tagId] }),
+  }),
+);
+
+export const eventTags = mysqlTable(
+  "eventTags",
+  {
+    eventId: varchar("eventId", { length: 255 }).notNull(), // .references(() => events.id, {onDelete: "cascade"}),
+    tagId: varchar("tagId", { length: 255 }).notNull(), // .references(() => tags.id, {onDelete: "cascade"}),
+  },
+  (et) => ({
+    compoundKey: primaryKey({ columns: [et.eventId, et.tagId] }),
+  }),
+);

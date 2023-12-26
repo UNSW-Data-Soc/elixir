@@ -9,6 +9,7 @@ import {
   DATASOC_YOUTUBE_LINK,
 } from "@/app/utils";
 
+import LoginButton from "./components/loginButton";
 import {
   FacebookIcon,
   GitHubIcon,
@@ -109,7 +110,7 @@ export default function Footer() {
           <p className="font-bold uppercase tracking-wide text-[#444e5f]">
             Internals
           </p>
-          <Link href="/auth/login">Login</Link>
+          <LoginButton />
           <Link href="#">Feedback</Link> {/* // TODO: feedback page */}
         </div>
       </div>

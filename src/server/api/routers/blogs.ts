@@ -13,7 +13,7 @@ import { z } from "zod";
 
 /** CONSTANTS + PARAMETERS **/
 const BLOG_TITLE_MIN_LENGTH = 3;
-const BLOG_TITLE_MAX_LENGTH = 36;
+const BLOG_TITLE_MAX_LENGTH = 255;
 const DEFAULT_BLOG_CONTENT = {
   type: "doc",
   content: [
@@ -227,7 +227,7 @@ export const blogRouter = createTRPCRouter({
         creator: ctx.session.user.id,
       });
 
-      return newSlug;
+      return { id, slug: newSlug };
     }),
 
   update: moderatorProcedure

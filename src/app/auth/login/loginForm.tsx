@@ -9,7 +9,7 @@ import { FormEventHandler, useEffect, useState } from "react";
 
 import toast, { useToasterStore } from "react-hot-toast";
 
-const LoginForm = () => {
+const LoginForm = ({ redirectOnLogin }: { redirectOnLogin: string }) => {
   const router = useRouter();
 
   const [email, setEmail] = useState<string>("");
@@ -42,7 +42,7 @@ const LoginForm = () => {
     }
 
     // if login successful redirect to home page
-    router.push("/");
+    router.push(redirectOnLogin);
   };
 
   return (
@@ -71,7 +71,7 @@ const LoginForm = () => {
       <div className="flex justify-between">
         <Link
           href="/reset/password"
-          className="text-[#3b7bca] hover:underline hover:text-[#235da4] transition-all"
+          className="text-[#3b7bca] transition-all hover:text-[#235da4] hover:underline"
         >
           Forgot password?
         </Link>
@@ -84,7 +84,7 @@ const LoginForm = () => {
         </span> */}
       </div>
       <input
-        className="rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd] cursor-pointer"
+        className="cursor-pointer rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
         type="submit"
         value="Login"
       />

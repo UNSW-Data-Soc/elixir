@@ -37,9 +37,14 @@ const BlogsEditor = () => {
     data: blog,
     isLoading: blogLoading,
     isError: blogError,
-  } = api.blogs.getById.useQuery({
-    id: blogId ?? "",
-  });
+  } = api.blogs.getById.useQuery(
+    {
+      id: blogId ?? "",
+    },
+    {
+      retry: 3, // number of times to retry on failure (default is 2)
+    },
+  );
 
   // initially load blog info + content into the editor
   useEffect(() => {
@@ -175,7 +180,10 @@ const BlogsEditInfoForm = () => {
 const BlogsList = () => {
   const router = useRouter();
 
-  const { data: blogs, isLoading } = api.blogs.getAll.useQuery();
+  const { data: blogs, isLoading, isError } = api.blogs.getAll.useQuery();
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <>Error!</>;
 
   return (
     <main className="mx-auto flex w-full max-w-[800px] flex-col items-center gap-5 p-10">
@@ -185,21 +193,19 @@ const BlogsList = () => {
       <p className="text-xl font-light">
         Did you want to edit one of these blogs instead?
       </p>
-      {isLoading && <Spinner />}
-      {!!blogs &&
-        blogs.map((blog) => (
-          <div
-            key={blog.id}
-            className="flex w-full cursor-pointer flex-row rounded-lg bg-[#fafafa] p-5 transition-all hover:bg-[#eee]"
-            onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
-          >
-            <div>
-              <h3>{blog.title}</h3>
-              <p>{blog.author}</p>
-            </div>
+      {blogs.map((blog) => (
+        <div
+          key={blog.id}
+          className="flex w-full cursor-pointer flex-row rounded-lg bg-[#fafafa] p-5 transition-all hover:bg-[#eee]"
+          onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
+        >
+          <div>
+            <h3 className="text-lg font-bold">{blog.title}</h3>
+            <p>{blog.author}</p>
           </div>
-        ))}
-      {!!blogs && blogs.length === 0 && (
+        </div>
+      ))}
+      {blogs.length === 0 && (
         <p>
           No blogs to edit! Click <Link href="/blogs/create">here</Link> to
           create one.

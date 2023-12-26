@@ -3,12 +3,13 @@ import {
   moderatorProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { hasModeratorPermissions } from "@/server/api/utils";
 import { events } from "@/server/db/schema";
+
+import { isModerator } from "@/app/utils";
 
 import { TRPCError } from "@trpc/server";
 
-import { and, count, desc, eq, gt } from "drizzle-orm";
+import { and, count, desc, eq, gt, lte } from "drizzle-orm";
 import { z } from "zod";
 
 /** CONSTANTS + PARAMETERS **/
@@ -41,15 +42,33 @@ const countSlug = async (ctx: any, slug: string) => {
 /** ROUTER **/
 export const eventRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    if (hasModeratorPermissions(ctx.session)) {
-      return await ctx.db.select().from(events).orderBy(desc(events.startTime));
+    if (isModerator(ctx.session)) {
+      return {
+        upcoming: await ctx.db
+          .select()
+          .from(events)
+          .where(gt(events.endTime, new Date()))
+          .orderBy(desc(events.startTime)),
+        past: await ctx.db
+          .select()
+          .from(events)
+          .where(lte(events.endTime, new Date()))
+          .orderBy(desc(events.startTime)),
+      };
     }
 
-    return await ctx.db
-      .select()
-      .from(events)
-      .where(eq(events.public, true))
-      .orderBy(desc(events.startTime));
+    return {
+      upcoming: await ctx.db
+        .select()
+        .from(events)
+        .where(and(eq(events.public, true), gt(events.endTime, new Date())))
+        .orderBy(desc(events.startTime)),
+      past: await ctx.db
+        .select()
+        .from(events)
+        .where(and(eq(events.public, true), lte(events.endTime, new Date())))
+        .orderBy(desc(events.startTime)),
+    };
   }),
 
   getUpcoming: publicProcedure
@@ -94,7 +113,7 @@ export const eventRouter = createTRPCRouter({
       }
 
       // event is not public, and user is not moderator or admin
-      if (!event.public && !hasModeratorPermissions(ctx.session)) {
+      if (!event.public && !isModerator(ctx.session)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to view this event",

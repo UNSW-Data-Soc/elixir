@@ -3,28 +3,11 @@ import Link from "next/link";
 
 import { api } from "@/trpc/server";
 
-import { ArrowDownIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { getFirstImageUrl } from "./blogs/utils";
-import LinkButton from "./components/LinkButton";
 import BlogImageHomePage from "./components/blogImageHomePage";
-import {
-  FacebookIcon,
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  YouTubeIcon,
-} from "./socialIcons";
-import {
-  DATASOC_FACEBOOK_LINK,
-  DATASOC_GITHUB_LINK,
-  DATASOC_INSTAGRAM_LINK,
-  DATASOC_LINKEDIN_LINK,
-  DATASOC_REGISTRATION_LINK,
-  DATASOC_YOUTUBE_LINK,
-  Event_PHOTO_X_PXL,
-  Event_PHOTO_Y_PXL,
-} from "./utils";
+import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL } from "./utils";
 import {
   getCompanyImageRoute,
   getCoverPhotoRoute,
@@ -35,9 +18,6 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
-
-// const SOCIAL_HEIGHT = 25;
-// const SOCIAL_WIDTH = 25;
 
 const NUM_DISPLAY_EVENTS = 3;
 const NUM_DISPLAY_BLOGS = 3;
@@ -83,17 +63,6 @@ export default async function Home() {
             </div>
             <div className="pt-2 text-center text-3xl sm:text-left">@ UNSW</div>
           </div>
-          {/* <div className="text-center text-6xl font-bold sm:text-left sm:text-8xl tracking-wide">
-            UNSW <br />
-            DATA SCIENCE <br />
-            SOCIETY
-          </div> */}
-          {/* <LinkButton
-            to={DATASOC_REGISTRATION_LINK}
-            text="Join Us!"
-            className="text-bold bg-[#0957ff] p-6 text-lg"
-          /> */}
-          {/* <SocialIcons /> */}
         </div>
         <a
           href="#main"
@@ -116,33 +85,6 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-7 bg-[#b6e2ff] p-12 py-24 align-baseline">
-        <h3 className="w-full text-center text-3xl">Recent Blog Posts</h3>
-        {blogs.length === 0 && (
-          <p className="w-full text-center font-light">No blogs posts yet!</p>
-        )}
-        {blogs.length > 0 && (
-          <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
-            {blogs.map((blog) => (
-              <Link
-                key={blog.id}
-                href={`/blogs/${blog.slug}`}
-                className="group/eventCard relative flex h-[200px] min-w-[300px] flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
-              >
-                <BlogImageHomePage
-                  imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
-                />
-                <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
-                  <p className="w-full text-center">{blog.title}</p>
-                  <p className="w-full text-center text-xs">
-                    {dayjs(blog.createdTime).fromNow()}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
         {futureEvents.length === 0 && (
           <p className="w-full text-center text-xl font-light">
@@ -174,6 +116,53 @@ export default async function Home() {
                       {dayjs(event.startTime).fromNow()}
                     </p>
                   </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
+        <h3 className="w-full text-center text-3xl">Recent Blog Posts</h3>
+        {blogs.length === 0 && (
+          <p className="w-full text-center font-light">No blogs posts yet!</p>
+        )}
+        {blogs.length > 0 && (
+          <div className="flex flex-row flex-wrap items-center justify-center gap-4 p-3">
+            <Link
+              href={`/blogs/${blogs[0].slug}`}
+              className="relative flex aspect-[8/7] h-[500px] flex-col items-stretch justify-center gap-1 overflow-hidden bg-transparent align-baseline"
+            >
+              <BlogImageHomePage
+                imgSrc={getFirstImageUrl(JSON.parse(blogs[0].body)).url}
+              />
+              <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-2 bg-gradient-to-t from-slate-800 p-5 text-white transition-all">
+                <p className="w-full text-3xl font-semibold tracking-wide">
+                  {blogs[0].title}
+                </p>
+                <p className="w-full text-lg">
+                  {dayjs(blogs[0].createdTime).fromNow()}
+                </p>
+              </div>
+            </Link>
+            {blogs.slice(1).map((blog) => (
+              <Link
+                key={blog.id}
+                href={`/blogs/${blog.slug}`}
+                className="relative flex aspect-[9/16] h-[500px] flex-col items-stretch gap-1 bg-transparent align-baseline"
+              >
+                <div className="aspect-[4/5] flex-shrink-0 flex-grow-0">
+                  <BlogImageHomePage
+                    imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
+                  />
+                </div>
+                <div className="flex h-full w-full flex-col justify-start gap-1 bg-gradient-to-t py-1">
+                  <p className="w-full whitespace-pre-wrap text-2xl font-semibold">
+                    {blog.title}
+                  </p>
+                  <p className="w-full text-base">
+                    {dayjs(blog.createdTime).fromNow()}
+                  </p>
                 </div>
               </Link>
             ))}

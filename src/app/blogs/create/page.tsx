@@ -23,9 +23,9 @@ export default function BlogCreate() {
 
   const { mutate: createBlog, isLoading: creatingBlog } =
     api.blogs.create.useMutation({
-      onSuccess: (slug) => {
+      onSuccess: ({ id }) => {
         toast.success("Blog created!");
-        router.push(`/blogs/editor?blogSlug=${slug}`);
+        router.push(`/blogs/editor?blogId=${id}`);
       },
       onError: (err) => {
         if (!err || !err.data) {

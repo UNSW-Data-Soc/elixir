@@ -30,9 +30,9 @@ dayjs.extend(relativeTime);
 
 const DEFAULT_EVENT_IMAGE = "./logo.png";
 
-function getEventCardStyle(
-  event: RouterOutputs["events"]["getAll"][number],
-): CSSProperties {
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
+
+function getEventCardStyle(event: Event): CSSProperties {
   return event.public // && inFuture // TODO: should we have this????
     ? {}
     : {
@@ -40,9 +40,7 @@ function getEventCardStyle(
       };
 }
 
-export async function EventsCard(props: {
-  event: RouterOutputs["events"]["getAll"][number];
-}) {
+export async function EventsCard(props: { event: Event }) {
   const session = await getServerAuthSession();
 
   const startTime = dayjs(props.event.startTime);

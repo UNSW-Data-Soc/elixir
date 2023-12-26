@@ -1,48 +1,50 @@
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 import LoginForm from "./loginForm";
 
 import { getServerSession } from "next-auth";
 
-const Login = async () => {
+export default async function Login({
+  searchParams,
+}: {
+  searchParams?: { from?: string };
+}) {
   const session = await getServerSession();
-  if (session) return redirect("/");
+  if (session) return redirect(searchParams?.from ?? "/");
 
   return (
-    <main className="fixed w-full h-full flex items-center justify-center bg-white p-5">
-      <div className="sm:shadow-2xl xl:w-7/12 lg:w-8/12 md:w-10/12 sm:w-8/12 w-10/12 md:flex-row flex-col max-w-4xl text-[#333] rounded-2xl flex overflow-hidden">
-        <div className="hidden md:w-6/12 sm:flex justify-center items-center flex-col py-10 md:p-0 bg-light-rainbow select-none">
+    <main className="fixed flex h-full w-full items-center justify-center bg-white p-5">
+      <div className="flex w-10/12 max-w-4xl flex-col overflow-hidden rounded-2xl text-[#333] sm:w-8/12 sm:shadow-2xl md:w-10/12 md:flex-row lg:w-8/12 xl:w-7/12">
+        <div className="bg-light-rainbow hidden select-none flex-col items-center justify-center py-10 sm:flex md:w-6/12 md:p-0">
           <Image
             src="/logo_greyscale.jpeg"
             width={100}
             height={100}
             alt="logo"
-            className="mix-blend-multiply mb-3"
+            className="mb-3 mix-blend-multiply"
             quality={100}
             priority
           />
           <p className="text-[#4a4a4a]">Welcome to</p>
-          <p className="text-[#4a4a4a] text-3xl font-semibold text-center">
+          <p className="text-center text-3xl font-semibold text-[#4a4a4a]">
             UNSW DataSoc
           </p>
         </div>
-        <div className="p-6 sm:p-12 md:w-6/12 flex flex-col gap-7">
+        <div className="flex flex-col gap-7 p-6 sm:p-12 md:w-6/12">
           <Image
             src="/logo.png"
             width={6450}
             height={1756}
             alt="logo"
-            className="block sm:hidden border-b pb-7"
+            className="block border-b pb-7 sm:hidden"
           />
           <div>
-            <h1 className="text-2xl font-bold mb-3">Login</h1>
-            <LoginForm />
+            <h1 className="mb-3 text-2xl font-bold">Login</h1>
+            <LoginForm redirectOnLogin={searchParams?.from ?? "/"} />
           </div>
         </div>
       </div>
     </main>
   );
-};
-
-export default Login;
+}
