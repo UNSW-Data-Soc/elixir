@@ -8,9 +8,17 @@ import { useSession } from "next-auth/react";
 
 import { CSSProperties } from "react";
 
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
 
+import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
+
+import {
+  EyeIcon,
+  PencilSquareIcon,
+  TagIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
 import { isModerator } from "../utils";
 import BlogActionsModal from "./blogActionsModal";
@@ -32,6 +40,9 @@ export default function BlogCard({ blog }: { blog: Blog }) {
   const deleteModal = useDisclosure();
   const visibilityModal = useDisclosure();
 
+  // tags
+  const { data: tags } = api.tags.blogs.get.useQuery({ id: blog.id });
+
   const editedDate = dayjs(blog.lastEditTime);
 
   const firstImage = getFirstImageUrl(JSON.parse(blog.body));
@@ -39,10 +50,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
   return (
     <>
       <Link href={`/blogs/${blog.slug}`}>
-        <div
-          className="relative aspect-[16/9] min-w-[20rem] cursor-pointer overflow-hidden rounded-2xl shadow-xl transition-all active:scale-95 sm:w-96"
-          style={getBlogCardStyle(blog)}
-        >
+        <div className="relative aspect-[5/4] min-w-[20rem] cursor-pointer overflow-hidden rounded-md shadow-xl transition-all active:scale-[.98] sm:aspect-[16/9] sm:w-96 sm:min-w-[30rem]">
           <Image
             draggable={false}
             alt="blog post hero image"
@@ -51,19 +59,32 @@ export default function BlogCard({ blog }: { blog: Blog }) {
             }`}
             src={firstImage.url}
             fill={true}
+            style={getBlogCardStyle(blog)}
           />
-          <div className="absolute bottom-0 flex w-full flex-col items-start justify-between gap-1 rounded-b-none bg-[#fffc] px-5 py-4">
-            <div className="flex w-full flex-col items-start">
+          <div className="absolute bottom-0 top-0 flex w-full flex-col items-start justify-end gap-2 rounded-b-none bg-gradient-to-t from-black px-5 py-4">
+            <div
+              className="flex w-full flex-col items-start gap-1 text-white"
+              style={getBlogCardStyle(blog)}
+            >
               <p className="text-lg font-bold">{blog.title}</p>
-              <div className="flex w-full justify-between">
-                <small className="text-default-500">
-                  Authored by {blog.author}
-                </small>
-                <small className="text-default-500">
-                  {editedDate.fromNow()}
-                </small>
+              <div className="flex w-full justify-between text-default-200">
+                <small>Authored by {blog.author}</small>
+                <small>{editedDate.fromNow()}</small>
               </div>
             </div>
+            {!!tags && tags.length > 0 && (
+              <div className="flex flex-row flex-wrap gap-1 text-xs">
+                {tags.map((tag) => (
+                  <p
+                    key={tag.id}
+                    style={{ backgroundColor: tag.colour }}
+                    className="rounded-xl border border-white p-1 px-2 text-white"
+                  >
+                    {tag.name}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
           {isModerator(session.data) && (
             <BlogActionButtons
@@ -98,40 +119,62 @@ function BlogActionButtons({
 }) {
   const router = useRouter();
   return (
-    <div className="absolute right-0 top-0 flex w-full flex-row items-center justify-end bg-[#fffc] align-baseline">
-      <BlogActionButton
-        color="secondary"
-        onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
+    <div className="absolute right-0 top-0 m-2 flex flex-row items-center overflow-hidden rounded-xl">
+      {/* {!blog.public ? (
+        <p className="flex-grow bg-red-500 p-2 px-3 text-white">
+          Not published
+        </p>
+      ) : (
+        <p className="flex-grow bg-green-500 p-2 px-3 text-white">Published</p>
+      )} */}
+      <Tooltip content="Edit blog" className="flex-grow">
+        <BlogActionButton
+          className="bg-[#14A1D9]"
+          onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
+        >
+          <PencilSquareIcon height={20} /> Edit
+        </BlogActionButton>
+      </Tooltip>
+      <Tooltip
+        content={blog.public ? "Unpublish" : "Publish"}
+        className="flex-grow"
       >
-        Edit Blog
-      </BlogActionButton>
-      <BlogActionButton color="warning" onClick={visibilityModal.onOpen}>
-        {blog.public ? "Unpublish" : "Publish"}
-      </BlogActionButton>
-      <BlogActionButton color="danger" onClick={deleteModal.onOpen}>
-        Delete
-      </BlogActionButton>
-      <BlogActionButton color="primary" onClick={tagsModal.onOpen}>
-        Edit Tags
-      </BlogActionButton>
+        <BlogActionButton
+          className="bg-[#F29F05]"
+          onClick={visibilityModal.onOpen}
+        >
+          <EyeIcon height={20} />
+          {blog.public ? "Unpublish" : "Publish"}
+        </BlogActionButton>
+      </Tooltip>
+      <Tooltip content="Delete blog" className="flex-grow">
+        <BlogActionButton className="bg-[#D9435F]" onClick={deleteModal.onOpen}>
+          <TrashIcon height={20} />
+          Delete
+        </BlogActionButton>
+      </Tooltip>
+      <Tooltip content="Edit tags" className="flex-grow">
+        <BlogActionButton className="bg-[#9F68A6]" onClick={tagsModal.onOpen}>
+          <TagIcon height={20} />
+          Edit Tags
+        </BlogActionButton>
+      </Tooltip>
     </div>
   );
 }
 
 function BlogActionButton({
-  color = "primary",
+  className = "bg-white",
   children,
   onClick,
 }: {
-  color?: "primary" | "danger" | "warning" | "secondary";
+  className?: string;
   children: React.ReactNode;
   onClick: () => void;
 }) {
   return (
-    <Button
-      color={color}
-      variant="light"
-      radius="full"
+    <button
+      className={`flex flex-row items-center gap-2 rounded-none p-2 px-3 text-sm text-white ${className} transition-all hover:brightness-110`}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -139,7 +182,7 @@ function BlogActionButton({
       }}
     >
       {children}
-    </Button>
+    </button>
   );
 }
 
@@ -150,6 +193,7 @@ function getBlogCardStyle(blog: Blog): CSSProperties {
   return blog.public
     ? {}
     : {
-        opacity: 0.5,
+        // opacity: 0.5,
+        filter: "brightness(0.5)",
       };
 }
