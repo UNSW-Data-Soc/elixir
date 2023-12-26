@@ -29,7 +29,7 @@ async function BlogsContainer() {
   return (
     <div className="m-auto flex flex-wrap justify-center gap-8 px-10 py-10 lg:container md:px-0">
       {isModerator(session) && (
-        <div className="absolute bottom-5 right-5">
+        <div className="absolute bottom-5 right-5 z-50">
           <BlogsAddCard />
         </div>
       )}

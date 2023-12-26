@@ -8,7 +8,8 @@ import { useSession } from "next-auth/react";
 
 import { CSSProperties } from "react";
 
-import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
+import { Tooltip } from "@nextui-org/tooltip";
 
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
@@ -50,7 +51,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
   return (
     <>
       <Link href={`/blogs/${blog.slug}`}>
-        <div className="relative aspect-[5/4] min-w-[20rem] cursor-pointer overflow-hidden rounded-md shadow-xl transition-all active:scale-[.98] sm:aspect-[16/9] sm:w-96 sm:min-w-[30rem]">
+        <div className="relative aspect-[5/4] min-w-[20rem] cursor-pointer rounded-md shadow-xl transition-all active:scale-[.98] sm:aspect-[16/9] sm:w-96 sm:min-w-[30rem]">
           <Image
             draggable={false}
             alt="blog post hero image"
@@ -67,13 +68,19 @@ export default function BlogCard({ blog }: { blog: Blog }) {
               style={getBlogCardStyle(blog)}
             >
               <p className="text-lg font-bold">{blog.title}</p>
-              <div className="flex w-full justify-between text-default-200">
-                <small>Authored by {blog.author}</small>
-                <small>{editedDate.fromNow()}</small>
+              <div className="flex w-full items-center justify-start gap-2 text-default-200">
+                <small className="text-sm">Authored by {blog.author}</small>
+                <div className="h-1 w-1 rounded-full bg-white">
+                  {/* HTML cdot code: &#183; */}
+                </div>
+                <small className="text-sm">{editedDate.fromNow()}</small>
               </div>
             </div>
             {!!tags && tags.length > 0 && (
-              <div className="flex flex-row flex-wrap gap-1 text-xs">
+              <div
+                className="flex flex-row flex-wrap gap-1 text-xs"
+                style={getBlogCardStyle(blog)}
+              >
                 {tags.map((tag) => (
                   <p
                     key={tag.id}
@@ -127,38 +134,31 @@ function BlogActionButtons({
       ) : (
         <p className="flex-grow bg-green-500 p-2 px-3 text-white">Published</p>
       )} */}
-      <Tooltip content="Edit blog" className="flex-grow">
-        <BlogActionButton
-          className="bg-[#14A1D9]"
-          onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
-        >
-          <PencilSquareIcon height={20} /> Edit
-        </BlogActionButton>
-      </Tooltip>
-      <Tooltip
-        content={blog.public ? "Unpublish" : "Publish"}
-        className="flex-grow"
+      <BlogActionButton
+        className="bg-[#14A1D9]"
+        onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
       >
-        <BlogActionButton
-          className="bg-[#F29F05]"
-          onClick={visibilityModal.onOpen}
-        >
-          <EyeIcon height={20} />
+        <PencilSquareIcon height={20} />{" "}
+        <span className="hidden sm:block">Edit</span>
+      </BlogActionButton>
+      <BlogActionButton
+        className="bg-[#F29F05]"
+        onClick={visibilityModal.onOpen}
+      >
+        <EyeIcon height={20} />
+        <span className="hidden sm:block">
           {blog.public ? "Unpublish" : "Publish"}
-        </BlogActionButton>
-      </Tooltip>
-      <Tooltip content="Delete blog" className="flex-grow">
-        <BlogActionButton className="bg-[#D9435F]" onClick={deleteModal.onOpen}>
-          <TrashIcon height={20} />
-          Delete
-        </BlogActionButton>
-      </Tooltip>
-      <Tooltip content="Edit tags" className="flex-grow">
-        <BlogActionButton className="bg-[#9F68A6]" onClick={tagsModal.onOpen}>
-          <TagIcon height={20} />
-          Edit Tags
-        </BlogActionButton>
-      </Tooltip>
+        </span>
+      </BlogActionButton>
+      <BlogActionButton className="bg-[#D9435F]" onClick={deleteModal.onOpen}>
+        <TrashIcon height={20} />
+        <span className="hidden sm:block">Delete</span>
+      </BlogActionButton>
+
+      <BlogActionButton className="bg-[#9F68A6]" onClick={tagsModal.onOpen}>
+        <TagIcon height={20} />
+        <span className="hidden sm:block">Edit Tags</span>
+      </BlogActionButton>
     </div>
   );
 }
