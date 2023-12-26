@@ -1,5 +1,6 @@
 "use client";
 
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -39,7 +40,6 @@ import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from "./utils";
 import { getUserProfilePicRoute } from "./utils/s3";
 
 import { Session } from "next-auth";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 type ItemDropdown = {
   key: string;
@@ -65,7 +65,7 @@ const logout = async (router: AppRouterInstance) => {
   router.push("/");
 };
 
-const Navbar = () => {
+export default function Navbar() {
   const router = useRouter();
   const path = usePathname();
   const session = useSession();
@@ -161,7 +161,7 @@ const Navbar = () => {
       </NavbarContent>
     </NextUINavbar>
   );
-};
+}
 
 function AboutUsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -351,5 +351,3 @@ function SettingsDropdown(props: {
     </Dropdown>
   );
 }
-
-export default Navbar;
