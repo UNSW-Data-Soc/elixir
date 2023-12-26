@@ -1,17 +1,19 @@
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
-
 import { Tooltip } from "@nextui-org/tooltip";
+
+import { getServerAuthSession } from "@/server/auth";
 
 import { RouterOutputs } from "@/trpc/shared";
 
 import { isModerator } from "../utils";
-import { getServerAuthSession } from "@/server/auth";
 
-export default async function EventInformation(props: {
-  event: RouterOutputs["events"]["getAll"][number];
-}) {
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
+
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
+
+export default async function EventInformation(props: { event: Event }) {
   const session = await getServerAuthSession();
 
   const author = { name: "Prayag" }; // TODO: api.users.getById.query({id: props.event.creator});

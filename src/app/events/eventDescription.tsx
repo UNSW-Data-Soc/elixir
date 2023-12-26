@@ -1,27 +1,32 @@
 "use client";
 
-import { RouterOutputs } from "@/trpc/shared";
 import { useState } from "react";
 
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/modal";
-import { Tooltip } from "@nextui-org/tooltip";
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
 import { Link } from "@nextui-org/link";
-import { Button } from "@nextui-org/button";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/modal";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { Tooltip } from "@nextui-org/tooltip";
+
+import { RouterOutputs } from "@/trpc/shared";
+
+import { generateHTML } from "@tiptap/html";
 
 import { TIPTAP_EXTENSIONS } from "../blogs/tiptapExtensions";
-import { generateHTML } from "@tiptap/html";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+
 dayjs.extend(relativeTime);
+
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
 export function EventDescription({
   children,
@@ -32,7 +37,7 @@ export function EventDescription({
     header: React.ReactNode;
     body: React.ReactNode;
   };
-  event: RouterOutputs["events"]["getAll"][number];
+  event: Event;
 }) {
   const [showEventDescription, setShowEventDescription] = useState(false);
 
@@ -54,7 +59,7 @@ export function EventDescription({
 }
 
 function EventDescriptionModal(props: {
-  event: RouterOutputs["events"]["getAll"][number];
+  event: Event;
   onOpenChange: () => void;
   header: React.ReactNode;
   body: React.ReactNode;

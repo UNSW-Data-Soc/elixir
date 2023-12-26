@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { useSession } from "next-auth/react";
+
+import { useState } from "react";
 
 import { Button } from "@nextui-org/button";
 import {
@@ -11,16 +12,17 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import toast from "react-hot-toast";
 
-import { RouterOutputs } from "@/trpc/shared";
 import { api } from "@/trpc/react";
+import { RouterOutputs } from "@/trpc/shared";
 
 import { isModerator } from "../utils";
 
-export default function EventActionsModal(props: {
-  event: RouterOutputs["events"]["getAll"][number];
-}) {
+import toast from "react-hot-toast";
+
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
+
+export default function EventActionsModal(props: { event: Event }) {
   const session = useSession();
 
   const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);

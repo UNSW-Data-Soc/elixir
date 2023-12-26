@@ -1,8 +1,10 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
+
+import { useState } from "react";
+
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -10,12 +12,14 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { isModerator } from "../utils";
+
 import { RouterOutputs } from "@/trpc/shared";
 
-export default function EventCardActions(props: {
-  event: RouterOutputs["events"]["getAll"][number];
-}) {
+import { isModerator } from "../utils";
+
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
+
+export default function EventCardActions(props: { event: Event }) {
   const [showModifyTagsDialogue, setShowModifyTagsDialogue] = useState(false);
 
   const session = useSession();
