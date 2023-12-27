@@ -1,16 +1,19 @@
-import { DrizzleAdapter } from "./db/drizzleAdapter";
-import {
-  getServerSession,
-  type DefaultSession,
-  type NextAuthOptions,
-} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
-import { users } from "./db/schema";
-import { and, eq } from "drizzle-orm";
-import { createHash } from "crypto";
+
 import { env } from "@/env";
+
+import { DrizzleAdapter } from "./db/drizzleAdapter";
+import { users } from "./db/schema";
+
+import { createHash } from "crypto";
+import { and, eq } from "drizzle-orm";
+import {
+  type DefaultSession,
+  type NextAuthOptions,
+  getServerSession,
+} from "next-auth";
 
 export type UserRole = "admin" | "moderator" | "user";
 
@@ -96,6 +99,7 @@ export const authOptions: NextAuthOptions = {
             name: users.name,
             email: users.email,
             role: users.role,
+            image: users.image,
           })
           .from(users)
           .where(

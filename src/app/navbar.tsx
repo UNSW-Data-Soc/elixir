@@ -327,7 +327,7 @@ function SettingsDropdown(props: {
                   props.session.user.image,
                 )
               : undefined
-          } // TODO: fix
+          }
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions" items={items}>
