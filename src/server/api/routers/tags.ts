@@ -133,4 +133,32 @@ export const tagsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.select().from(tags);
   }),
+
+  delete: moderatorProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input: { id } }) => {
+      // TODO: should be handled by db cascade
+      await Promise.all([
+        ctx.db.delete(resourceTags).where(eq(resourceTags.tagId, id)),
+        ctx.db.delete(blogTags).where(eq(blogTags.tagId, id)),
+      ]);
+
+      await ctx.db.delete(tags).where(eq(tags.id, id));
+
+      return { id };
+    }),
+
+  update: moderatorProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        colour: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+      }),
+    )
+    .mutation(async ({ ctx, input: { id, name, colour } }) => {
+      await ctx.db.update(tags).set({ name, colour }).where(eq(tags.id, id));
+
+      return { id };
+    }),
 });
