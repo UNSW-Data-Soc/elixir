@@ -4,11 +4,9 @@ import { useRouter } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { api } from "@/trpc/react";
-
-import { endpoints } from "@/app/api/backend/endpoints";
 
 import PhotoUploader from "@/app/photoUploader";
 import {
@@ -16,7 +14,6 @@ import {
   COVER_PHOTO_Y_PXL,
   Spinner,
   isModerator,
-  parseBackendError,
 } from "@/app/utils";
 import { getCoverPhotoKey, upload } from "@/app/utils/s3";
 
@@ -66,7 +63,7 @@ export default function CoverPhotoRoot() {
   }
 
   return (
-    <div>
+    <div className="min-w-[270px] sm:min-w-[500px]">
       {isLoading && <Spinner />}
       <PhotoUploader
         uploadCroppedPhoto={uploadCroppedPhoto}
