@@ -43,20 +43,8 @@ export default function BlogEditTagsModal({
   if (isError) return <div>ERROR: Failed to load tags.</div>;
 
   return (
-    <Modal
-      isOpen={tagsModal.isOpen}
-      onOpenChange={tagsModal.onOpenChange}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
-      <ModalContent
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-      >
+    <Modal isOpen={tagsModal.isOpen} onOpenChange={tagsModal.onOpenChange}>
+      <ModalContent>
         {(onClose) => (
           <div className="flex flex-col gap-3 p-5">
             <div>
@@ -161,7 +149,13 @@ function AddTagForm({ tags, blog }: { tags: Tag[]; blog: Blog }) {
   };
 
   return (
-    <form className="flex flex-row items-center border">
+    <form
+      className="flex flex-row items-center border"
+      onSubmit={(e) => {
+        e.preventDefault();
+        addTag();
+      }}
+    >
       <input
         type="text"
         placeholder="Tag name"
@@ -188,7 +182,6 @@ function AddTagForm({ tags, blog }: { tags: Tag[]; blog: Blog }) {
       <button
         type="submit"
         color="primary"
-        onClick={addTag}
         disabled={attachLoading || createLoading}
         className="aspect-square h-full p-2"
       >

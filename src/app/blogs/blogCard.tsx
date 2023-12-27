@@ -9,7 +9,6 @@ import { useSession } from "next-auth/react";
 import { CSSProperties } from "react";
 
 import { useDisclosure } from "@nextui-org/react";
-import { Tooltip } from "@nextui-org/tooltip";
 
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
@@ -127,13 +126,6 @@ function BlogActionButtons({
   const router = useRouter();
   return (
     <div className="absolute right-0 top-0 m-2 flex flex-row items-center overflow-hidden rounded-xl">
-      {/* {!blog.public ? (
-        <p className="flex-grow bg-red-500 p-2 px-3 text-white">
-          Not published
-        </p>
-      ) : (
-        <p className="flex-grow bg-green-500 p-2 px-3 text-white">Published</p>
-      )} */}
       <BlogActionButton
         className="bg-[#14A1D9]"
         onClick={() => router.push(`/blogs/editor?blogId=${blog.id}`)}
