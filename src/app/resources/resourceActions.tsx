@@ -1,7 +1,9 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { isModerator } from "../utils";
+
+import { useEffect, useState } from "react";
+
 import {
   Button,
   Modal,
@@ -11,11 +13,15 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import { RouterOutputs } from "@/trpc/shared";
+
 import { api } from "@/trpc/react";
-import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { RouterOutputs } from "@/trpc/shared";
+
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+
+import { isModerator } from "../utils";
+
+import toast from "react-hot-toast";
 
 type Resource = RouterOutputs["resources"]["getAll"][number];
 type Tag = RouterOutputs["tags"]["resources"]["get"][number];
@@ -213,10 +219,15 @@ function TagsList({ resource, tags }: { resource: Resource; tags: Tag[] }) {
   });
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       {tags.map((tag) => (
-        <div key={tag.id} className="flex flex-row justify-between gap-2">
-          <p style={{ backgroundColor: tag.colour }}>{tag.name}</p>
+        <div key={tag.id} className="flex flex-row justify-start gap-2">
+          <p
+            style={{ backgroundColor: tag.colour }}
+            className="rounded-xl px-2 py-1 text-white"
+          >
+            {tag.name}
+          </p>
           <button
             onClick={() =>
               detachResourceTag({
