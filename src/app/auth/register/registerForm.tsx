@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { signIn } from "next-auth/react";
+
 import { FormEventHandler, useEffect, useState } from "react";
+
+import { api } from "@/trpc/react";
+
 import toast, { useToasterStore } from "react-hot-toast";
 import isEmail from "validator/lib/isEmail";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { api } from "@/trpc/react";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -26,12 +30,27 @@ const RegisterForm = () => {
 
   const { mutate: registerMutate, isLoading: isRegistering } =
     api.auth.register.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
         setName("");
         setEmail("");
         setPassword("");
         // toast.remove(TOAST_ID_REGISTER);
-        void toast.success("Register successful!");
+        toast.success("Register successful!");
+
+        const signInResponse = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+        if (!signInResponse) {
+          toast.error("Sign in error.");
+          return;
+        } else if (signInResponse.error) {
+          toast.error(signInResponse.error);
+          return;
+        }
+
+        router.push("/");
       },
       onError: (e) => {
         const errorMessage = e.data?.zodError?.fieldErrors.content;
@@ -63,21 +82,6 @@ const RegisterForm = () => {
     }
 
     registerMutate({ name, email, password });
-
-    const signInResponse = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-    if (!signInResponse) {
-      toast.error("Sign in error.");
-      return;
-    } else if (signInResponse.error) {
-      toast.error(signInResponse.error);
-      return;
-    }
-
-    router.push("/");
   };
 
   return (
@@ -90,6 +94,7 @@ const RegisterForm = () => {
           placeholder="enter your name..."
           onChange={(e) => setName(e.target.value)}
           value={name}
+          disabled={isRegistering}
         />
       </div>
       <div className="flex flex-col gap-2 pb-3">
@@ -101,6 +106,7 @@ const RegisterForm = () => {
           placeholder="enter your email..."
           onChange={(e) => setEmail(e.target.value)}
           value={email}
+          disabled={isRegistering}
         />
       </div>
       <div className="flex flex-col gap-2 pb-3">
@@ -111,6 +117,7 @@ const RegisterForm = () => {
           placeholder="enter your password..."
           onChange={(e) => setPassword(e.target.value)}
           value={password}
+          disabled={isRegistering}
         />
       </div>
       <p className="text-[#6a6a6a]">
