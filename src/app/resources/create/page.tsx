@@ -1,21 +1,28 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+
+import { useSession } from "next-auth/react";
+
 import { ChangeEvent, useState } from "react";
-import { toast } from "react-hot-toast";
+
+import { Tooltip } from "@nextui-org/tooltip";
+
+import { api } from "@/trpc/react";
+
 import {
   FileUploadDropzone,
-  Spinner,
   IMAGE_FILE_TYPES,
-  RESOURCE_FILE_TYPES,
   MAX_ALLOWABLE_RESOURCE_FILE_SIZE,
+  RESOURCE_FILE_TYPES,
+  Spinner,
   isModerator,
 } from "@/app/utils";
-import { Tooltip } from "@nextui-org/tooltip";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import { api } from "@/trpc/react";
 import { getResourceFileKey, upload } from "@/app/utils/s3";
+
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+
+import { toast } from "react-hot-toast";
 
 // TODO: move to utils file
 function isValidURL(text: string) {
@@ -38,7 +45,7 @@ export default function CreateResource() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [visible, setVisibility] = useState(true);
+  const [visible, setVisibility] = useState(false);
   const [resourceTypeFile, setResourceTypeFile] = useState(true);
   const [link, setLink] = useState("");
   const [file, setFile] = useState<Blob | null>(null);
