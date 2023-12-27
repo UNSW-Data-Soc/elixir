@@ -15,6 +15,7 @@ import { RouterOutputs } from "@/trpc/shared";
 
 import {
   EyeIcon,
+  EyeSlashIcon,
   PencilSquareIcon,
   TagIcon,
   TrashIcon,
@@ -77,7 +78,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
             </div>
             {!!tags && tags.length > 0 && (
               <div
-                className="flex flex-row flex-wrap gap-1 text-xs"
+                className="flex flex-row flex-wrap gap-2 text-xs"
                 style={getBlogCardStyle(blog)}
               >
                 {tags.map((tag) => (
@@ -137,7 +138,7 @@ function BlogActionButtons({
         className="bg-[#F29F05]"
         onClick={visibilityModal.onOpen}
       >
-        <EyeIcon height={20} />
+        {blog.public ? <EyeSlashIcon height={20} /> : <EyeIcon height={20} />}
         <span className="hidden sm:block">
           {blog.public ? "Unpublish" : "Publish"}
         </span>
