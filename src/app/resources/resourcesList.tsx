@@ -1,15 +1,19 @@
+import Link from "next/link";
+
+import { Divider } from "@nextui-org/divider";
+
+import { getServerAuthSession } from "@/server/auth";
+
 import { api } from "@/trpc/server";
 import { RouterOutputs } from "@/trpc/shared";
-import { Divider } from "@nextui-org/divider";
+
+import { LinkIcon } from "@heroicons/react/24/outline";
+
+import { getResourceFileRoute } from "../utils/s3";
+import ResourceActions from "./resourceActions";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Link from "next/link";
-
-import ResourceActions from "./resourceActions";
-import { getServerAuthSession } from "@/server/auth";
-import { getResourceFileRoute } from "../utils/s3";
-import { LinkIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(relativeTime);
 
@@ -70,9 +74,13 @@ async function ResourceCard({ resource }: { resource: Resource }) {
 
 async function ResourceTags({ tags }: { tags: Tag[] }) {
   return (
-    <div>
+    <div className="flex flex-row flex-wrap gap-2 text-xs">
       {tags.map((tag) => (
-        <p key={tag.id} style={{ backgroundColor: tag.colour }}>
+        <p
+          key={tag.id}
+          style={{ backgroundColor: tag.colour }}
+          className="rounded-xl border border-white p-1 px-2 text-white"
+        >
           {tag.name}
         </p>
       ))}
