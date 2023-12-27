@@ -60,6 +60,7 @@ const menuItems = [
   { name: "Contact Us", link: "/contact" },
 ];
 
+// TODO: move to utils file
 const logout = async (router: AppRouterInstance) => {
   await signOut();
   router.push("/");
