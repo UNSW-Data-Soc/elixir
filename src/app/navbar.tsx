@@ -280,7 +280,7 @@ function SettingsDropdown(props: {
         key: "tags",
         label: "Tags",
         startContent: <TagIcon className="h-6 w-6" />,
-        link: "/tags/references",
+        link: "/tags",
       },
       {
         key: "companies",
