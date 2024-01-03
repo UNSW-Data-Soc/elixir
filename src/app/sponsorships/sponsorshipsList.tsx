@@ -39,30 +39,33 @@ export default function SponsorshipsList() {
     return <></>;
   }
 
+  const major = sponsorships?.filter((s) => s.sponsorship.type === "major");
+  const partners = sponsorships?.filter(
+    (s) => s.sponsorship.type === "partner",
+  );
+  const others = sponsorships?.filter((s) => s.sponsorship.type === "other");
+
   return (
     <>
       <div className="flex flex-col items-center justify-center gap-16 align-baseline">
         {isLoading && <Spinner />}
         {!!sponsorships && sponsorships.length > 0 ? (
           <>
-            <SponsorshipTypeSection
-              sponsorships={sponsorships.filter(
-                (s) => s.sponsorship.type === "major",
-              )}
-              heading={"Major Sponsors"}
-            />
-            <SponsorshipTypeSection
-              sponsorships={sponsorships.filter(
-                (s) => s.sponsorship.type === "partner",
-              )}
-              heading={"Partners"}
-            />
-            <SponsorshipTypeSection
-              sponsorships={sponsorships.filter(
-                (s) => s.sponsorship.type === "other",
-              )}
-              heading={"Other"}
-            />
+            {!!major && major.length > 0 && (
+              <SponsorshipTypeSection
+                sponsorships={major}
+                heading={"Major Sponsors"}
+              />
+            )}
+            {!!partners && partners.length > 0 && (
+              <SponsorshipTypeSection
+                sponsorships={partners}
+                heading={"Partners"}
+              />
+            )}
+            {!!others && others.length > 0 && (
+              <SponsorshipTypeSection sponsorships={others} heading={"Other"} />
+            )}
           </>
         ) : (
           sponsorships?.length === 0 && (
@@ -131,7 +134,7 @@ function SponsorshipCard({
 
   return (
     <>
-      <div className="max-w-[400px]">
+      <div className="max-w-[300px]">
         <Image
           src={getCompanyImageRoute(company.id, company.logo)}
           alt="Profile picture"
