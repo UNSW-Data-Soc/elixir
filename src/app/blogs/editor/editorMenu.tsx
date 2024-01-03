@@ -1,3 +1,15 @@
+import { useState } from "react";
+
+import { Modal, ModalContent, Tooltip, useDisclosure } from "@nextui-org/react";
+
+import { BACKEND_URL, endpoints } from "@/app/api/backend/endpoints";
+
+import useClickAway from "@/app/hooks/useClickAway";
+import PhotoUploader from "@/app/photoUploader";
+import { FileUploadDropzone, IMAGE_FILE_TYPES } from "@/app/utils";
+import { getBlogImageKey, upload } from "@/app/utils/s3";
+
+import { useEditorContext } from "./editorContext";
 import {
   BoldIcon,
   CodeIcon,
@@ -16,15 +28,8 @@ import {
   UnderlineIcon,
   UnlinkIcon,
 } from "./icons";
-import { useEditorContext } from "./editorContext";
-import { useState } from "react";
-import useClickAway from "@/app/hooks/useClickAway";
-import { Modal, ModalContent, Tooltip, useDisclosure } from "@nextui-org/react";
-import { FileUploadDropzone, IMAGE_FILE_TYPES } from "@/app/utils";
+
 import toast from "react-hot-toast";
-import { BACKEND_URL, endpoints } from "@/app/api/backend/endpoints";
-import PhotoUploader from "@/app/photoUploader";
-import { getBlogImageKey, upload } from "@/app/utils/s3";
 
 const TOAST_ID_UPLOADING_PHOTO = "uploading-photo";
 
@@ -34,7 +39,7 @@ export default function EditorMenu() {
   if (!editor) return <></>;
 
   return (
-    <div className="fixed top-28 flex translate-x-[-150%] flex-col items-center justify-start rounded-lg border-[0.5px] border-[#ddd] bg-[#fafafa] shadow-lg md:z-50 md:translate-x-[-170%]">
+    <div className="fixed top-28 flex translate-x-[-150%] flex-col items-center justify-start rounded-lg border-[0.5px] border-[#ddd] bg-[#fafafa] shadow-lg md:z-40 md:translate-x-[-170%]">
       <EditorMenuGroup bottomBorder={false}>
         <Tooltip
           placement="left"

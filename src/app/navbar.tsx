@@ -75,11 +75,11 @@ export default function Navbar() {
     <NextUINavbar
       isBordered
       shouldHideOnScroll={false}
-      className="flex items-center justify-center gap-6 bg-[#fffb]"
+      className="z-50 flex items-center justify-center gap-6 bg-[#fffb]"
       maxWidth="xl"
     >
       {/* mobile navbar */}
-      <NavbarContent className="flex xl:hidden" justify="start">
+      <NavbarContent className="z-50 flex xl:hidden" justify="start">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
             <Image
@@ -92,10 +92,10 @@ export default function Navbar() {
           </Link>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="flex xl:hidden" justify="center">
+      <NavbarContent className="z-50 flex xl:hidden" justify="center">
         <NavbarMenuToggle />
       </NavbarContent>
-      <NavbarMenu>
+      <NavbarMenu className="z-50">
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
@@ -121,7 +121,7 @@ export default function Navbar() {
       </NavbarMenu>
 
       {/* desktop navbar */}
-      <NavbarContent className="hidden gap-6 xl:flex" justify="end">
+      <NavbarContent className="z-50 hidden gap-6 xl:flex" justify="end">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
             <Image
