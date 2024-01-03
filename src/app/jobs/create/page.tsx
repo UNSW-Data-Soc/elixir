@@ -52,14 +52,6 @@ export default function CreateJob() {
       return toast.error("Please fill all fields");
     }
 
-    // if (description.trim() === "") {
-    //   return toast.error("Please fill all fields");
-    // }
-
-    // if (body.trim() === "") {
-    //   return toast.error("Please fill all fields");
-    // }
-
     // if (!photo) {
     //   return toast.error("Please upload a photo!");
     // }
@@ -106,7 +98,7 @@ export default function CreateJob() {
   return (
     <>
       {isLoading && <Spinner />}
-      <main className="container m-auto flex flex-col py-10">
+      <main className="container m-auto flex flex-col p-10">
         <div className="container m-auto flex flex-row justify-between flex-wrap">
           <div>
             <h1 className="py-3 text-5xl font-semibold">
@@ -133,7 +125,7 @@ export default function CreateJob() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        <p className="py-5  text-2xl font-semibold">Body</p>
+        <p className="py-5  text-2xl font-semibold">Long Description <span className="text-sm">(optional)</span></p>
         <input
           className="py-3 px-4 border-2 rounded-xl transition-all"
           type="text"
