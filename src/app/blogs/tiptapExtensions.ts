@@ -188,7 +188,7 @@ export const TIPTAP_EXTENSIONS = [
   }),
   Blockquote.configure({
     HTMLAttributes: {
-      class: "border-l-3 border-slate-200 pl-4 ml-4 my-2",
+      class: "border-l-3 border-slate-300 p-4 my-2 bg-[#f5f5f5]",
     },
   }),
   OrderedList.configure({
@@ -207,7 +207,7 @@ export const TIPTAP_EXTENSIONS = [
     openOnClick: false,
     // validate: (href) => /^https?:\/\//.test(href),
     HTMLAttributes: {
-      class: "text-blue-500 underline",
+      class: "no-underline text-blue-500 hover:text-blue-700 transition-colors",
     },
   }),
   Embed,
