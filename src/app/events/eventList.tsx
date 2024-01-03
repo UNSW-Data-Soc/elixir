@@ -14,17 +14,23 @@ export default async function EventList() {
           </p>
         </div>
       )}
-      <div className="flex flex-row flex-wrap justify-center gap-5">
-        {upcoming.map((event) => (
-          <EventsCard key={event.id} event={event} />
-        ))}
-      </div>
-      <h2 className="text-2xl font-semibold">Past Events</h2>
-      <div className="flex flex-row flex-wrap justify-center gap-5">
-        {past.map((event) => (
-          <EventsCard key={event.id} event={event} />
-        ))}
-      </div>
+      {upcoming.length > 0 && (
+        <div className="flex flex-row flex-wrap justify-center gap-5">
+          {upcoming.map((event) => (
+            <EventsCard key={event.id} event={event} />
+          ))}
+        </div>
+      )}
+      {past.length > 0 && (
+        <>
+          <h2 className="text-2xl font-semibold">Past Events</h2>
+          <div className="flex flex-row flex-wrap justify-center gap-5">
+            {past.map((event) => (
+              <EventsCard key={event.id} event={event} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
