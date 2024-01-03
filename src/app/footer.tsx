@@ -111,7 +111,6 @@ export default function Footer() {
             Internals
           </p>
           <LoginButton />
-          <Link href="#">Feedback</Link> {/* // TODO: feedback page */}
         </div>
       </div>
     </>
