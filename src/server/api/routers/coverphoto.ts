@@ -1,7 +1,5 @@
 import { coverPhotos } from "@/server/db/schema";
 
-import { TRPCError } from "@trpc/server";
-
 import { createTRPCRouter, moderatorProcedure, publicProcedure } from "../trpc";
 
 import { desc } from "drizzle-orm";
@@ -25,12 +23,13 @@ export const coverPhotoRouter = createTRPCRouter({
       .limit(1);
 
     if (latestPhoto.length === 0) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "No cover photos found",
-      });
+      // throw new TRPCError({
+      //   code: "BAD_REQUEST",
+      //   message: "No cover photos found",
+      // });
+      return { id: null, found: false };
     }
 
-    return { id: latestPhoto[0].id };
+    return { id: latestPhoto[0].id, found: true };
   }),
 });
