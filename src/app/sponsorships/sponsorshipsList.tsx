@@ -41,7 +41,7 @@ export default function SponsorshipsList() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center align-baseline gap-16">
+      <div className="flex flex-col items-center justify-center gap-16 align-baseline">
         {isLoading && <Spinner />}
         {!!sponsorships && sponsorships.length > 0 ? (
           <>
@@ -87,9 +87,9 @@ function SponsorshipTypeSection({
   return (
     <div>
       {!!sponsorships && sponsorships.length > 0 && (
-        <div className="flex flex-col items-center justify-center align-baseline gap-3">
-          <h1 className="text-3xl font-semibold">{heading}</h1>
-          <div className="flex flex-wrap items-center justify-center align-baseline gap-3">
+        <div className="flex flex-col items-center justify-center gap-3 align-baseline">
+          <h1 className="text-3xl font-light">{heading}</h1>
+          <div className="flex flex-wrap items-center justify-center gap-4 align-baseline md:gap-12">
             {sponsorships.map((sponsorship) => (
               <div
                 key={sponsorship.sponsorship.id}
@@ -135,7 +135,7 @@ function SponsorshipCard({
         <Image
           src={getCompanyImageRoute(company.id, company.logo)}
           alt="Profile picture"
-          className="object-cover rounded-xl"
+          className="rounded-xl object-cover"
           style={{ cursor: "pointer" }}
           height={300}
           width={300}
@@ -185,23 +185,23 @@ function SponsorshipDescriptionModal({
                 )}
               </small>
             </ModalHeader>
-            <ModalBody className="flex flex-col items-center justify-center align-baseline text-center">
+            <ModalBody className="flex flex-col items-center justify-center text-center align-baseline">
               {!!company.logo && (
                 <Image
                   src={getCompanyImageRoute(company.id, company.logo)}
                   alt="Profile picture"
-                  className="object-cover rounded-xl"
+                  className="rounded-xl object-cover"
                   height={300}
                   width={300}
                 />
               )}
               <p>{sponsorship.message}</p>
             </ModalBody>
-            <ModalFooter className="flex item-center justify-between align-baseline">
+            <ModalFooter className="flex items-center justify-between align-baseline">
               <SponsorshipsActions sponsorship={{ sponsorship, company }} />
-              <Button color="primary" variant="light" onPress={onClose}>
+              {/* <Button color="primary" variant="light" onPress={onClose}>
                 Close
-              </Button>
+              </Button> */}
             </ModalFooter>
           </>
         )}
