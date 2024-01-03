@@ -1,7 +1,9 @@
-import { ChangeEvent } from "react";
 import Image from "next/image";
-import toast from "react-hot-toast";
+
+import { ChangeEvent } from "react";
+
 import { Session } from "next-auth";
+import toast from "react-hot-toast";
 
 const DEFAULT_ERROR_MESSAGE = "An error occurred";
 
@@ -43,6 +45,8 @@ export const DATASOC_INSTAGRAM_LINK = "https://www.instagram.com/unswdatasoc/";
 export const DATASOC_LINKEDIN_LINK = "https://au.linkedin.com/company/datasoc";
 export const DATASOC_GITHUB_LINK = "https://github.com/UNSW-Data-Soc";
 export const DATASOC_FACEBOOK_LINK = "https://www.facebook.com/DataSoc/";
+export const ELIXIR_FEEDBACK_LINK =
+  "https://docs.google.com/forms/d/e/1FAIpQLSf-uRTEOkf5aKkuRUD5MZri7occnM_7094ROl5_ZPwiLSaT0A/viewform?usp=sf_link";
 
 export const FYG_2021_LINK =
   "https://drive.google.com/file/d/1Fdf56Csia7Ea3HNPSttzRIb5Cfg6z7H5/preview";
