@@ -6,6 +6,8 @@ import {
 import { hasModeratorPermissions } from "@/server/api/utils";
 import { blogs } from "@/server/db/schema";
 
+import { isModerator } from "@/app/utils";
+
 import { TRPCError } from "@trpc/server";
 
 import { count, desc, eq } from "drizzle-orm";
@@ -76,10 +78,11 @@ const DEFAULT_BLOG_CONTENT = {
 /** HELPER FUNCTIONS **/
 const createSlug = (str: string) =>
   str
-    .replace(/([a-z])([A-Z])/g, "$1-$2")
-    .replace(/[\s_]+/g, "-")
-    .toLowerCase()
-    .slice(0, 250);
+    .replace(/[^A-Za-z0-9 ]/g, "") // remove non-alphanumeric characters
+    .replace(/([a-z])([A-Z])/g, "$1-$2") // insert hyphens between camelCase
+    .replace(/[\s_]+/g, "-") // replace whitespace and underscores with hyphens
+    .toLowerCase() // convert to lowercase
+    .slice(0, 250); // truncate to 250 characters
 
 /**
  * count the number of blogs with slugs that match the given slug
@@ -103,7 +106,7 @@ const countSlug = async (ctx: any, slug: string) => {
 /** ROUTER **/
 export const blogRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    if (hasModeratorPermissions(ctx.session)) {
+    if (isModerator(ctx.session)) {
       return await ctx.db.select().from(blogs).orderBy(desc(blogs.createdTime));
     }
 
@@ -153,7 +156,7 @@ export const blogRouter = createTRPCRouter({
       }
 
       // blog is not public, and user is not moderator or admin
-      if (!blog.public && !hasModeratorPermissions(ctx.session)) {
+      if (!blog.public && !isModerator(ctx.session)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to view this blog",
@@ -189,7 +192,7 @@ export const blogRouter = createTRPCRouter({
       }
 
       // blog is not public, and user is not moderator or admin
-      if (!blog.public && !hasModeratorPermissions(ctx.session)) {
+      if (!blog.public && !isModerator(ctx.session)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to view this blog",
