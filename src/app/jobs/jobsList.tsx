@@ -45,7 +45,7 @@ function JobCard({ job: { company, jobPosting: job } }: { job: Job }) {
   return (
     <Link
       href={link}
-      className="group relative flex flex-col gap-1 rounded-xl border p-5 transition-all hover:shadow-md"
+      className="group relative flex flex-col gap-1 rounded-xl border bg-white p-5 transition-all hover:shadow-md"
     >
       {company.logo && (
         <Image
@@ -53,7 +53,7 @@ function JobCard({ job: { company, jobPosting: job } }: { job: Job }) {
           height={COMPANY_PHOTO_Y_PXL}
           width={COMPANY_PHOTO_X_PXL}
           alt={`${company.name} logo`}
-          className="mx-auto block max-w-xs transition-all group-hover:opacity-10"
+          className="mx-auto block max-w-[280px] transition-all group-hover:opacity-10 sm:max-w-xs"
         />
       )}
       <div className="absolute bottom-5 left-5 right-5 top-5 mx-auto flex items-center justify-center opacity-0 transition-all group-hover:opacity-100">
