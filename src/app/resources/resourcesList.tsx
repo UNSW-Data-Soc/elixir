@@ -23,6 +23,10 @@ type Tag = RouterOutputs["tags"]["resources"]["get"][number];
 export default async function ResourcesList() {
   const resources = await api.resources.getAll.query();
 
+  if (resources.length === 0) {
+    return <p className="text-lg">No resources for now. Check back later!</p>;
+  }
+
   return (
     <div>
       {resources.map((resource) => (
@@ -45,20 +49,22 @@ async function ResourceCard({ resource }: { resource: Resource }) {
 
   return (
     <div
-      className={`flex flex-col gap-3 rounded-xl p-5 shadow-xl ${
+      className={`flex max-w-sm flex-col gap-3 rounded-xl border p-5 transition-all hover:shadow-md ${
         resource.public ? "opacity-100" : "opacity-60"
       }`}
     >
-      <div className="flex flex-row items-center gap-3">
-        <h3 className="text-lg font-semibold">{resource.title}</h3>
-        <a
-          href={resourceLink}
-          className="rounded-md p-1 transition-all hover:text-[#83aaff]"
-        >
-          <LinkIcon height={20} />
-        </a>
+      <div>
+        <div className="flex flex-row items-center gap-3">
+          <h3 className="text-lg font-semibold">{resource.title}</h3>
+          <a
+            href={resourceLink}
+            className="rounded-md p-1 transition-all hover:text-[#83aaff]"
+          >
+            <LinkIcon height={20} />
+          </a>
+        </div>
+        <small>{time}</small>
       </div>
-      <small>{time}</small>
       <Divider />
       <p>{resource.description}</p>
       {tags.length > 0 && (
