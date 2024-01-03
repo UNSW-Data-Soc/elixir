@@ -138,13 +138,13 @@ export default async function Home() {
           <div className="flex flex-row flex-wrap items-center justify-center gap-4 p-3">
             <Link
               href={`/blogs/${blogs[0].slug}`}
-              className="relative flex aspect-[8/7] h-[500px] flex-col items-stretch justify-center gap-1 overflow-hidden bg-transparent align-baseline"
+              className="relative flex aspect-[8/7] flex-col items-stretch justify-center gap-1 overflow-hidden bg-transparent align-baseline sm:h-[500px]"
             >
               <BlogImageHomePage
                 imgSrc={getFirstImageUrl(JSON.parse(blogs[0].body)).url}
               />
-              <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-2 bg-gradient-to-t from-slate-800 p-5 text-white transition-all">
-                <p className="w-full text-3xl font-semibold tracking-wide">
+              <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-1 bg-gradient-to-t from-slate-800 p-5 text-white transition-all sm:gap-2">
+                <p className="w-full text-2xl font-semibold tracking-wide sm:text-3xl">
                   {blogs[0].title}
                 </p>
                 <p className="w-full text-lg">
@@ -156,14 +156,14 @@ export default async function Home() {
               <Link
                 key={blog.id}
                 href={`/blogs/${blog.slug}`}
-                className="relative flex aspect-[9/16] h-[500px] flex-col items-stretch gap-1 bg-transparent align-baseline"
+                className="relative flex aspect-[8/7] flex-col items-stretch gap-1 bg-transparent align-baseline sm:aspect-[9/16] sm:h-[500px]"
               >
-                <div className="aspect-[4/5] flex-shrink-0 flex-grow-0">
+                <div className="sm:aspect-[4/5] sm:flex-shrink-0 sm:flex-grow-0">
                   <BlogImageHomePage
                     imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
                   />
                 </div>
-                <div className="flex h-full w-full flex-col justify-start gap-1 bg-gradient-to-t py-1">
+                <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-1 bg-gradient-to-t from-slate-800 p-5 text-white sm:static sm:h-full sm:justify-start sm:bg-white sm:from-transparent sm:p-0 sm:py-1 sm:text-black">
                   <p className="w-full whitespace-pre-wrap text-2xl font-semibold">
                     {blog.title}
                   </p>
