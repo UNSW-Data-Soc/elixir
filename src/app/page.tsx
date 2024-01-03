@@ -7,7 +7,12 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { getFirstImageUrl } from "./blogs/utils";
 import BlogImageHomePage from "./components/blogImageHomePage";
-import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL } from "./utils";
+import {
+  COMPANY_PHOTO_X_PXL,
+  COMPANY_PHOTO_Y_PXL,
+  Event_PHOTO_X_PXL,
+  Event_PHOTO_Y_PXL,
+} from "./utils";
 import {
   getCompanyImageRoute,
   getCoverPhotoRoute,
@@ -205,8 +210,8 @@ export default async function Home() {
                       src={getCompanyImageRoute(company.id, company.logo)}
                       alt="Sponsor Logo"
                       className="object-contain"
-                      width={500}
-                      height={500}
+                      width={COMPANY_PHOTO_X_PXL}
+                      height={COMPANY_PHOTO_Y_PXL}
                     />
                   </Link>
                 </div>
