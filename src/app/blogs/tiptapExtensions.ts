@@ -27,9 +27,9 @@ import { getBlogImageRoute } from "../utils/s3";
 type Levels = 1 | 2 | 3;
 
 const classes: Record<Levels, string> = {
-  1: "text-4xl",
-  2: "text-3xl",
-  3: "text-2xl",
+  1: "text-3xl mb-2",
+  2: "text-2xl mb-2",
+  3: "text-xl mb-2",
 };
 
 export const Heading = BaseHeading.configure({ levels: [1, 2, 3] }).extend({
