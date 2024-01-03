@@ -42,16 +42,18 @@ export default async function Home() {
       {/* navbar height hardcoded as 4rem here */}
       <main className="bg-light-rainbow relative left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
         <div className="fade-in-image mix-blend-multiply">
-          <Image
-            src={getCoverPhotoRoute(coverPhoto.id)}
-            alt="Cover Photo"
-            fill
-            sizes="100vw"
-            priority
-            quality={100}
-            className="coverPhoto object-cover"
-            draggable={false}
-          />
+          {!!coverPhoto.id && (
+            <Image
+              src={getCoverPhotoRoute(coverPhoto.id)}
+              alt="Cover Photo"
+              fill
+              sizes="100vw"
+              priority
+              quality={100}
+              className="coverPhoto object-cover"
+              draggable={false}
+            />
+          )}
         </div>
         <div className="flex flex-col items-center justify-center gap-5 px-8 pt-48 align-baseline text-white brightness-200 sm:items-start sm:pl-20 md:pt-48 lg:pl-36 xl:pl-48 2xl:pl-56 2xl:pt-56">
           <div className="flex flex-col gap-3">
@@ -216,40 +218,3 @@ export default async function Home() {
     </>
   );
 }
-
-// function SocialIcons() {
-//   return (
-//     <>
-//       <div className="flex items-start justify-start gap-3 align-baseline text-[#b4b6b7]">
-//         <Link href={DATASOC_FACEBOOK_LINK} className="flex gap-1">
-//           <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-//         </Link>
-//         <Link href={DATASOC_INSTAGRAM_LINK} className="flex gap-1">
-//           <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-//         </Link>
-//         <Link href={DATASOC_LINKEDIN_LINK} className="flex gap-1">
-//           <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-//         </Link>
-//         <Link href={DATASOC_GITHUB_LINK} className="flex gap-1">
-//           <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-//         </Link>
-//         <Link href={DATASOC_YOUTUBE_LINK} className="flex gap-1">
-//           <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-//         </Link>
-//       </div>
-//     </>
-//   );
-// }
-
-// function sponsorshipTypeToPos(type: SponsorshipType): number {
-//   switch (type) {
-//     case "major":
-//       return 0;
-//     case "partner":
-//       return 1;
-//     case "other":
-//       return 2;
-//     default:
-//       return 3;
-//   }
-// }
