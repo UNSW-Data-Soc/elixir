@@ -44,7 +44,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
   // tags
   const { data: tags } = api.tags.blogs.get.useQuery({ id: blog.id });
 
-  const editedDate = dayjs(blog.lastEditTime);
+  const createdDate = dayjs(blog.createdTime);
 
   const firstImage = getFirstImageUrl(JSON.parse(blog.body));
 
@@ -73,7 +73,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
                 <div className="h-1 w-1 rounded-full bg-white">
                   {/* HTML cdot code: &#183; */}
                 </div>
-                <small className="text-sm">{editedDate.fromNow()}</small>
+                <small className="text-sm">{createdDate.fromNow()}</small>
               </div>
             </div>
             {!!tags && tags.length > 0 && (
