@@ -53,7 +53,7 @@ const menuItems = [
   { name: "About Us", link: "/about" },
   { name: "Sponsors", link: "/sponsorships" },
   { name: "Events", link: "/events" },
-  // { name: "Jobs Board", link: "/jobs" }, // TODO: uncomment when jobs board is ready
+  { name: "Jobs Board", link: "/jobs" }, // TODO: uncomment when jobs board is ready
   { name: "Blogs", link: "/blogs" },
   { name: "Resources", link: "/resources" },
   { name: "Publications", link: "/publications" },
@@ -76,9 +76,10 @@ export default function Navbar() {
       isBordered
       shouldHideOnScroll={false}
       className="flex items-center justify-center gap-6 bg-[#fffb]"
+      maxWidth="xl"
     >
       {/* mobile navbar */}
-      <NavbarContent className="flex lg:hidden" justify="start">
+      <NavbarContent className="flex xl:hidden" justify="start">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
             <Image
@@ -91,7 +92,7 @@ export default function Navbar() {
           </Link>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="flex lg:hidden" justify="center">
+      <NavbarContent className="flex xl:hidden" justify="center">
         <NavbarMenuToggle />
       </NavbarContent>
       <NavbarMenu>
@@ -120,7 +121,7 @@ export default function Navbar() {
       </NavbarMenu>
 
       {/* desktop navbar */}
-      <NavbarContent className="hidden gap-6 lg:flex" justify="end">
+      <NavbarContent className="hidden gap-6 xl:flex" justify="end">
         <NavbarBrand>
           <Link href="/" className="text-[#333]">
             <Image
