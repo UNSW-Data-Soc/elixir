@@ -5,6 +5,7 @@ import { blogRouter } from "./routers/blogs";
 import { companiesRouter } from "./routers/companies";
 import { coverPhotoRouter } from "./routers/coverphoto";
 import { eventRouter } from "./routers/events";
+import { jobsRouter } from "./routers/jobs";
 import { resourcesRouter } from "./routers/resources";
 import { sponsorshipsRouter } from "./routers/sponsorships";
 import { tagsRouter } from "./routers/tags";
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   companies: companiesRouter,
   coverPhotos: coverPhotoRouter,
   events: eventRouter,
+  jobs: jobsRouter,
   resources: resourcesRouter,
   sponsorships: sponsorshipsRouter,
   tags: tagsRouter,

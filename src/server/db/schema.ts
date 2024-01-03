@@ -1,4 +1,5 @@
 import { userLevels, userRoleGroups } from "@/trpc/types";
+
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
@@ -178,6 +179,21 @@ export const sponsorships = mysqlTable(
     sponsorshipId: index("sponsorshipIdIdx").on(sponsorship.id),
   }),
 );
+
+export const jobPostings = mysqlTable("jobPosting", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  body: text("body").notNull(),
+  company: varchar("companyId", { length: 255 }).notNull(), // TODO: add later .references(() => companies.id, {onDelete: "cascade",})
+  photo: varchar("photoId", { length: 255 }),
+  link: text("link"),
+  public: boolean("public").notNull().default(false),
+  createdTime: timestamp("createdTime").notNull().defaultNow(),
+  lastEditedTime: timestamp("lastEditedTime").notNull().defaultNow(),
+  expiration: timestamp("expiration").notNull(),
+  creator: varchar("creatorId", { length: 255 }), // TODO: add later .references(() => users.id, {onDelete: "set null",})
+});
 
 export const coverPhotos = mysqlTable("coverphoto", {
   id: varchar("id", { length: 255 }).primaryKey(),
