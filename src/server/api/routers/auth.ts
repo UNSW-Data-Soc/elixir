@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -7,17 +6,22 @@ import {
 import { hash } from "@/server/auth";
 import { resetTokens, users } from "@/server/db/schema";
 
+import { env } from "@/env";
+
 import { TRPCError } from "@trpc/server";
 
 import { and, countDistinct, eq } from "drizzle-orm";
-import { z } from "zod";
-
 import { Resend } from "resend";
+import { z } from "zod";
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure
     .input(
-      z.object({ name: z.string(), email: z.string(), password: z.string() }),
+      z.object({
+        name: z.string(),
+        email: z.string().trim(),
+        password: z.string(),
+      }),
     )
     .mutation(async ({ ctx, input: { email, password, name } }) => {
       // check if existing user with the same email
@@ -82,7 +86,7 @@ export const authRouter = createTRPCRouter({
     }),
 
   sendResetToken: publicProcedure
-    .input(z.object({ email: z.string() }))
+    .input(z.object({ email: z.string().trim() }))
     .mutation(async ({ input: { email }, ctx }) => {
       const user = await ctx.db
         .select({ id: users.id })
@@ -100,7 +104,7 @@ export const authRouter = createTRPCRouter({
       await ctx.db.insert(resetTokens).values({
         user: user[0].id,
         token,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 2), // 2 hours
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 2), // 2 hours TODO: move to env?
       });
 
       // send email to user
@@ -108,16 +112,18 @@ export const authRouter = createTRPCRouter({
       const resend = new Resend(env.RESEND_API_KEY);
 
       resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: "hello@unswdata.com",
-        subject: "Hello World",
-        html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
+        from: "UNSW DataSoc <hello@unswdata.com>",
+        to: email,
+        subject: "Password reset for DataSoc website",
+        html: `<p>Please click <a href="${env.FRONTEND_URL}${env.FRONTEND_PASSWORD_RESET_SLUG}/${uuid}">here</a> to reset your password. If you didn't request a password reset, you can safely ignore this email.</p>`,
       });
     }),
 
   resetPassword: publicProcedure
     .input(z.object({ token: z.string(), password: z.string() }))
-    .mutation(async ({ input: { token, password }, ctx }) => {
+    .mutation(async ({ input: { token: uuid, password }, ctx }) => {
+      const token = hash(uuid);
+
       const tokensRes = await ctx.db
         .select()
         .from(resetTokens)
@@ -144,5 +150,13 @@ export const authRouter = createTRPCRouter({
           passwordHash,
         })
         .where(eq(users.id, user));
+
+      // invalidate token
+      await ctx.db
+        .update(resetTokens)
+        .set({
+          expires: now,
+        })
+        .where(eq(resetTokens.token, token));
     }),
 });

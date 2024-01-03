@@ -27,6 +27,8 @@ const envSchema = z.object({
   SECRET_KEY: z.string().min(1),
 
   RESEND_API_KEY: z.string().min(1),
+  FRONTEND_URL: z.string().min(1),
+  FRONTEND_PASSWORD_RESET_SLUG: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);
