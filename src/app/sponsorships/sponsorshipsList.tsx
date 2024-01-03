@@ -16,7 +16,7 @@ import {
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
 
-import { Spinner } from "../utils";
+import { COMPANY_PHOTO_X_PXL, COMPANY_PHOTO_Y_PXL, Spinner } from "../utils";
 import { getCompanyImageRoute } from "../utils/s3";
 import SponsorshipsActions from "./sponsorshipActions";
 import SponsorshipExpirationInfo from "./sponsorshipExpirationInfo";
@@ -137,8 +137,8 @@ function SponsorshipCard({
           alt="Profile picture"
           className="rounded-xl object-cover"
           style={{ cursor: "pointer" }}
-          height={300}
-          width={300}
+          height={COMPANY_PHOTO_Y_PXL * 0.4}
+          width={COMPANY_PHOTO_X_PXL * 0.4}
           onClick={() => {
             setShowcompanyDescription(true);
           }}
