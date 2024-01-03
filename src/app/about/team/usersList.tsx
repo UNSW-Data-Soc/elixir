@@ -1,16 +1,22 @@
-import toast from "react-hot-toast";
-import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
-import { DirectorRole, ExecRole, directorRoles, execRoles } from "@/trpc/types";
-import { api } from "@/trpc/server";
 import Image from "next/image";
+
+import { Tooltip } from "@nextui-org/tooltip";
+
+import { api } from "@/trpc/server";
+import { RouterOutputs } from "@/trpc/shared";
+import { DirectorRole, ExecRole, directorRoles, execRoles } from "@/trpc/types";
+
+import { LinkedInIcon } from "@/app/socialIcons";
 import { getUserProfilePicRoute } from "@/app/utils/s3";
+
 import {
   EnvelopeIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { LinkedInIcon } from "@/app/socialIcons";
-import { RouterOutputs } from "@/trpc/shared";
-import { Tooltip } from "@nextui-org/tooltip";
+
+import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
+
+import toast from "react-hot-toast";
 
 type User = RouterOutputs["users"]["getTeam"][number];
 const boardRoles = [...execRoles, ...directorRoles];
@@ -113,9 +119,11 @@ function UserCard({
           {/* <a href={`https://www.linkedin.com/in/${user.linkedin}/`}>
             <LinkedInIcon height={20} width={20} colour={false} />
           </a> */}
-          <Tooltip content={<p>{user.about}</p>} placement="bottom">
-            <InformationCircleIcon height={20} />
-          </Tooltip>
+          {!!user.about && user.about.length > 0 && (
+            <Tooltip content={<p>{user.about}</p>} placement="bottom">
+              <InformationCircleIcon height={20} />
+            </Tooltip>
+          )}
         </div>
       </div>
     </div>
