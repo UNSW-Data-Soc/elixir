@@ -16,7 +16,9 @@ export default function LoginButton() {
       <Link href="" onClick={() => signOut()}>
         Logout
       </Link>
-      <Link href={ELIXIR_FEEDBACK_LINK}>Feedback</Link>
+      <Link target="_blank" href={ELIXIR_FEEDBACK_LINK}>
+        Feedback
+      </Link>
     </>
   ) : (
     <Link href={`/auth/login?from=${pathname}`}>Login</Link>
