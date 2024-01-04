@@ -46,7 +46,7 @@ export default async function Home() {
     <>
       {/* navbar height hardcoded as 4rem here */}
       <main className="bg-light-rainbow relative left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
-        <div className="fade-in-image mix-blend-multiply">
+        <div className="mix-blend-multiply">
           {!!coverPhoto.id && (
             <Image
               src={getCoverPhotoRoute(coverPhoto.id)}
