@@ -45,7 +45,7 @@ export default async function Home() {
   return (
     <>
       {/* navbar height hardcoded as 4rem here */}
-      <main className="bg-light-rainbow relative left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
+      <main className="bg-light-rainbow relative left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none mix-blend-multiply">
         <div className="mix-blend-multiply">
           {!!coverPhoto.id && (
             <Image
@@ -55,7 +55,7 @@ export default async function Home() {
               sizes="100vw"
               priority
               quality={100}
-              className="coverPhoto object-cover"
+              className="coverPhoto object-cover mix-blend-multiply"
               draggable={false}
             />
           )}
