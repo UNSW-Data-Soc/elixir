@@ -166,7 +166,7 @@ export const TIPTAP_EXTENSIONS = [
   Document,
   Paragraph.configure({
     HTMLAttributes: {
-      class: "text-justify min-h-[1rem]",
+      class: "text-start sm:text-justify min-h-[1rem]",
     },
   }),
   Text,

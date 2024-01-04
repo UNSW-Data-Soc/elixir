@@ -39,11 +39,13 @@ export default async function BlogContent({ slug }: { slug: string }) {
   return (
     <main className="mx-auto px-10 py-12 sm:max-w-[80%] sm:px-0 md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%]">
       <header className="flex flex-col gap-4">
-        <h1 className="text-6xl font-light tracking-tighter">{blog.title}</h1>
-        <p className="text-xl font-light text-[#555]">
+        <h1 className="text-4xl font-light tracking-tighter md:text-5xl">
+          {blog.title}
+        </h1>
+        <p className="text-lg font-light text-[#555] sm:text-xl">
           Written by <span className="italic">{blog.author}</span>
         </p>
-        <div className="flex w-full flex-row justify-between">
+        <div className="flex w-full flex-row justify-between text-sm sm:text-base">
           <Tooltip content={createdDate.format("DD/MM/YYYY HH:mm")}>
             <p className="italic text-[#555]">
               Published {createdDate.fromNow()}
