@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 
 import React, { useState } from "react";
@@ -18,21 +20,21 @@ import {
 
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
+import {
+  DirectorRole,
+  ExecRole,
+  SubcomRole,
+  UserLevel,
+  userLevels,
+} from "@/trpc/types";
 
 import { getUserProfilePicRoute } from "../utils/s3";
+import UpdateYearsActive from "./updateYearsActive";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import toast from "react-hot-toast";
 import Select from "react-select";
-import {
-  UserLevel,
-  userLevels,
-  ExecRole,
-  DirectorRole,
-  SubcomRole,
-} from "@/trpc/types";
-import UpdateYearsActive from "./updateYearsActive";
 
 dayjs.extend(relativeTime);
 
@@ -44,6 +46,7 @@ export default function UserDialogueInfo(props: {
   closeModal: () => void;
 }) {
   const session = useSession();
+  const router = useRouter();
 
   const ctx = api.useUtils();
 
@@ -150,6 +153,13 @@ export default function UserDialogueInfo(props: {
                   )}
               </ModalBody>
               <ModalFooter>
+                <Button
+                  color="secondary"
+                  variant="light"
+                  onPress={() => router.push(`/profile/${props.user.id}`)}
+                >
+                  Edit Profile
+                </Button>
                 <Button
                   color="danger"
                   variant="light"

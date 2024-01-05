@@ -92,7 +92,8 @@ export default function ProfileManager(props: { userId: string }) {
   if (
     session.status === "unauthenticated" ||
     !session.data?.user ||
-    session.data.user.id !== props.userId
+    (session.data.user.id !== props.userId &&
+      session.data.user.role !== "admin")
   ) {
     toast.error("You do not have permission to view this page.");
     router.push("/");
@@ -122,7 +123,7 @@ export default function ProfileManager(props: { userId: string }) {
       {isLoading && <Spinner />}
       {user && (
         <div className="container m-auto flex flex-col">
-          <div className="container m-auto flex flex-row justify-between flex-wrap">
+          <div className="container m-auto flex flex-row flex-wrap justify-between">
             <div>
               <h1 className="py-3 text-5xl font-semibold">{user.name}</h1>
               <div>
@@ -133,11 +134,11 @@ export default function ProfileManager(props: { userId: string }) {
               </div>
             </div>
             <div className="flex flex-wrap justify-center">
-              <div className="w-6/12 flex justify-center items-center bg-[#eee] rounded-2xl aspect-square">
+              <div className="flex aspect-square w-6/12 items-center justify-center rounded-2xl bg-[#eee]">
                 {!!profilePicURL ? (
                   <Image
                     src={profilePicURL}
-                    className="shadow rounded max-w-full h-auto align-middle border-none"
+                    className="h-auto max-w-full rounded border-none align-middle shadow"
                     alt="Profile picture"
                     placeholder="empty"
                     width={PROFILE_PIC_X_PXL}
@@ -151,7 +152,7 @@ export default function ProfileManager(props: { userId: string }) {
           </div>
           <p className="py-5  text-2xl font-semibold">Name</p>
           <input
-            className="py-3 px-4 border-2 rounded-xl transition-all"
+            className="rounded-xl border-2 px-4 py-3 transition-all"
             type="text"
             placeholder="Your name..."
             value={name}
@@ -161,7 +162,7 @@ export default function ProfileManager(props: { userId: string }) {
           />
           <p className="py-5 text-2xl font-semibold">About you</p>
           <input
-            className="py-3 px-4 border-2 rounded-xl transition-all"
+            className="rounded-xl border-2 px-4 py-3 transition-all"
             type="text"
             placeholder="Write a short description here..."
             value={about}
@@ -181,7 +182,7 @@ export default function ProfileManager(props: { userId: string }) {
           />
 
           <button
-            className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+            className="mr-2 mt-10 rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
             onClick={handleSaveProfile}
           >
             Save changes
