@@ -11,6 +11,7 @@ import { RouterOutputs } from "@/trpc/shared";
 import { Spinner } from "@/app/utils";
 import { getUserProfilePicRoute } from "@/app/utils/s3";
 
+import AvatarIcon from "../utils/avatarIcon";
 import UserDialogueInfo from "./userPermissionsDialog";
 
 type User = RouterOutputs["users"]["getAll"][number];
@@ -44,17 +45,17 @@ export default function UsersList() {
             <h4 className="text-large font-bold">{user.name}</h4>
           </CardHeader>
           <CardBody className="overflow-visible py-2">
-            <Image
-              src={
-                user.image
-                  ? getUserProfilePicRoute(user.id, user.image)
-                  : "./logo.png"
-              } // TODO: default user profile picture
-              alt="Profile picture"
-              className="rounded-xl object-cover"
-              height={300}
-              width={300}
-            />
+            {user.image ? (
+              <Image
+                src={getUserProfilePicRoute(user.id, user.image)}
+                alt="Profile picture"
+                className="rounded-xl object-cover"
+                height={300}
+                width={300}
+              />
+            ) : (
+              <AvatarIcon />
+            )}
           </CardBody>
         </Card>
       ))}
