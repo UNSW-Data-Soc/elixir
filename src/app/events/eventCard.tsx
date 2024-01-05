@@ -28,7 +28,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-const DEFAULT_EVENT_IMAGE = "./logo.png";
+const DEFAULT_EVENT_IMAGE = "/logo.png";
 
 type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
