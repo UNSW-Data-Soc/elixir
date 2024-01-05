@@ -28,7 +28,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-const DEFAULT_EVENT_IMAGE = "/logo.png";
+// TODO: find a good default image for events
+const DEFAULT_EVENT_IMAGE =
+  "https://escales.ponant.com/wp-content/uploads/2020/12/plage.jpg";
 
 type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
