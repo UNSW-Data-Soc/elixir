@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getServerAuthSession } from "@/server/auth";
 
+import UserAddCard from "./addUserCard";
 import UsersList from "./userList";
 
 export default async function Users() {
@@ -19,8 +20,11 @@ export default async function Users() {
     );
   }
   return (
-    <div className="container m-auto flex flex-wrap justify-center gap-5 p-10">
+    <div className="relative m-auto flex w-full flex-grow flex-wrap justify-center gap-5 p-10">
       <UsersList />
+      <div className="absolute bottom-5 right-5">
+        <UserAddCard />
+      </div>
     </div>
   );
 }
