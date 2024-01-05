@@ -167,7 +167,6 @@ export default function Navbar() {
 
 function AboutUsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   return (
     <div
@@ -185,32 +184,27 @@ function AboutUsDropdown() {
           </Link>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
-          <DropdownItem key="about-us" onClick={() => router.push("/about")}>
+          <DropdownItem key="about-us" href="/about">
             About Us
           </DropdownItem>
-          <DropdownItem
-            key="our-team"
-            onClick={() => router.push("/about/team")}
-          >
+          <DropdownItem key="our-team" href="/about/team">
             Our Team
           </DropdownItem>
-          <DropdownItem key="constitution-link">
-            <Link
-              href={DATASOC_CONSTITUION_LINK}
-              className="text-sm text-black"
-              target="_blank"
-            >
-              Our Constitution
-            </Link>
+          <DropdownItem
+            key="constitution-link"
+            href={DATASOC_CONSTITUION_LINK}
+            target="_blank"
+            className="text-sm text-black"
+          >
+            Our Constitution
           </DropdownItem>
-          <DropdownItem key="careers-guide">
-            <Link
-              href={DATASOC_SPARC_LINK}
-              className="text-sm text-black"
-              target="_blank"
-            >
-              SpArc
-            </Link>
+          <DropdownItem
+            key="careers-guide"
+            href={DATASOC_SPARC_LINK}
+            className="text-sm text-black"
+            target="_blank"
+          >
+            SpArc
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
@@ -238,22 +232,13 @@ function PublicationsDropdown() {
           </Link>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
-          <DropdownItem
-            key="publications"
-            onClick={() => router.push("/publications")}
-          >
+          <DropdownItem key="publications" href="/publications">
             Publications
           </DropdownItem>
-          <DropdownItem
-            key="first-year-guide"
-            onClick={() => router.push("/first-year-guide")}
-          >
+          <DropdownItem key="first-year-guide" href="/first-year-guide">
             First Year Guide
           </DropdownItem>
-          <DropdownItem
-            key="careers-guide"
-            onClick={() => router.push("/careers-guide")}
-          >
+          <DropdownItem key="careers-guide" href="/careers-guide">
             Careers Guide
           </DropdownItem>
         </DropdownMenu>
