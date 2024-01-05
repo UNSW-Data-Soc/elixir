@@ -95,7 +95,7 @@ export default function TagsEditModal({
               <div className="relative">
                 <div className="flex flex-row justify-between">
                   <button
-                    className="flex flex-row gap-1 rounded-xl bg-[#D9435F] p-2 px-3 text-white transition-all hover:brightness-110"
+                    className="flex flex-row items-center gap-1 rounded-xl bg-[#D9435F] p-2 px-3 text-white transition-all hover:brightness-110"
                     disabled={isUpdating || isDeleting}
                     onClick={() => setShowDeleteConfirm(true)}
                   >
@@ -130,7 +130,7 @@ export default function TagsEditModal({
                     </div>
                   </div>
                   <button
-                    className="flex flex-row gap-1 rounded-xl bg-[#14A1D9] p-2 px-3 text-white transition-all hover:brightness-110"
+                    className="flex flex-row items-center gap-1 rounded-xl bg-[#14A1D9] p-2 px-3 text-white transition-all hover:brightness-110"
                     disabled={isUpdating || isDeleting}
                     onClick={() => {
                       updateTag({
