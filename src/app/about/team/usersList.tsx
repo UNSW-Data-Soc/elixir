@@ -95,9 +95,12 @@ function UserCard({
       className="group flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl transition-all hover:scale-[1.01] hover:shadow-2xl"
     >
       <div className="relative flex aspect-square w-[230px] items-center justify-start overflow-hidden rounded-2xl bg-[#eee]">
-        {user.image ? (
+        {yearsActive.photo || user.image ? (
           <Image
-            src={getUserProfilePicRoute(user.id, user.image)}
+            src={getUserProfilePicRoute(
+              user.id,
+              (yearsActive.photo ?? user.image) as string, // TODO: typescript doesn't realise that this is ok
+            )}
             fill={true}
             className="object-cover"
             alt="Team Member Portrait"

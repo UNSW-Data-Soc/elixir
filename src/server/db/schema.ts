@@ -56,6 +56,7 @@ export const userYearsActive = mysqlTable(
     year: int("year").notNull(),
     group: mysqlEnum("group", userRoleGroups).notNull(),
     role: text("role").notNull(), // either 'role' name for exec or 'portfolio' name for directors/subcom
+    photo: text("photo"),
   },
   (r) => ({
     compoundKey: primaryKey({
@@ -68,7 +69,9 @@ export const resetTokens = mysqlTable(
   "resetTokens",
   {
     token: varchar("token", { length: 255 }).notNull(),
-    user: varchar("id", { length: 255 }).notNull(), // TODO: .references(() => users.id, {onDelete: "cascade"})
+    user: varchar("id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
     expires: timestamp("expires", { mode: "date" }).defaultNow().notNull(),
   },
   (t) => ({
@@ -81,9 +84,7 @@ export const resetTokens = mysqlTable(
 export const sessions = mysqlTable(
   "session",
   {
-    sessionToken: varchar("sessionToken", { length: 255 })
-      .notNull()
-      .primaryKey(),
+    sessionToken: varchar("sessionToken", { length: 255 }).notNull(),
     userId: varchar("userId", { length: 255 }).notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
@@ -115,7 +116,9 @@ export const blogs = mysqlTable(
   "blog",
   {
     id: varchar("id", { length: 255 }).primaryKey(),
-    creator: varchar("creatorId", { length: 255 }), // TODO: add later .references(() => users.id, {onDelete: "set null",}),
+    creator: varchar("creatorId", { length: 255 }).references(() => users.id, {
+      onDelete: "set null",
+    }),
     slug: varchar("slug", { length: 255 }).unique().notNull(),
     title: text("title").notNull(),
     body: text("body").notNull(),
@@ -133,7 +136,9 @@ export const events = mysqlTable(
   "event",
   {
     id: varchar("id", { length: 255 }).primaryKey(),
-    creator: varchar("creatorId", { length: 255 }), // TODO: add later .references(() => users.id, {onDelete: "set null",}),
+    creator: varchar("creatorId", { length: 255 }).references(() => users.id, {
+      onDelete: "set null",
+    }),
     title: text("title").notNull(),
     slug: varchar("slug", { length: 255 }).unique().notNull(),
     description: text("description").notNull(),
@@ -169,7 +174,10 @@ export const sponsorships = mysqlTable(
   {
     id: varchar("id", { length: 255 }).primaryKey(),
     message: text("message").notNull(),
-    company: varchar("companyId", { length: 255 }), // TODO: add later .references(() => companies.id, {onDelete: "cascade",})
+    company: varchar("companyId", { length: 255 }).references(
+      () => companies.id,
+      { onDelete: "cascade" },
+    ),
     public: boolean("public").notNull().default(false),
     type: mysqlEnum("sponsorshipType", ["major", "partner", "other"]),
     expiration: timestamp("expiration").notNull(),
@@ -180,25 +188,37 @@ export const sponsorships = mysqlTable(
   }),
 );
 
-export const jobPostings = mysqlTable("jobPosting", {
-  id: varchar("id", { length: 255 }).primaryKey(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  body: text("body").notNull(),
-  company: varchar("companyId", { length: 255 }).notNull(), // TODO: add later .references(() => companies.id, {onDelete: "cascade",})
-  photo: varchar("photoId", { length: 255 }),
-  link: text("link"),
-  public: boolean("public").notNull().default(false),
-  createdTime: timestamp("createdTime").notNull().defaultNow(),
-  lastEditedTime: timestamp("lastEditedTime").notNull().defaultNow(),
-  expiration: timestamp("expiration").notNull(),
-  creator: varchar("creatorId", { length: 255 }), // TODO: add later .references(() => users.id, {onDelete: "set null",})
-});
+export const jobPostings = mysqlTable(
+  "jobPosting",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    body: text("body").notNull(),
+    company: varchar("companyId", { length: 255 })
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    photo: varchar("photoId", { length: 255 }),
+    link: text("link"),
+    public: boolean("public").notNull().default(false),
+    createdTime: timestamp("createdTime").notNull().defaultNow(),
+    lastEditedTime: timestamp("lastEditedTime").notNull().defaultNow(),
+    expiration: timestamp("expiration").notNull(),
+    creator: varchar("creatorId", { length: 255 }).references(() => users.id, {
+      onDelete: "set null",
+    }),
+  },
+  (job) => ({}),
+);
 
-export const coverPhotos = mysqlTable("coverphoto", {
-  id: varchar("id", { length: 255 }).primaryKey(),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-});
+export const coverPhotos = mysqlTable(
+  "coverphoto",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (cp) => ({}),
+);
 
 export const resources = mysqlTable("resources", {
   id: varchar("id", { length: 255 }).primaryKey(),
@@ -220,8 +240,12 @@ export const tags = mysqlTable("tags", {
 export const resourceTags = mysqlTable(
   "resourceTags",
   {
-    resourceId: varchar("resourceId", { length: 255 }).notNull(), // .references(() => resources.id, {onDelete: "cascade"}),
-    tagId: varchar("tagId", { length: 255 }).notNull(), // .references(() => tags.id, {onDelete: "cascade"}),
+    resourceId: varchar("resourceId", { length: 255 })
+      .notNull()
+      .references(() => resources.id, { onDelete: "cascade" }),
+    tagId: varchar("tagId", { length: 255 })
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
   },
   (rt) => ({
     compoundKey: primaryKey({ columns: [rt.resourceId, rt.tagId] }),
@@ -231,8 +255,12 @@ export const resourceTags = mysqlTable(
 export const blogTags = mysqlTable(
   "blogTags",
   {
-    blogId: varchar("blogId", { length: 255 }).notNull(), // .references(() => blogs.id, {onDelete: "cascade"}),
-    tagId: varchar("tagId", { length: 255 }).notNull(), // .references(() => tags.id, {onDelete: "cascade"}),
+    blogId: varchar("blogId", { length: 255 })
+      .notNull()
+      .references(() => blogs.id, { onDelete: "cascade" }),
+    tagId: varchar("tagId", { length: 255 })
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
   },
   (bt) => ({
     compoundKey: primaryKey({ columns: [bt.blogId, bt.tagId] }),
@@ -242,8 +270,12 @@ export const blogTags = mysqlTable(
 export const eventTags = mysqlTable(
   "eventTags",
   {
-    eventId: varchar("eventId", { length: 255 }).notNull(), // .references(() => events.id, {onDelete: "cascade"}),
-    tagId: varchar("tagId", { length: 255 }).notNull(), // .references(() => tags.id, {onDelete: "cascade"}),
+    eventId: varchar("eventId", { length: 255 })
+      .notNull()
+      .references(() => events.id, { onDelete: "cascade" }),
+    tagId: varchar("tagId", { length: 255 })
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
   },
   (et) => ({
     compoundKey: primaryKey({ columns: [et.eventId, et.tagId] }),
