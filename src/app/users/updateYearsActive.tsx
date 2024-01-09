@@ -4,20 +4,21 @@ import React, { useState } from "react";
 
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
+import {
+  DirectorRole,
+  ExecRole,
+  SubcomRole,
+  UserRoleGroup,
+  directorRoles,
+  execRoles,
+  subcomRoles,
+} from "@/trpc/types";
+
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import toast from "react-hot-toast";
-import {
-  execRoles,
-  directorRoles,
-  subcomRoles,
-  ExecRole,
-  DirectorRole,
-  SubcomRole,
-  UserRoleGroup,
-} from "@/trpc/types";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(relativeTime);
 
@@ -122,7 +123,6 @@ export default function UpdateYearsActive({ user }: { user: User }) {
           onChange={(e) => setYear(e.target.value)}
         />
         <select
-          placeholder="role"
           className="flex-grow-1 rounded-xl bg-[#fafafa] px-3 py-2 outline-none transition-all focus:bg-[#eee] focus:outline-none"
           value={societyRole}
           onChange={(e) => setSocietyRole(e.target.value as SocietyRole)}

@@ -64,7 +64,6 @@ function fixDoc(genDoc: typeof generatedDoc) {
 
 export const generatedDoc = generateOpenAPIDocumentFromTRPCRouter(appRouter, {
   pathPrefix: "/api/trpc",
-  title: "elixir backend",
 });
 
 export const doc = fixDoc(generatedDoc);
