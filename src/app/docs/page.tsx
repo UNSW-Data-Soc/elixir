@@ -30,7 +30,19 @@ export default async function Page() {
           <code className="whitespace-nowrap rounded-lg bg-purple-300 p-1 px-2">
             POST
           </code>{" "}
-          requests.
+          requests. But proceed with{" "}
+          <span className="font-semibold text-red-800">caution</span> because
+          you are technically{" "}
+          <span className="whitespace-nowrap rounded-lg bg-purple-400 p-1 px-2 text-white">
+            ✨interacting with our production database✨
+          </span>
+          <br />
+          <br />
+          Currently, this page is accessible to all users with the{" "}
+          <code className="whitespace-nowrap rounded-lg bg-purple-300 p-1 px-2">
+            admin
+          </code>{" "}
+          role only.
           <br />
           <br />
           Note: some routes are{" "}
