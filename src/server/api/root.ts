@@ -37,27 +37,42 @@ export type AppRouter = typeof appRouter;
 
 // modify the generated doc to fix some issues
 function fixDoc(genDoc: typeof generatedDoc) {
-  // for (const path in genDoc.paths) {
-  //   for (const method in genDoc.paths[path]) {
-  //     if (method === "get") {
-  //       console.log(
-  //         genDoc.paths[path][method].parameters[0].content["application/json"]
-  //           .schema.properties,
-  //       );
+  const g = genDoc as any; // hacky way to get around typescript
 
-  //       genDoc.paths[path][method].parameters[0].content[
-  //         "application/json"
-  //       ].schema.properties = {
-  //         json: {
-  //           type: "json",
-  //           haha: genDoc.paths[path][method].parameters[0].content[
-  //             "application/json"
-  //           ].schema.properties,
-  //         },
-  //       };
-  //     }
-  //   }
-  // }
+  for (const path in g.paths) {
+    for (const method in g.paths[path]) {
+      try {
+        // try-catch all in case
+
+        if (method === "get") {
+          g.paths[path][method].parameters[0].content[
+            "application/json"
+          ].schema.properties = {
+            json: {
+              type: "object",
+              properties:
+                g.paths[path][method].parameters[0].content["application/json"]
+                  .schema.properties,
+            },
+          };
+        }
+        if (method === "post") {
+          g.paths[path][method].requestBody.content[
+            "application/json"
+          ].schema.properties = {
+            json: {
+              type: "object",
+              properties:
+                g.paths[path][method]?.requestBody.content["application/json"]
+                  .schema.properties,
+            },
+          };
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
   genDoc.info.title = "elixir backend";
   return genDoc;
 }
@@ -67,5 +82,3 @@ export const generatedDoc = generateOpenAPIDocumentFromTRPCRouter(appRouter, {
 });
 
 export const doc = fixDoc(generatedDoc);
-
-// console.log(Object.keys(doc.paths));
