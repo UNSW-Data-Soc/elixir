@@ -70,7 +70,7 @@ export default async function UsersList() {
             >
               {year}
             </label>
-            <div className="hidden flex-wrap justify-center gap-5 py-16 peer-checked:flex">
+            <div className="hidden flex-wrap justify-center gap-5 py-16 pt-24 peer-checked:flex">
               {users
                 .filter(({ userYearsActive }) => userYearsActive.year === year)
                 .map((user) => (
@@ -92,7 +92,7 @@ function UserCard({
   return (
     <div
       key={user.id}
-      className="group flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl transition-all hover:scale-[1.01] hover:shadow-2xl"
+      className="group flex flex-col items-center gap-2 rounded-2xl border p-3 shadow-xl transition-all hover:scale-[1.01] hover:shadow-2xl"
     >
       <div className="relative flex aspect-square w-[230px] items-center justify-start overflow-hidden rounded-2xl bg-[#eee]">
         {yearsActive.photo || user.image ? (
@@ -112,7 +112,7 @@ function UserCard({
       <div className="flex w-full flex-col items-center gap-2 px-3 py-2">
         <div className="flex flex-col items-center gap-1">
           <h4 className="text-lg font-semibold">{user.name}</h4>
-          <p className="font-light">{yearsActive.role}</p>
+          <p className="text-sm font-light">{yearsActive.role}</p>
         </div>
         <div className="flex flex-row gap-2">
           {/* <Tooltip content={<p>{user.email}</p>} placement="bottom"> */}

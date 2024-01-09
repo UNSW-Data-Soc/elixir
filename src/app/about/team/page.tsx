@@ -10,7 +10,7 @@ export default async function Users() {
           to connect, grow and feel supported.
         </p>
       </header>
-      <div className="container m-auto flex flex-wrap justify-center gap-5 p-10">
+      <div className="m-auto flex max-w-7xl flex-wrap justify-center gap-5 p-5 md:p-10">
         <UsersList />
       </div>
     </main>

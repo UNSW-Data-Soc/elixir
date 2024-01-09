@@ -214,7 +214,6 @@ function AboutUsDropdown() {
 
 function PublicationsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   return (
     <div

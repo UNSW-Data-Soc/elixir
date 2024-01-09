@@ -1,5 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
+import { TRPCError } from "@trpc/server";
+
 import { authRouter } from "./routers/auth";
 import { blogRouter } from "./routers/blogs";
 import { companiesRouter } from "./routers/companies";
@@ -13,6 +15,9 @@ import { usersRouter } from "./routers/users";
 
 export const appRouter = createTRPCRouter({
   greeting: publicProcedure.query(() => "Hello World!"),
+  badGreeting: publicProcedure.query(() => {
+    throw new TRPCError({ code: "BAD_REQUEST", message: "Bad greeting" });
+  }),
   auth: authRouter,
   blogs: blogRouter,
   companies: companiesRouter,
