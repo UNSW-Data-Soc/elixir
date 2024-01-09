@@ -13,6 +13,8 @@ import { sponsorshipsRouter } from "./routers/sponsorships";
 import { tagsRouter } from "./routers/tags";
 import { usersRouter } from "./routers/users";
 
+import { generateOpenAPIDocumentFromTRPCRouter } from "openapi-trpc";
+
 export const appRouter = createTRPCRouter({
   greeting: publicProcedure.query(() => "Hello World!"),
   badGreeting: publicProcedure.query(() => {
@@ -32,3 +34,39 @@ export const appRouter = createTRPCRouter({
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+// modify the generated doc to fix some issues
+function fixDoc(genDoc: typeof generatedDoc) {
+  // for (const path in genDoc.paths) {
+  //   for (const method in genDoc.paths[path]) {
+  //     if (method === "get") {
+  //       console.log(
+  //         genDoc.paths[path][method].parameters[0].content["application/json"]
+  //           .schema.properties,
+  //       );
+
+  //       genDoc.paths[path][method].parameters[0].content[
+  //         "application/json"
+  //       ].schema.properties = {
+  //         json: {
+  //           type: "json",
+  //           haha: genDoc.paths[path][method].parameters[0].content[
+  //             "application/json"
+  //           ].schema.properties,
+  //         },
+  //       };
+  //     }
+  //   }
+  // }
+  genDoc.info.title = "elixir backend";
+  return genDoc;
+}
+
+export const generatedDoc = generateOpenAPIDocumentFromTRPCRouter(appRouter, {
+  pathPrefix: "/api/trpc",
+  title: "elixir backend",
+});
+
+export const doc = fixDoc(generatedDoc);
+
+// console.log(Object.keys(doc.paths));

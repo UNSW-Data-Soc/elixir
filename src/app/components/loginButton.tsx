@@ -19,6 +19,7 @@ export default function LoginButton() {
       <Link target="_blank" href={ELIXIR_FEEDBACK_LINK}>
         Feedback
       </Link>
+      <Link href="/docs">Backend Docs</Link>
     </>
   ) : (
     <Link href={`/auth/login?from=${pathname}`}>Login</Link>
