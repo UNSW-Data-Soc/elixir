@@ -101,9 +101,9 @@ export default async function Home() {
         {futureEvents.length > 0 && (
           <div className="flex flex-row gap-8 p-3">
             {futureEvents.map((event) => (
-              <Link key={event.id} href={`/events`}>
+              <Link key={event.id} href={event.link ?? `/events`}>
                 <div
-                  className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  className="group/eventCard relative flex aspect-[16/9] flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
                   key={event.id}
                 >
                   <Image

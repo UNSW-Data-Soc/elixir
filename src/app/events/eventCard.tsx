@@ -29,8 +29,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 // TODO: find a good default image for events
-const DEFAULT_EVENT_IMAGE =
-  "https://escales.ponant.com/wp-content/uploads/2020/12/plage.jpg";
+const DEFAULT_EVENT_IMAGE = "/logo.png";
 
 type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
@@ -67,9 +66,9 @@ export async function EventsCard(props: { event: Event }) {
                     : DEFAULT_EVENT_IMAGE
                 }
                 alt="Event Cover Photo"
-                className={`h-full rounded-b-none rounded-t-xl object-cover ${
+                className={`h-full rounded-b-none rounded-t-xl ${
                   session ? "absolute left-0 top-0 z-30 w-full" : ""
-                }`}
+                } ${props.event.photo ? "object-cover" : "object-contain"}`}
                 height={Event_PHOTO_Y_PXL * 0.4}
                 width={Event_PHOTO_X_PXL}
               />
