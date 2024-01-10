@@ -20,13 +20,7 @@ import {
 
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
-import {
-  DirectorRole,
-  ExecRole,
-  SubcomRole,
-  UserLevel,
-  userLevels,
-} from "@/trpc/types";
+import { UserLevel, userLevels } from "@/trpc/types";
 
 import { getUserProfilePicRoute } from "../utils/s3";
 import UpdateYearsActive from "./updateYearsActive";
