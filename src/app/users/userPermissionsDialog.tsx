@@ -187,6 +187,7 @@ export default function UserDialogueInfo(props: {
         user={props.user}
         isOpen={showUserDeletionDialog}
         onOpenChange={() => setShowUserDeletionDialog(false)}
+        closeParentModal={() => props.closeModal()}
       />
     </>
   );
@@ -196,10 +197,15 @@ function DeleteUserConfirmationDialog(props: {
   user: User;
   isOpen: boolean;
   onOpenChange: () => void;
+  closeParentModal: () => void;
 }) {
+  const ctx = api.useUtils();
+
   const { mutate: deleteUser } = api.users.delete.useMutation({
     onSuccess: () => {
       toast.success("Successfully deleted user");
+      void ctx.users.invalidate();
+      props.closeParentModal();
     },
     onError: () => {
       toast.error("Failed to delete user");
