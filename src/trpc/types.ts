@@ -26,7 +26,6 @@ export type BlogBody = {
 
 export const execRoles = [
   "President",
-  "Vice President (Internals)",
   "Vice President (Externals)",
   "Vice President (Operations)",
   "Vice President (Activities)",
