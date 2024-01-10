@@ -4,9 +4,8 @@ import { Tooltip } from "@nextui-org/tooltip";
 
 import { api } from "@/trpc/server";
 import { RouterOutputs } from "@/trpc/shared";
-import { DirectorRole, ExecRole, directorRoles, execRoles } from "@/trpc/types";
+import { directorRoles, execRoles } from "@/trpc/types";
 
-import { LinkedInIcon } from "@/app/socialIcons";
 import AvatarIcon from "@/app/utils/avatarIcon";
 import { getUserProfilePicRoute } from "@/app/utils/s3";
 
@@ -15,14 +14,8 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 
-import { Spinner, ZERO_WIDTH_SPACE } from "../../utils";
-
-import toast from "react-hot-toast";
-
 type User = RouterOutputs["users"]["getTeam"][number];
 const boardRoles = [...execRoles, ...directorRoles];
-
-const EMPTY_ABOUT_MESSAGE = "This profile remains a mystery...";
 
 const portfolioOrder = boardRoles.reduce(
   (acc: { [key: string]: number }, role, idx) => {
