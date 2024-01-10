@@ -3,13 +3,14 @@ import { redirect } from "next/navigation";
 import { doc } from "@/server/api/root";
 import { getServerAuthSession } from "@/server/auth";
 
+import { isAdmin } from "../utils";
 import Swagger from "./swagger";
 
 export default async function Page() {
   const session = await getServerAuthSession();
 
   if (!session) return redirect("/auth/login?from=/docs");
-  if (session?.user.role !== "admin")
+  if (!isAdmin(session))
     return <div className="w-full text-center">Forbidden sorry :(</div>;
 
   return (
