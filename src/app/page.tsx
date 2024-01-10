@@ -152,27 +152,29 @@ export default async function Home() {
                 </p>
               </div>
             </Link>
-            {blogs.slice(1).map((blog) => (
-              <Link
-                key={blog.id}
-                href={`/blogs/${blog.slug}`}
-                className="relative flex aspect-[8/7] flex-col items-stretch gap-1 bg-transparent align-baseline sm:aspect-[9/16] sm:h-[500px]"
-              >
-                <div className="sm:aspect-[4/5] sm:flex-shrink-0 sm:flex-grow-0">
-                  <BlogImageHomePage
-                    imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
-                  />
-                </div>
-                <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-1 bg-gradient-to-t from-slate-800 p-5 text-white sm:static sm:h-full sm:justify-start sm:bg-white sm:from-transparent sm:p-0 sm:py-1 sm:text-black">
-                  <p className="w-full whitespace-pre-wrap text-2xl font-semibold">
-                    {blog.title}
-                  </p>
-                  <p className="w-full text-base">
-                    {dayjs(blog.createdTime).fromNow()}
-                  </p>
-                </div>
-              </Link>
-            ))}
+            <div className="flex flex-row flex-wrap items-center justify-center gap-4 sm:flex-nowrap">
+              {blogs.slice(1).map((blog) => (
+                <Link
+                  key={blog.id}
+                  href={`/blogs/${blog.slug}`}
+                  className="relative flex aspect-[8/7] flex-col items-stretch gap-1 bg-transparent align-baseline sm:aspect-[9/16] sm:h-[500px]"
+                >
+                  <div className="h-full sm:aspect-[4/5] sm:h-auto sm:flex-shrink-0 sm:flex-grow-0">
+                    <BlogImageHomePage
+                      imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
+                    />
+                  </div>
+                  <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-1 bg-gradient-to-t from-slate-800 p-5 text-white sm:static sm:h-full sm:justify-start sm:bg-white sm:from-transparent sm:p-0 sm:py-1 sm:text-black">
+                    <p className="w-full whitespace-pre-wrap text-2xl font-semibold">
+                      {blog.title}
+                    </p>
+                    <p className="w-full text-base">
+                      {dayjs(blog.createdTime).fromNow()}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </div>
