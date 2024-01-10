@@ -28,7 +28,7 @@ export default async function ResourcesList() {
   }
 
   return (
-    <div>
+    <div className="flex flex-row flex-wrap justify-center gap-6">
       {resources.map((resource) => (
         <ResourceCard resource={resource} key={resource.id} />
       ))}
@@ -49,7 +49,7 @@ async function ResourceCard({ resource }: { resource: Resource }) {
 
   return (
     <div
-      className={`flex max-w-sm flex-col gap-3 rounded-xl border p-5 transition-all hover:shadow-md ${
+      className={`flex aspect-[16/9] w-[400px] max-w-sm flex-col gap-3 rounded-xl border p-5 transition-all hover:shadow-md ${
         resource.public ? "opacity-100" : "opacity-60"
       }`}
     >

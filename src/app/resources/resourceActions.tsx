@@ -271,6 +271,8 @@ function AttachTagForm({
     onSuccess: () => {
       toast.success("Tagged successfully!");
       void ctx.tags.invalidate();
+      setName("");
+      setColour("#000000");
     },
     onError: (err) => {
       toast.error(`Failed to tag: ${err.message}`);
