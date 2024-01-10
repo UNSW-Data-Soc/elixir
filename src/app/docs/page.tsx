@@ -8,9 +8,8 @@ import Swagger from "./swagger";
 export default async function Page() {
   const session = await getServerAuthSession();
 
-  if (session?.user.role !== "admin") {
-    return redirect("/auth/login?from=/docs");
-  }
+  if (!session) return redirect("/auth/login?from=/docs");
+  if (session?.user.role !== "admin") return <div>Forbidden</div>;
 
   return (
     <main className="pb-10">
