@@ -9,7 +9,8 @@ export default async function Page() {
   const session = await getServerAuthSession();
 
   if (!session) return redirect("/auth/login?from=/docs");
-  if (session?.user.role !== "admin") return <div>Forbidden</div>;
+  if (session?.user.role !== "admin")
+    return <div className="w-full text-center">Forbidden sorry :(</div>;
 
   return (
     <main className="pb-10">
@@ -53,6 +54,16 @@ export default async function Page() {
             403 (Unauthorized)
           </code>{" "}
           response if you have insufficient permissions.
+          <br />
+          <br />
+          This documentation was generated using{" "}
+          <a
+            className="underline transition-colors hover:text-purple-700"
+            href="https://github.com/dtinth/openapi-trpc"
+          >
+            openapi-trpc
+          </a>
+          .
         </p>
       </div>
       <Swagger doc={doc} />
