@@ -18,7 +18,7 @@ export default function BlogsList({ blogs: initBlogs }: { blogs: Blog[] }) {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center gap-3 align-baseline">
+    <div className="flex flex-col items-center justify-center gap-3 px-5 align-baseline">
       {blogs.length > 0 && (
         <div className="flex flex-wrap items-stretch justify-center gap-5 align-baseline">
           {blogs.map((b) => (
