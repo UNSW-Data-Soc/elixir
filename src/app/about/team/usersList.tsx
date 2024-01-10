@@ -107,22 +107,28 @@ function UserCard({
           <h4 className="text-lg font-semibold">{user.name}</h4>
           <p className="text-sm font-light">{yearsActive.role}</p>
         </div>
-        <div className="flex flex-row gap-2">
-          {/* <Tooltip content={<p>{user.email}</p>} placement="bottom"> */}
-          <a href={`mailto:${user.email}`}>
-            <EnvelopeIcon height={20} />
-          </a>
-          {/* </Tooltip> */}
-          {/* <a href={`https://www.linkedin.com/in/${user.linkedin}/`}>
-            <LinkedInIcon height={20} width={20} colour={false} />
-          </a> */}
-          {!!user.about && user.about.length > 0 && (
-            <Tooltip content={<p>{user.about}</p>} placement="bottom">
-              <InformationCircleIcon height={20} />
-            </Tooltip>
-          )}
-        </div>
+        {/* <UserInfo user={user} /> */}
       </div>
+    </div>
+  );
+}
+
+function UserInfo({ user }: { user: User["user"] }) {
+  return (
+    <div className="flex flex-row gap-2">
+      {/* <Tooltip content={<p>{user.email}</p>} placement="bottom"> */}
+      <a href={`mailto:${user.email}`}>
+        <EnvelopeIcon height={20} />
+      </a>
+      {/* </Tooltip> */}
+      {/* <a href={`https://www.linkedin.com/in/${user.linkedin}/`}>
+    <LinkedInIcon height={20} width={20} colour={false} />
+  </a> */}
+      {!!user.about && user.about.length > 0 && (
+        <Tooltip content={<p>{user.about}</p>} placement="bottom">
+          <InformationCircleIcon height={20} />
+        </Tooltip>
+      )}
     </div>
   );
 }
