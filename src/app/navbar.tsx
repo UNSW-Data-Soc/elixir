@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { signOut, useSession } from "next-auth/react";
 
-import { useState } from "react";
+import { useReducer, useState } from "react";
 
 import { Avatar } from "@nextui-org/avatar";
 import {
@@ -71,12 +71,16 @@ export default function Navbar() {
   const path = usePathname();
   const session = useSession();
 
+  const [isOpen, toggleOpen] = useReducer((isOpen) => !isOpen, false);
+
   return (
     <NextUINavbar
       isBordered
       shouldHideOnScroll={false}
       className="z-50 flex items-center justify-center gap-6 bg-[#fffb]"
       maxWidth="xl"
+      isMenuOpen={isOpen}
+      onMenuOpenChange={toggleOpen}
     >
       {/* mobile navbar */}
       <NavbarContent className="z-50 flex xl:hidden" justify="start">
@@ -93,7 +97,7 @@ export default function Navbar() {
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="z-50 flex xl:hidden" justify="center">
-        <NavbarMenuToggle />
+        <NavbarMenuToggle onClick={toggleOpen} />
       </NavbarContent>
       <NavbarMenu className="z-50">
         {menuItems.map((item, index) => (
@@ -103,6 +107,7 @@ export default function Navbar() {
               className="w-full p-3"
               href={item.link}
               size="lg"
+              onClick={toggleOpen}
             >
               {item.name}
             </Link>
