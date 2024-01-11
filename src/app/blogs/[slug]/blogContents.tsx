@@ -39,7 +39,7 @@ export default async function BlogContent({ slug }: { slug: string }) {
   return (
     <main className="mx-auto px-10 py-12 sm:max-w-[80%] sm:px-0 md:max-w-[75%] lg:max-w-[65%] xl:max-w-[60%] 2xl:max-w-[40%]">
       <header className="flex flex-col gap-4">
-        <h1 className="text-4xl font-light tracking-tighter md:text-5xl">
+        <h1 className="text-4xl font-light leading-tight tracking-tighter md:text-5xl md:leading-tight">
           {blog.title}
         </h1>
         <p className="text-lg font-light text-[#555] sm:text-xl">
