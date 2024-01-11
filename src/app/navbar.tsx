@@ -144,7 +144,25 @@ const menuItems: MenuItem[] = [
 ];
 const shortMenuItems: MenuItem[] = [
   { name: "Home", link: "/" },
-  { name: "About", link: "/about" },
+  {
+    name: "About",
+    link: "/about",
+    subItems: [
+      { name: "Our Team", link: "/about/team" },
+      {
+        name: "Our Constitution",
+        link: DATASOC_CONSTITUION_LINK,
+        target: "_blank",
+        className: "text-sm text-black",
+      },
+      {
+        name: "SpArc",
+        link: DATASOC_SPARC_LINK,
+        target: "_blank",
+        className: "text-sm text-black",
+      },
+    ],
+  },
   { name: "Events", link: "/events" },
   {
     name: "Sponsors",
