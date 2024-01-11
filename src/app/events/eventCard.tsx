@@ -29,7 +29,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 // TODO: find a good default image for events
-const DEFAULT_EVENT_IMAGE = "/logo.png";
+export const DEFAULT_EVENT_IMAGE = "/logo.png";
 
 type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
@@ -47,6 +47,8 @@ export async function EventsCard(props: { event: Event }) {
   const startTime = dayjs(props.event.startTime);
   const endTime = dayjs(props.event.endTime);
   const inFuture = endTime.isAfter(Date.now());
+
+  console.log(startTime.format("HH:mm:ss"), endTime.format("HH:mm:ss"));
 
   return (
     <>
@@ -124,23 +126,30 @@ export async function EventsCard(props: { event: Event }) {
           ),
           body: (
             <div className="flex flex-col gap-5 pb-5">
-              <div className="flex flex-row justify-start gap-8">
+              <div className="flex flex-col justify-start gap-4">
                 <p className="flex flex-row gap-1 text-xl">
                   <MapPinIcon height={28} /> <span>{props.event.location}</span>
                 </p>
                 <p className="flex flex-row gap-1 text-xl">
                   <ClockIcon height={28} />{" "}
                   <span>
-                    {/* format the event datetime */}
+                    {/* format the event datetime 
+                        // TODO: unreadable code rip reformat
+                    */}
                     {startTime.isSame(endTime)
                       ? `${startTime.format("DD MMM")}`
                       : startTime.isSame(endTime, "day")
-                      ? `${startTime.format("hh:mm")} — ${endTime.format(
-                          "hh:mm",
+                      ? `${startTime.format("HH:mm")} - ${endTime.format(
+                          "HH:mm",
                         )}, ${startTime.format("DD MMM YYYY")}`
-                      : `${startTime.format("DD MMM hh:mm")} — ${endTime.format(
-                          "DD MMM hh:mm",
-                        )}`}
+                      : startTime.format("HH:mm") === "00:00" &&
+                        endTime.format("HH:mm") === "00:00"
+                      ? `${startTime.format("DD MMMM")} - ${endTime.format(
+                          "DD MMMM",
+                        )}, ${startTime.format("YYYY")}`
+                      : `${startTime.format("DD MMM HH:mm")} - ${endTime.format(
+                          "DD MMM HH:mm",
+                        )}, ${startTime.format("YYYY")}`}
                   </span>
                 </p>
               </div>
