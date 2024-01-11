@@ -53,7 +53,7 @@ const menuItems = [
   { name: "About Us", link: "/about" },
   { name: "Sponsors", link: "/sponsorships" },
   { name: "Events", link: "/events" },
-  { name: "Jobs Board", link: "/jobs" }, // TODO: uncomment when jobs board is ready
+  { name: "Jobs Board", link: "/jobs" },
   { name: "Blogs", link: "/blogs" },
   { name: "Resources", link: "/resources" },
   { name: "Publications", link: "/publications" },
@@ -96,15 +96,12 @@ export default function Navbar() {
           </Link>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="z-50 flex xl:hidden" justify="center">
-        <NavbarMenuToggle onClick={toggleOpen} />
-      </NavbarContent>
       <NavbarMenu className="z-50">
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
               color={item.link === path ? "primary" : "foreground"}
-              className="w-full p-3"
+              className="w-full px-3 py-2"
               href={item.link}
               size="lg"
               onClick={toggleOpen}
@@ -165,6 +162,11 @@ export default function Navbar() {
             />
           </NavbarItem>
         )}
+      </NavbarContent>
+
+      {/* hamburger button for mobile navbar */}
+      <NavbarContent className="z-50 flex xl:hidden" justify="center">
+        <NavbarMenuToggle onClick={toggleOpen} />
       </NavbarContent>
     </NextUINavbar>
   );

@@ -60,7 +60,7 @@ export default async function Home() {
             />
           )}
         </div>
-        <div className="flex flex-col items-center justify-center gap-5 px-8 pt-48 align-baseline text-white brightness-200 sm:items-start sm:pl-20 md:pt-48 lg:pl-36 xl:pl-36 2xl:pl-56 2xl:pt-56">
+        <div className="flex flex-col items-center justify-center gap-5 px-8 pt-48 align-baseline text-white brightness-200 sm:items-start sm:px-20 md:pt-48 lg:px-36 xl:px-36 2xl:px-56 2xl:pt-56">
           <div className="flex flex-col gap-3">
             <div className="text-center text-3xl sm:text-left">
               Welcome to the
