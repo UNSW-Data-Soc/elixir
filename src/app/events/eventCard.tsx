@@ -98,7 +98,9 @@ export async function EventsCard(props: { event: Event }) {
                     {isModerator(session) && (
                       <div className="flex items-center justify-center px-3 align-baseline">
                         <EventActionsModal event={props.event} />
-                        <EventCardActions event={props.event} />
+                        {/* <EventCardActions event={props.event} /> 
+                        // TODO: fix once events tags are implemented
+                        */}
                       </div>
                     )}
                   </div>
@@ -168,6 +170,43 @@ export async function EventsCard(props: { event: Event }) {
           ),
         }}
       </EventDescription>
+    </>
+  );
+}
+
+export async function PastEventCard({ event }: { event: Event }) {
+  const session = await getServerAuthSession();
+
+  const isMod = isModerator(session);
+
+  return (
+    <>
+      <Link
+        href={event.link /* isMod ? "#" : event.link */}
+        key={event.id}
+        className={`relative flex aspect-[16/9] min-w-[20rem] max-w-[400px] cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-xl shadow-md duration-200 ease-in-out transition-all hover:scale-[.985] active:scale-95 ${
+          event.public ? "opacity-100" : "opacity-50"
+        }`}
+      >
+        <Image
+          src={
+            event.photo
+              ? getEventImageRoute(event.id, event.photo)
+              : DEFAULT_EVENT_IMAGE
+          }
+          alt="Event Cover Photo"
+          className={`h-full ${
+            session ? "absolute left-0 top-0 z-30 w-full" : ""
+          } ${event.photo ? "object-cover" : "object-contain"}`}
+          height={Event_PHOTO_Y_PXL * 0.4}
+          width={Event_PHOTO_X_PXL}
+        />
+        <div
+          className={`absolute right-2 top-2 z-40 overflow-hidden rounded-md`}
+        >
+          {isMod && <EventActionsModal event={event} />}
+        </div>
+      </Link>
     </>
   );
 }

@@ -8,7 +8,7 @@ import { api } from "@/trpc/server";
 import { getEventImageRoute } from "@/app/utils/s3";
 
 import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL } from "../utils";
-import { EventsCard } from "./eventCard";
+import { EventsCard, PastEventCard } from "./eventCard";
 import { DEFAULT_EVENT_IMAGE } from "./eventCard";
 
 export default async function EventList() {
@@ -40,25 +40,7 @@ export default async function EventList() {
           <div className="flex flex-row flex-wrap justify-center gap-5">
             {past.map((event) => (
               // <EventsCard key={event.id} event={event} />
-              <Link
-                href={event.link}
-                key={event.id}
-                className="relative flex aspect-[16/9] min-w-[20rem] max-w-[400px] cursor-pointer flex-col items-center justify-center gap-2 duration-200 ease-in-out transition-all hover:scale-[.985] active:scale-95"
-              >
-                <Image
-                  src={
-                    event.photo
-                      ? getEventImageRoute(event.id, event.photo)
-                      : DEFAULT_EVENT_IMAGE
-                  }
-                  alt="Event Cover Photo"
-                  className={`h-full rounded-b-none rounded-t-xl ${
-                    session ? "absolute left-0 top-0 z-30 w-full" : ""
-                  } ${event.photo ? "object-cover" : "object-contain"}`}
-                  height={Event_PHOTO_Y_PXL * 0.4}
-                  width={Event_PHOTO_X_PXL}
-                />
-              </Link>
+              <PastEventCard key={event.id} event={event} />
             ))}
           </div>
         </>

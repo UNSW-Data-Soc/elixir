@@ -16,6 +16,8 @@ import {
 import { api } from "@/trpc/react";
 import { RouterOutputs } from "@/trpc/shared";
 
+import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+
 import { isModerator } from "../utils";
 
 import toast from "react-hot-toast";
@@ -66,32 +68,25 @@ export default function EventActionsModal(props: { event: Event }) {
 
   return (
     <>
-      <div className="items-center justify-center align-baseline">
-        <Button
-          color="secondary"
-          radius="full"
-          variant="light"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+      <div className="flex items-center justify-center align-baseline">
+        <EventActionButton
+          className="bg-primary-500"
+          onClick={() => {
             setShowVisibilityDialogue(true);
           }}
         >
+          <EyeIcon className="h-5 w-5" />
           {props.event.public ? "Unpublish" : "Publish"}
-        </Button>
-
-        <Button
-          color="danger"
-          radius="full"
-          variant="light"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+        </EventActionButton>
+        <EventActionButton
+          className="bg-danger-500"
+          onClick={() => {
             setShowDeletionDialogue(true);
           }}
         >
+          <TrashIcon className="h-5 w-5" />
           Delete
-        </Button>
+        </EventActionButton>
       </div>
 
       <Modal
@@ -169,5 +164,28 @@ export default function EventActionsModal(props: { event: Event }) {
         </ModalContent>
       </Modal>
     </>
+  );
+}
+
+function EventActionButton({
+  className = "bg-white",
+  children,
+  onClick,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`flex flex-row items-center gap-2 rounded-none p-2 px-3 text-sm text-white ${className} transition-all hover:brightness-110`}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
+    >
+      {children}
+    </button>
   );
 }
