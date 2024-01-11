@@ -1,3 +1,7 @@
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+import { signOut } from "next-auth/react";
+
 import { ChangeEvent } from "react";
 
 import { Session } from "next-auth";
@@ -153,3 +157,8 @@ export function isAdmin(session: Session | null | undefined) {
   if (!session) return false;
   return session.user.role === "admin";
 }
+
+export const logout = async (router: AppRouterInstance) => {
+  await signOut();
+  router.push("/");
+};
