@@ -46,14 +46,14 @@ export default async function BlogContent({ slug }: { slug: string }) {
           Written by <span className="italic">{blog.author}</span>
         </p>
         <div className="flex w-full flex-row justify-between text-sm sm:text-base">
-          <Tooltip content={createdDate.format("DD/MM/YYYY HH:mm")}>
-            <p className="italic text-[#555]">
-              Published {createdDate.fromNow()}
-            </p>
-          </Tooltip>
-          <Tooltip content={editedDate.format("DD/MM/YYYY HH:mm")}>
-            <p className="italic text-[#555]">Edited {editedDate.fromNow()}</p>
-          </Tooltip>
+          {/* <Tooltip content={createdDate.format("DD/MM/YYYY HH:mm")}> */}
+          <p className="italic text-[#555]">
+            Published {createdDate.fromNow()}
+          </p>
+          {/* </Tooltip> */}
+          {/* <Tooltip content={editedDate.format("DD/MM/YYYY HH:mm")}> */}
+          <p className="italic text-[#555]">Edited {editedDate.fromNow()}</p>
+          {/* </Tooltip> */}
         </div>
       </header>
       <div dangerouslySetInnerHTML={{ __html: content }} className="pt-8"></div>
