@@ -8,7 +8,7 @@ This project uses
 - [Auth.js](https://authjs.dev/)
 - [Drizzle ORM](https://orm.drizzle.team/)
 
----
+## Setting Up
 
 Once you have cloned the repository locally, run
 
@@ -17,6 +17,15 @@ npm install
 ```
 
 to download all necessary packages.
+
+---
+
+If it is your first time setting up, create a `.env` file in the root directory
+and copy-paste the `.env.example` file's contents into `.env`
+
+Ask the IT directors to give you the values for the environment variables. NEVER commit or push the `.env` file.
+
+---
 
 Ensure that you have Prettier (VSCode extension or other) installed to lint your code before you commit + push.
 
