@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Event } from "../api/backend/events";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
+import { useState } from "react";
+
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -12,99 +12,81 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { endpoints } from "../api/backend/endpoints";
+
+import { api } from "@/trpc/react";
+import { RouterOutputs } from "@/trpc/shared";
+
+import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+
+import { isModerator } from "../utils";
+
 import toast from "react-hot-toast";
 
-export default function EventActionsModal(props: {
-  event: Event;
-  handleDeletion: (id: string) => void;
-  handleEventUpdate: (updatedBlog: Event) => void;
-}) {
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
+
+export default function EventActionsModal(props: { event: Event }) {
+  const session = useSession();
+
   const [showDeletionDialogue, setShowDeletionDialogue] = useState(false);
   const [showVisibilityDialogue, setShowVisibilityDialogue] = useState(false);
-  const session = useSession();
-  const router = useRouter();
 
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  const utils = api.useUtils();
+
+  const { mutate: deleteEvent } = api.events.delete.useMutation({
+    onMutate: () => {},
+    onSuccess: () => {
+      toast.success("Event deleted successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to delete event");
+    },
+    onSettled: () => {
+      setShowDeletionDialogue(false);
+    },
+  });
+
+  const { mutate: togglePublishEvent } = api.events.togglePublish.useMutation({
+    onMutate: () => {},
+    onSuccess: () => {
+      const actionPubUnpub = props.event.public ? "unpublish" : "publish";
+      toast.success(`Event ${actionPubUnpub}ed successfully!`);
+      void utils.events.invalidate();
+      window.location.reload(); // TODO: how to update page without full reload
+    },
+    onError: () => {
+      const actionPubUnpub = props.event.public ? "unpublish" : "publish";
+      toast.error(`Failed to ${actionPubUnpub} event`);
+    },
+    onSettled: () => {
+      setShowVisibilityDialogue(false);
+    },
+  });
+
+  if (session.status !== "authenticated" || !isModerator(session.data)) {
     return <></>;
-  }
-
-  async function handleEventDeletion() {
-    await endpoints.events
-      .remove(props.event.id)
-      .then(() => {
-        toast.success("Event deleted successfully!");
-        props.handleDeletion(props.event.id);
-      })
-      .catch(() => {
-        toast.error("Failed to delete event");
-      })
-      .finally(() => {
-        setShowDeletionDialogue(false);
-        return;
-      });
-  }
-
-  async function handleEventPublication() {
-    let actionPubUnpub = props.event.public ? "unpublished" : "published";
-    let actionPubUnpubPresent = props.event.public ? "unpublish" : "publish";
-
-    await endpoints.events
-      .updateVisibility(props.event.id, !props.event.public)
-      .then(() => {
-        toast.success(`Resource ${actionPubUnpub} successfully!`);
-        let updatedEvent = props.event;
-        updatedEvent.public = !props.event.public;
-        props.handleEventUpdate(updatedEvent);
-      })
-      .catch(() => {
-        toast.error(`Failed to ${actionPubUnpubPresent} event`);
-      })
-      .finally(() => {
-        setShowVisibilityDialogue(false);
-      });
   }
 
   return (
     <>
-      <div className="items-center justify-center align-baseline">
-        {
-          // TODO: add edit button
-          props.event.public ? (
-            <Button
-              color="secondary"
-              radius="full"
-              variant="light"
-              onClick={() => {
-                setShowVisibilityDialogue(true);
-              }}
-            >
-              Unpublish
-            </Button>
-          ) : (
-            <Button
-              color="secondary"
-              radius="full"
-              variant="light"
-              onClick={() => {
-                setShowVisibilityDialogue(true);
-              }}
-            >
-              Publish
-            </Button>
-          )
-        }
-
-        <Button
-          color="danger"
-          radius="full"
-          variant="light"
+      <div className="flex items-center justify-center align-baseline">
+        <EventActionButton
+          className="bg-primary-500"
+          onClick={() => {
+            setShowVisibilityDialogue(true);
+          }}
+        >
+          <EyeIcon className="h-5 w-5" />
+          {props.event.public ? "Unpublish" : "Publish"}
+        </EventActionButton>
+        <EventActionButton
+          className="bg-danger-500"
           onClick={() => {
             setShowDeletionDialogue(true);
           }}
         >
+          <TrashIcon className="h-5 w-5" />
           Delete
-        </Button>
+        </EventActionButton>
       </div>
 
       <Modal
@@ -136,7 +118,7 @@ export default function EventActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleEventPublication}
+                  onPress={() => togglePublishEvent({ id: props.event.id })}
                 >
                   Confirm
                 </Button>
@@ -172,7 +154,7 @@ export default function EventActionsModal(props: {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleEventDeletion}
+                  onPress={() => deleteEvent({ id: props.event.id })}
                 >
                   Confirm
                 </Button>
@@ -182,5 +164,28 @@ export default function EventActionsModal(props: {
         </ModalContent>
       </Modal>
     </>
+  );
+}
+
+function EventActionButton({
+  className = "bg-white",
+  children,
+  onClick,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`flex flex-row items-center gap-2 rounded-none p-2 px-3 text-sm text-white ${className} transition-all hover:brightness-110`}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
+    >
+      {children}
+    </button>
   );
 }

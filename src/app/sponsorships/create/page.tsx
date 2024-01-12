@@ -1,196 +1,170 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+
+import { useSession } from "next-auth/react";
+
 import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { DEFAULT_DATEPICKER_INTERVAL, Spinner } from "@/app/utils";
-import { Company } from "@/app/api/backend/companies";
-import { endpoints } from "@/app/api/backend/endpoints";
-import { CreateSponsorship, SponsorshipType, isOfTypeSponsorshipType } from "@/app/api/backend/sponsorships";
+
 import { Select, SelectItem } from "@nextui-org/select";
+
+import { api } from "@/trpc/react";
+
+import { DEFAULT_DATEPICKER_INTERVAL, Spinner, isModerator } from "@/app/utils";
+
+// import dayjs from "dayjs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from "react-hot-toast";
 
-import dayjs from "dayjs";
+const sponsorshipTypes = ["major", "partner", "other"] as const;
+type SponsorshipType = (typeof sponsorshipTypes)[number];
+
+function checkSponsorshipType(s: string): s is SponsorshipType {
+  return sponsorshipTypes.includes(s as SponsorshipType);
+}
 
 export default function CreateSponsorship() {
-    const router = useRouter();
-    const session = useSession();
+  const router = useRouter();
+  const session = useSession();
 
-    const [loading, setLoading] = useState(true);
-    const [companiesAll, setCompaniesAll] = useState<Company[]>([]);
+  const [message, setMessage] = useState("");
+  const [sponsorshipType, setSponsorshipType] =
+    useState<SponsorshipType>("other");
+  const [company, setCompany] = useState("");
+  const [expiration, setExpiration] = useState(new Date());
 
-    const [message, setMessage] = useState("");
-    const [sponsorshipType, setSponsorshipType] = useState<SponsorshipType>("other");
-    const [company, setCompany] = useState("");
-    const [expiration, setExpiration] = useState(new Date());
+  const {
+    data: companiesAll,
+    isLoading,
+    isError,
+  } = api.companies.getAll.useQuery();
+  const { mutate: createSpon } = api.sponsorships.create.useMutation({
+    onSuccess: () => {
+      toast.success("Created sponsorship successfully");
+      router.push("/sponsorships");
+    },
+    onError: () => {
+      toast.error("Failed to create sponsorship");
+    },
+  });
 
-    useEffect(() => {
-        async function getData() {
-            await endpoints.companies.getAll()
-                .then(cmps => {
-                    setCompaniesAll(cmps);
-                })
-                .catch(() => {
-                    toast.error("Failed to retrieve companies");
-                })
-        }
-        
-        setLoading(true);
-        getData();
-        setLoading(false);
-    }, []);
+  if (session.status == "loading") return <Spinner />;
+  if (session.status === "unauthenticated" || !isModerator(session.data)) {
+    router.push("/auth/login");
+  }
+  if (isLoading) return <Spinner />;
+  if (!companiesAll && isError) {
+    toast.error("Error getting companies");
+    return <></>;
+  }
 
-    if (session.status == "loading") return <></>;
-    if (session.status === "unauthenticated" || !session.data?.user) {
-        router.push("/");
-        return <></>;
+  async function handleConfirm() {
+    if (company === "") {
+      return toast.error("Please select a company");
     }
 
-    async function handleConfirm() {
-        if(company === "") {
-            return toast.error("Please select a company");
-        }
+    // TODO: do we need this check
+    // if(!dayjs(expiration).isAfter(Date.now())) {
+    //     return toast.error("Please select an expiration date in the future!");
+    // }
 
-        const exp = dayjs(expiration);
+    createSpon({
+      message,
+      sponPublic: true,
+      type: sponsorshipType,
+      company,
+      expiration,
+    });
+  }
 
-        if(!exp.isAfter(Date.now())) {
-            return toast.error("Please select an expiration date in the future!");
-        }
-        
-        let sponsorship: CreateSponsorship = {
-            message: message,
-            sponsorship_type: sponsorshipType,
-            company: company,
-            expiration: dayjs(expiration).toISOString(),
-        };
+  return (
+    <>
+      {isLoading && <Spinner />}
+      <div className="container m-auto flex flex-col">
+        <div className="container m-auto flex flex-row justify-between flex-wrap">
+          <div>
+            <h1 className="py-3 text-5xl font-semibold">New Sponsorship</h1>
+            <div></div>
+          </div>
+        </div>
 
-        setLoading(true);
-        endpoints.sponsorships.create(sponsorship)
-        .then(uploadedSponsorship => {
-            setLoading(false);
-            toast.success("Created sponsorship successfully");
-            router.push("/sponsorships");
-            return;
-        }).catch(() => {
-            toast.error("Failed to create sponsorship");
-            setLoading(false);
-            return;
-        });
+        <p className="py-5  text-2xl font-semibold">Type</p>
+        <Select
+          label="Type"
+          placeholder="Select an sponsorship type"
+          className="max-w-xs"
+          selectedKeys={new Set([sponsorshipType])}
+          isRequired
+          onChange={(t) => {
+            const sType = t.target.value;
+            if (checkSponsorshipType(sType)) setSponsorshipType(sType);
+          }}
+        >
+          {sponsorshipTypes.map((sType) => (
+            <SelectItem key={sType} value={sType}>
+              {sType}
+            </SelectItem>
+          ))}
+        </Select>
 
-    }
+        <p className="py-5  text-2xl font-semibold">Company</p>
+        <Select
+          items={companiesAll}
+          label="Company"
+          placeholder="Select a company"
+          className="max-w-xs"
+          required
+          selectedKeys={(() => {
+            const companyObj = companiesAll.find((c) => c.id === company);
+            if (!companyObj) return new Set([]);
+            return new Set([companyObj.id]);
+          })()}
+          onChange={(companyId) => {
+            setCompany(companyId.target.value);
+          }}
+        >
+          {(company) => (
+            <SelectItem key={company.id} value={company.id}>
+              {company.name}
+            </SelectItem>
+          )}
+        </Select>
 
-    async function handleCancel() {
-        return router.back();
-    }
+        <p className="py-5  text-2xl font-semibold">Sponsorship Message</p>
+        <input
+          className="py-3 px-4 border-2 rounded-xl transition-all"
+          type="text"
+          placeholder="A call to action..."
+          value={message}
+          onChange={(e) => {
+            setMessage(e.target.value);
+          }}
+        />
 
-    function isValidURL(text: string) {
-        let url: URL;
+        <p className="py-5  text-2xl font-semibold">Expiration</p>
+        <DatePicker
+          className="bg-red"
+          showIcon={true}
+          showTimeSelect
+          selected={expiration}
+          timeIntervals={DEFAULT_DATEPICKER_INTERVAL}
+          onChange={(date: Date) => setExpiration(date)}
+        />
 
-        try {
-            url = new URL(text);
-        } catch (_) {
-            return false;
-        }
-
-        return url.protocol === "http:" || url.protocol === "https:";
-    }
-
-    function getCompaniesSelect(): Iterable<string> {
-        for(let c of companiesAll) {
-            if(c.id === company) {
-                return new Set([company]);
-            }
-        }
-        return new Set([]);
-    }
-
-    return (
-        <>
-            {loading && <Spinner />}
-            {
-                <div className="container m-auto flex flex-col">
-                    <div className="container m-auto flex flex-row justify-between flex-wrap">
-                        <div>
-                            <h1 className="py-3 text-5xl font-semibold">
-                                New Sponsorship
-                            </h1>
-                            <div></div>
-                        </div>
-                    </div>
-
-                    <p className="py-5  text-2xl font-semibold">Type</p>
-                    <Select
-                        label="Type"
-                        placeholder="Select an sponsorship type"
-                        className="max-w-xs"
-                        selectedKeys={new Set([sponsorshipType])}
-                        isRequired
-                        onChange={t => {
-                            let sType = t.target.value;
-                            if(isOfTypeSponsorshipType(sType)) {
-                                setSponsorshipType(sType);
-                            }
-                        }}
-                    >
-                        {["major", "partner", "other"].map((sType) => (
-                        <SelectItem key={sType} value={sType}>
-                            {sType}
-                        </SelectItem>
-                        ))}
-                    </Select>
-                    
-                    <p className="py-5  text-2xl font-semibold">Company</p>
-                    <Select
-                        items={companiesAll}
-                        label="Company"
-                        placeholder="Select a company"
-                        className="max-w-xs"
-                        required
-                        selectedKeys={getCompaniesSelect()}
-                        onChange={companyId => {
-                            setCompany(companyId.target.value)
-                        }}
-                        >
-                        {(company) => <SelectItem key={company.id}>{company.name}</SelectItem>}
-                    </Select>
-
-                    <p className="py-5  text-2xl font-semibold">Sponsorship Message</p>
-                    <input
-                        className="py-3 px-4 border-2 rounded-xl transition-all"
-                        type="text"
-                        placeholder="A call to action..."
-                        value={message}
-                        onChange={(e) => {
-                            setMessage(e.target.value);
-                        }}
-                    />
-
-                    <p className="py-5  text-2xl font-semibold">Expiration</p>
-                    <DatePicker
-                        className="bg-red"
-                        showIcon={true}
-                        showTimeSelect
-                        selected={expiration}
-                        timeIntervals={DEFAULT_DATEPICKER_INTERVAL}
-                        onChange={(date: Date) => setExpiration(date)}
-                    />
-
-                    <button
-                        className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                        onClick={handleConfirm}
-                    >
-                        Create sponsorship
-                    </button>
-                    <button
-                        className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </button>
-                </div>
-            }
-        </>
-    );
+        <button
+          className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+          onClick={handleConfirm}
+        >
+          Create sponsorship
+        </button>
+        <button
+          className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
+          onClick={() => router.back()}
+        >
+          Cancel
+        </button>
+      </div>
+    </>
+  );
 }

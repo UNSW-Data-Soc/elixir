@@ -1,22 +1,30 @@
-import { redirect, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+
+import { getServerAuthSession } from "@/server/auth";
+
+import UserAddCard from "./addUserCard";
 import UsersList from "./userList";
-import { endpoints } from "../api/backend/endpoints";
 
 export default async function Users() {
-    const session = await getServerSession();
-    if (!session) {
-        return redirect("/");
-    }
+  const session = await getServerAuthSession();
 
-    let tags = await endpoints.tags.getAll();
+  if (!session) {
+    return redirect("/auth/login");
+  }
 
+  if (session?.user.role !== "admin") {
     return (
-        <div className="container m-auto flex gap-5 p-10 flex-wrap justify-center">
-            <UsersList
-                tags={tags}
-            />
-        </div>
+      <div className="container m-auto flex flex-grow flex-wrap justify-center gap-5 p-10">
+        You do not have permission to view this page.
+      </div>
     );
+  }
+  return (
+    <div className="relative m-auto flex w-full flex-grow flex-wrap justify-center gap-5 p-10">
+      <UsersList />
+      <div className="absolute bottom-5 right-5">
+        <UserAddCard />
+      </div>
+    </div>
+  );
 }

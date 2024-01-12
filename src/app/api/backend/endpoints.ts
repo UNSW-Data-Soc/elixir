@@ -1,17 +1,22 @@
-import { auth } from "./auth";
-import { blogs } from "./blogs";
-import { events } from "./events";
-import { tags } from "./tags";
-import { users } from "./users";
-import { resources } from "./resources";
-import { file } from "./file";
-import { getSession, signOut } from "next-auth/react";
-import { companies } from "./companies";
-import { sponsorships } from "./sponsorships";
-import { jobs } from "./jobs";
-import { getToken } from "next-auth/jwt";
 import { redirect } from "next/navigation";
 
+import { getToken } from "next-auth/jwt";
+import { getSession, signOut } from "next-auth/react";
+
+import { auth } from "./auth";
+import { blogs } from "./blogs";
+import { companies } from "./companies";
+import { events } from "./events";
+import { file } from "./file";
+import { jobs } from "./jobs";
+import { resources } from "./resources";
+import { sponsorships } from "./sponsorships";
+import { tags } from "./tags";
+import { users } from "./users";
+
+/**
+ * @deprecated
+ */
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 interface FetchArguments {
@@ -30,34 +35,14 @@ export const callFetch = async (
     body = null,
     authRequired = false,
   }: FetchArguments,
-  setContentType = true
+  setContentType = true,
 ) => {
-  const session = await getSession();
-
-  const headers: HeadersInit = setContentType ? { "Content-Type": contentType } : {};
-  if (authRequired) headers["Authorization"] = `Bearer ${session?.user.token}`;
-
-  const res = await fetch(`${BACKEND_URL}${route}`, { method, headers, body });
-
-  if (!res.ok) {
-    if (res.status === 401) {
-      if(route === "/login" || route === "/register") {
-        // can't remove token if it doesn't exist
-        return await res.json();
-      }
-      if(session && session.user.token) {
-        await signOut();
-        return redirect("/auth/login");
-      }
-      
-    }
-    const err = await res.text();
-    throw new Error(err);
-  }
-
-  return await res.json();
+  return {} as any;
 };
 
+/**
+ * @deprecated
+ */
 export const endpoints = {
   auth,
   blogs,

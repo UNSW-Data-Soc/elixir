@@ -1,16 +1,14 @@
-"use client";
+import { getServerAuthSession } from "@/server/auth";
 
-import { endpoints } from "../api/backend/endpoints";
-import { type Blog } from "../api/backend/blogs";
+import { api } from "@/trpc/server";
 
-import BlogsAddCard from "./blogsAddCard";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { isModerator } from "../utils";
 import BlogsList from "./blogList";
+import BlogsAddCard from "./blogsAddCard";
 
 export default function Blog() {
   return (
-    <main className="bg-white">
+    <main className="relative flex-grow bg-white">
       <header className="flex flex-col gap-4 bg-[#4799d1] p-12 text-white">
         <h1 className="text-3xl font-semibold">Blog</h1>
         <p>
@@ -24,32 +22,21 @@ export default function Blog() {
   );
 }
 
-function BlogsContainer() {
-  const session = useSession();
-
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-
-  useEffect(() => {
-    if (session.status === "loading") return;
-
-    const getBlogs = async () => {
-      const blogs = await endpoints.blogs.getAll({
-        authRequired: session.status === "authenticated",
-      });
-      setBlogs(blogs);
-    };
-
-    void getBlogs();
-  }, [session.status]);
-  console.log(session);
+async function BlogsContainer() {
+  const session = await getServerAuthSession();
+  const blogs = await api.blogs.getAll.query();
 
   return (
     <div className="m-auto flex flex-wrap justify-center gap-8 px-10 py-10 lg:container md:px-0">
-      {session.status === "authenticated" && <BlogsAddCard />}
+      {isModerator(session) && (
+        <div className="absolute bottom-5 right-5 z-50">
+          <BlogsAddCard />
+        </div>
+      )}
 
-      <BlogsList />
+      <BlogsList blogs={blogs} />
 
-      {session.status === "unauthenticated" && blogs.length === 0 && (
+      {!isModerator(session) && blogs.length === 0 && (
         <div className="flex h-full items-center justify-center p-10">
           <p className="text-center text-[#555]">No blogs yet!</p>
         </div>

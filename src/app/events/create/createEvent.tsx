@@ -2,16 +2,16 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   DEFAULT_DATEPICKER_INTERVAL,
   Event_PHOTO_X_PXL,
   Event_PHOTO_Y_PXL,
   Spinner,
+  isModerator,
 } from "@/app/utils";
 import { CreateEvent } from "@/app/api/backend/events";
-import { endpoints } from "@/app/api/backend/endpoints";
 import PhotoUploader from "@/app/photoUploader";
 
 import DatePicker from "react-datepicker";
@@ -23,8 +23,6 @@ import { BubbleMenu } from "@tiptap/react";
 import {
   BoldIcon,
   CodeIcon,
-  H1Icon,
-  H2Icon,
   H3Icon,
   ItalicIcon,
   LinkIcon,
@@ -37,12 +35,15 @@ import {
 } from "@/app/blogs/editor/icons";
 import useClickAway from "@/app/hooks/useClickAway";
 import { Tooltip } from "@nextui-org/react";
+import { api } from "@/trpc/react";
+import { getEventImageKey, upload } from "@/app/utils/s3";
+
+const TOAST_ID_UPLOADING_PHOTO = "uploading-photo";
 
 export default function CreateEvent() {
   const router = useRouter();
   const session = useSession();
 
-  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const editor = useEditor({
@@ -64,22 +65,38 @@ export default function CreateEvent() {
   const [link, setLink] = useState("");
   const [photo, setPhoto] = useState<Blob | null>(null);
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const { mutate: deleteEvent } = api.events.delete.useMutation({});
+
+  const { mutate: createEvent } = api.events.create.useMutation({
+    onSuccess: async ({ id: eventId, photoId }) => {
+      if (photo && photoId) {
+        toast.loading("Uploading photo...", { id: TOAST_ID_UPLOADING_PHOTO });
+
+        const res = await upload(photo, getEventImageKey(eventId, photoId));
+
+        toast.dismiss(TOAST_ID_UPLOADING_PHOTO);
+
+        if (!res.ok) {
+          toast.error("Failed to upload photo");
+          deleteEvent({ id: eventId }); // TODO: should we delete if photo upload fails?
+          return;
+        }
+      }
+      toast.success("Created event successfully");
+      router.push("/events");
+    },
+    onError: (err) => {
+      toast.error(`Failed to create event: ${err.message}`);
+    },
+  });
 
   if (session.status == "loading") return <></>;
-  if (session.status === "unauthenticated" || !session.data?.user) {
+  if (session.status === "unauthenticated" || !isModerator(session.data)) {
     router.push("/");
     return <></>;
   }
 
   async function handleConfirm() {
-    if (!session.data || !session.data.user) {
-      toast.error("Unauthorised");
-      return router.push("/");
-    }
-
     if (!isValidURL(link)) {
       return toast.error("Please enter a valid link");
     }
@@ -88,9 +105,10 @@ export default function CreateEvent() {
       return toast.error("Please fill all fields");
     }
 
-    if (!photo) {
-      return toast.error("Please upload a photo!");
-    }
+    // TODO: should we force a photo upload?
+    // if (!photo) {
+    //   return toast.error("Please upload a photo!");
+    // }
 
     const start = dayjs(startDate);
     const end = dayjs(endDate);
@@ -99,35 +117,15 @@ export default function CreateEvent() {
       return toast.error("The start date cannot occur after the end date!");
     }
 
-    const event: CreateEvent = {
-      creator: session.data.user.id,
-      title: title,
-      description: description,
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      location: location,
-      link: link,
-      public: false,
-    };
-
-    setLoading(true);
-    endpoints.events
-      .create(event, photo)
-      .then((uploadedEvent) => {
-        setLoading(false);
-        toast.success("Created event successfully");
-        router.push("/events");
-        return;
-      })
-      .catch((e) => {
-        toast.error(`Failed to create event: ${e}`);
-        setLoading(false);
-        return;
-      });
-  }
-
-  async function handleCancel() {
-    return router.back();
+    createEvent({
+      title,
+      description,
+      startTime: startDate,
+      endTime: endDate,
+      location,
+      link,
+      photo: !!photo,
+    });
   }
 
   function isValidURL(text: string) {
@@ -141,7 +139,6 @@ export default function CreateEvent() {
 
   return (
     <>
-      {loading && <Spinner />}
       {
         <div className="container m-auto flex flex-col">
           <div className="container m-auto flex flex-row flex-wrap justify-between">
@@ -209,9 +206,7 @@ export default function CreateEvent() {
           <p className="py-5  text-2xl font-semibold">Upload photo</p>
           <PhotoUploader
             uploadCroppedPhoto={(blob: Blob) => {
-              setLoading(true);
               setPhoto(blob);
-              setLoading(false);
             }}
             cancelUploadingCroppedPhoto={() => {
               setPhoto(null);
@@ -228,7 +223,7 @@ export default function CreateEvent() {
           </button>
           <button
             className="mr-2 mt-10 rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
-            onClick={handleCancel}
+            onClick={() => router.back()}
           >
             Cancel
           </button>

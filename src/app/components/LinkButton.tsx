@@ -1,24 +1,23 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
 import Link from "next/link";
 
+import { Button } from "@nextui-org/react";
+
 export default function LinkButton(props: {
-    to: string;
-    text: string;
-    className: string;
+  to: string;
+  text: string;
+  className: string;
 }) {
-    return (
-        <>
-            <Button
-                as={Link}
-                color="primary"
-                href={props.to}
-                variant="solid"
-                className={props.className}
-            >
-                <span>{props.text}</span>
-            </Button>
-        </>
-    );
+  return (
+    <Button
+      as={Link}
+      color="primary"
+      href={props.to}
+      variant="solid"
+      className={props.className}
+    >
+      {props.text}
+    </Button>
+  );
 }

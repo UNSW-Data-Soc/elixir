@@ -1,325 +1,485 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { logout } from "./api/auth/auth";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
-import {
-  ArrowLeftOnRectangleIcon,
-  ArrowRightOnRectangleIcon,
-  BoltIcon,
-  ChatBubbleBottomCenterIcon,
-  HomeIcon,
-  UserCircleIcon,
-  UsersIcon,
-  UserIcon,
-  FaceSmileIcon,
-  Cog6ToothIcon,
-  TagIcon,
-  PhotoIcon,
-  BuildingLibraryIcon,
-} from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
+
+import { DispatchWithoutAction, useReducer, useState } from "react";
+
+import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
+import { Link } from "@nextui-org/link";
 import {
-  Navbar as NextUINavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
-  Button,
+  NavbarMenu,
+  NavbarMenuItem,
   NavbarMenuToggle,
-  Avatar,
-} from "@nextui-org/react";
-import { useState } from "react";
-import { endpoints } from "./api/backend/endpoints";
-import { DATASOC_CONSTITUION_LINK, DATASOC_SPARC_LINK } from "./utils";
+  Navbar as NextUINavbar,
+} from "@nextui-org/navbar";
 
-const Navbar = () => {
-  const router = useRouter();
-  const session = useSession();
+import {
+  ArrowLeftOnRectangleIcon,
+  BuildingLibraryIcon,
+  ChevronDownIcon,
+  PhotoIcon,
+  TagIcon,
+  UserIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
 
-  const logoutClick = async () => {
-    if (!session) {
-      router.push("/");
-      return;
-    }
-    const success = await logout();
-    if (success) {
-      router.push("/");
-    }
-  };
+import {
+  DATASOC_CONSTITUION_LINK,
+  DATASOC_SPARC_LINK,
+  isAdmin,
+  isModerator,
+  logout,
+} from "./utils";
+import { getUserProfilePicRoute } from "./utils/s3";
 
-  return (
-    <NextUINavbar isBordered>
-      <NavbarBrand>
-        <Link href="/" className="">
-          <Image
-            src="/logo.png"
-            width={200}
-            height={200}
-            alt="Picture of the author"
-          />
-        </Link>
-      </NavbarBrand>
-      <NavbarContent className="hidden gap-4 sm:flex" justify="start">
-        <NavbarItem>
-          <Link href="/" className="">
-            <span>Home</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <AboutUsDropdown />
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/sponsorships" className="">
-            <span>Sponsors</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/events" className="">
-            <span>Events</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/jobs" className="">
-            <span>Jobs Board</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/blogs" className="">
-            <span>Blogs</span>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/resources" className="">
-            <span>Resources</span>
-          </Link>
-        </NavbarItem>
-
-        <NavbarItem>
-          <PublicationsDropdown />
-        </NavbarItem>
-
-        <NavbarItem>
-          <Link href="/contact" className="">
-            <span>Contact Us</span>
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent className="hidden gap-4 sm:flex" justify="end">
-        {session.status === "unauthenticated" && (
-          <>
-            <NavbarItem>
-              <Button
-                as={Link}
-                color="primary"
-                href="#"
-                variant="flat"
-                onClick={() => {
-                  router.push("/auth/login");
-                }}
-              >
-                Login
-              </Button>
-            </NavbarItem>
-          </>
-        )}
-
-        {session.status === "authenticated" && (
-          <>
-            {
-              <NavbarItem className="flex items-center justify-center align-baseline">
-                <SettingsDropdown
-                  is_admin={session.data.user.admin}
-                  is_moderator={session.data.user.moderator}
-                  user_id={session.data.user.id}
-                />
-              </NavbarItem>
-            }
-            <NavbarItem>
-              <Button
-                as={Link}
-                color="primary"
-                href="#"
-                variant="flat"
-                onClick={logoutClick}
-              >
-                <ArrowLeftOnRectangleIcon className="h-6 w-6" />
-                <span>Logout</span>
-              </Button>
-            </NavbarItem>
-          </>
-        )}
-      </NavbarContent>
-    </NextUINavbar>
-  );
+type SettingsItem = {
+  key: string;
+  label: string;
+  startContent: JSX.Element;
+  link: string;
 };
 
-function AboutUsDropdown() {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-
-  return (
-    <div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <Dropdown isOpen={isOpen}>
-        <DropdownTrigger>
-          <Link href="/about" className="">
-            <span>About Us</span>
-          </Link>
-        </DropdownTrigger>
-        <DropdownMenu aria-label="Static Actions">
-          <DropdownItem key="about-us" onClick={() => router.push("/about")}>
-            About Us
-          </DropdownItem>
-          <DropdownItem
-            key="our-team"
-            onClick={() => router.push("/about/team")}
-          >
-            Our Team
-          </DropdownItem>
-          <DropdownItem
-            key="constitution-link"
-          >
-            <Link href={DATASOC_CONSTITUION_LINK} className="text-black text-sm">
-              Our Constitution
-            </Link>
-          </DropdownItem>
-          <DropdownItem
-            key="careers-guide"
-            onClick={() => router.push(DATASOC_SPARC_LINK)}
-          >
-            SpArc
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-    </div>
-  );
-}
-
-function PublicationsDropdown() {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-
-  return (
-    <div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <Dropdown isOpen={isOpen}>
-        <DropdownTrigger>
-          <Link href="/publications" className="">
-            <span>Publications</span>
-          </Link>
-        </DropdownTrigger>
-        <DropdownMenu aria-label="Static Actions">
-          <DropdownItem
-            key="publications"
-            onClick={() => router.push("/publications")}
-          >
-            Publications
-          </DropdownItem>
-          <DropdownItem
-            key="first-year-guide"
-            onClick={() => router.push("/first-year-guide")}
-          >
-            First Year Guide
-          </DropdownItem>
-          <DropdownItem
-            key="careers-guide"
-            onClick={() => router.push("/careers-guide")}
-          >
-            Careers Guide
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-    </div>
-  );
-}
-
-function SettingsDropdown(props: { is_admin: boolean; is_moderator: boolean; user_id: string }) {
-  const router = useRouter();
-  interface ItemDropdown {
-    key: string;
-    label: string;
-    startContent: JSX.Element;
-    link: string;
-  }
-
-  let items: ItemDropdown[] = [];
-
-  if(props.is_admin) {
-    items= [
-      {
-        key: "users",
-        label: "Users",
-        startContent: <UsersIcon className="h-6 w-6" />,
-        link: "/users",
-      },
-    ]
-  }
-
-  if (props.is_moderator) {
-    items.push(
-      {
-        key: "tags",
-        label: "Tags",
-        startContent: <TagIcon className="h-6 w-6" />,
-        link: "/tags/references",
-      },
-      {
-        key: "companies",
-        label: "Companies",
-        startContent: <BuildingLibraryIcon className="h-6 w-6" />,
-        link: "/companies",
-      },
-      {
-        key: "coverphoto",
-        label: "Cover Photo",
-        startContent: <PhotoIcon className="h-6 w-6" />,
-        link: "/settings/coverphoto",
-      },
-    );
-  }
-
-  items.push({
+const adminSettingsItems: SettingsItem[] = [
+  {
+    key: "users",
+    label: "Users",
+    startContent: <UsersIcon className="h-6 w-6" />,
+    link: "/users",
+  },
+];
+const moderatorSettingsItems: SettingsItem[] = [
+  {
+    key: "tags",
+    label: "Tags",
+    startContent: <TagIcon className="h-6 w-6" />,
+    link: "/tags",
+  },
+  {
+    key: "companies",
+    label: "Companies",
+    startContent: <BuildingLibraryIcon className="h-6 w-6" />,
+    link: "/companies",
+  },
+  {
+    key: "coverphoto",
+    label: "Cover Photo",
+    startContent: <PhotoIcon className="h-6 w-6" />,
+    link: "/settings/coverphoto",
+  },
+];
+const userSettingsItems: SettingsItem[] = [
+  {
     key: "profile",
     label: "Profile",
     startContent: <UserIcon className="h-6 w-6" />,
-    link: `/profile/${props.user_id}`,
-  });
+    link: `/profile`,
+  },
+  {
+    key: "logout",
+    label: "Logout",
+    startContent: <ArrowLeftOnRectangleIcon className="h-6 w-6" />,
+    link: "/",
+  },
+];
+
+// navbar menu items + subitems
+type MenuSubItem = {
+  name: string;
+  link: string;
+  target?: string;
+  className?: string;
+};
+type MenuItem = {
+  name: string;
+  link: string;
+  subItems?: MenuSubItem[];
+};
+const menuItems: MenuItem[] = [
+  { name: "Home", link: "/" },
+  {
+    name: "About Us",
+    link: "/about",
+    subItems: [
+      { name: "Our Team", link: "/about/team" },
+      {
+        name: "Our Constitution",
+        link: DATASOC_CONSTITUION_LINK,
+        target: "_blank",
+        className: "text-sm text-black",
+      },
+      {
+        name: "SpArc",
+        link: DATASOC_SPARC_LINK,
+        target: "_blank",
+        className: "text-sm text-black",
+      },
+    ],
+  },
+  { name: "Sponsors", link: "/sponsorships" },
+  { name: "Events", link: "/events" },
+  { name: "Jobs Board", link: "/jobs" },
+  { name: "Blogs", link: "/blogs" },
+  { name: "Resources", link: "/resources" },
+  {
+    name: "Publications",
+    link: "/publications",
+    subItems: [
+      { name: "First Year Guide", link: "/first-year-guide" },
+      { name: "Careers Guide", link: "/careers-guide" },
+    ],
+  },
+  { name: "Contact Us", link: "/contact" },
+];
+const shortMenuItems: MenuItem[] = [
+  { name: "Home", link: "/" },
+  {
+    name: "About",
+    link: "/about",
+    subItems: [
+      { name: "Our Team", link: "/about/team" },
+      {
+        name: "Our Constitution",
+        link: DATASOC_CONSTITUION_LINK,
+        target: "_blank",
+        className: "text-sm text-black",
+      },
+      {
+        name: "SpArc",
+        link: DATASOC_SPARC_LINK,
+        target: "_blank",
+        className: "text-sm text-black",
+      },
+    ],
+  },
+  { name: "Events", link: "/events" },
+  {
+    name: "Sponsors",
+    link: "/sponsorships",
+    subItems: [{ name: "Jobs Board", link: "/jobs" }],
+  },
+  {
+    name: "Publications",
+    link: "/publications",
+    subItems: [
+      { name: "Blogs", link: "/blogs" },
+      { name: "Resources", link: "/resources" },
+      { name: "First Year Guide", link: "/first-year-guide" },
+      { name: "Careers Guide", link: "/careers-guide" },
+    ],
+  },
+  { name: "Contact", link: "/contact" },
+];
+
+function hasSubItems(item: MenuItem): item is Required<MenuItem> {
+  return !!item.subItems;
+}
+
+export default function Navbar() {
+  const [isOpen, toggleOpen] = useReducer((isOpen) => !isOpen, false);
 
   return (
-    <Dropdown backdrop="blur">
+    <NextUINavbar
+      isBordered
+      shouldHideOnScroll={false}
+      className="z-50 flex items-center justify-center gap-6 bg-[#fffb]"
+      maxWidth="xl"
+      isMenuOpen={isOpen}
+      onMenuOpenChange={toggleOpen}
+    >
+      {/* displays on mobile devices */}
+      <MobileNavbar toggleOpen={toggleOpen} />
+      <TabletNavbar />
+      {/* displays on large devices */}
+      <DesktopNavbar />
+    </NextUINavbar>
+  );
+}
+
+function MobileNavbar({ toggleOpen }: { toggleOpen: DispatchWithoutAction }) {
+  const path = usePathname();
+
+  const session = useSession();
+
+  return (
+    <>
+      <NavbarContent className="z-50 flex md:hidden" justify="start">
+        <NavbarBrand>
+          <Link href="/" className="text-[#333]">
+            <Image
+              src="/logo.png"
+              width={118}
+              height={32}
+              className="h-[1.8rem] w-auto"
+              alt="society logo"
+            />
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
+      <NavbarMenu className="z-50 py-5">
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              color={item.link === path ? "primary" : "foreground"}
+              className="w-full px-3 py-2 text-base sm:text-lg"
+              href={item.link}
+              size="lg"
+              onClick={toggleOpen}
+            >
+              {item.name}
+            </Link>
+            {hasSubItems(item) && (
+              <div className="flex flex-col gap-1">
+                {item.subItems.map((subItem, index) => (
+                  <Link
+                    key={`${subItem}-${index}`}
+                    color={subItem.link === path ? "primary" : "foreground"}
+                    className="w-full px-3 py-2 text-sm"
+                    href={subItem.link}
+                    size="lg"
+                    onClick={toggleOpen}
+                  >
+                    {subItem.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </NavbarMenuItem>
+        ))}
+        {session.status === "authenticated" && (
+          <MobileAdminLinks toggleOpen={toggleOpen} />
+        )}
+      </NavbarMenu>
+
+      {/* hamburger button for mobile navbar */}
+      <NavbarContent className="z-50 flex md:hidden" justify="center">
+        <NavbarMenuToggle onClick={toggleOpen} />
+      </NavbarContent>
+    </>
+  );
+}
+
+function MobileAdminLinks({
+  toggleOpen,
+}: {
+  toggleOpen: DispatchWithoutAction;
+}) {
+  const session = useSession();
+  const path = usePathname();
+  const router = useRouter();
+
+  const items: SettingsItem[] = [
+    ...(isAdmin(session.data) ? adminSettingsItems : []),
+    ...(isModerator(session.data) ? moderatorSettingsItems : []),
+    ...userSettingsItems,
+  ];
+
+  return (
+    <div className="flex flex-col gap-1">
+      {items.map((item, index) =>
+        item.key === "logout" ? (
+          <Link
+            key={`${item}-${index}`}
+            color={"danger"}
+            className="flex w-full flex-row gap-2 p-3"
+            onClick={() => logout(router)}
+            size="lg"
+          >
+            {item.startContent}
+            Logout
+          </Link>
+        ) : (
+          <Link
+            key={`${item}-${index}`}
+            color={item.link === path ? "primary" : "foreground"}
+            className="flex w-full flex-row gap-2 px-3 py-2 text-sm"
+            href={item.link}
+            size="lg"
+            onClick={toggleOpen}
+          >
+            {item.startContent}
+            {item.label}
+          </Link>
+        ),
+      )}
+    </div>
+  );
+}
+
+function TabletNavbar() {
+  const session = useSession();
+
+  return (
+    <NavbarContent
+      className="z-50 hidden gap-5 md:flex lg:hidden"
+      justify="end"
+    >
+      <NavbarBrand>
+        <Link href="/" className="text-[#333]">
+          <Image
+            src="/logo.png"
+            width={118}
+            height={32}
+            className="h-[1.8rem] w-auto"
+            alt="society logo"
+          />
+        </Link>
+      </NavbarBrand>
+      {shortMenuItems.map((item) =>
+        hasSubItems(item) ? (
+          <DesktopNavbarDropdown key={item.name} item={item} />
+        ) : (
+          <DesktopNavbarLink key={item.name} item={item} />
+        ),
+      )}
+      {session.status === "authenticated" && (
+        <NavbarItem className="ml-3 flex items-center justify-center align-baseline">
+          <SettingsDropdown />
+        </NavbarItem>
+      )}
+    </NavbarContent>
+  );
+}
+
+function DesktopNavbar() {
+  const session = useSession();
+
+  return (
+    <NavbarContent className="z-50 hidden gap-5 lg:flex" justify="end">
+      <NavbarBrand>
+        <Link href="/" className="text-[#333]">
+          <Image
+            src="/logo.png"
+            width={118}
+            height={32}
+            className="h-[1.8rem] w-auto"
+            alt="society logo"
+          />
+        </Link>
+      </NavbarBrand>
+      {menuItems.map((item) =>
+        hasSubItems(item) ? (
+          <DesktopNavbarDropdown key={item.name} item={item} />
+        ) : (
+          <DesktopNavbarLink key={item.name} item={item} />
+        ),
+      )}
+      {session.status === "authenticated" && (
+        <NavbarItem className="ml-3 flex items-center justify-center align-baseline">
+          <SettingsDropdown />
+        </NavbarItem>
+      )}
+    </NavbarContent>
+  );
+}
+
+function DesktopNavbarDropdown({ item }: { item: Required<MenuItem> }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <Dropdown isOpen={isOpen}>
+        <DropdownTrigger>
+          <Link
+            href={item.link}
+            className="flex h-full flex-row gap-1 text-[#333]"
+          >
+            <span>{item.name}</span>{" "}
+            <ChevronDownIcon height={15} width={15} color="#333" />
+          </Link>
+        </DropdownTrigger>
+        <DropdownMenu
+          items={[{ name: item.name, link: item.link }, ...item.subItems]}
+        >
+          {(subItem) => (
+            <DropdownItem
+              key={subItem.name}
+              href={subItem.link}
+              target={subItem.target ?? "_self"}
+            >
+              {subItem.name}
+            </DropdownItem>
+          )}
+        </DropdownMenu>
+      </Dropdown>
+    </div>
+  );
+}
+
+function DesktopNavbarLink({ item }: { item: MenuItem }) {
+  const path = usePathname();
+
+  return (
+    <Link
+      color={item.link === path ? "primary" : "foreground"}
+      className={`${
+        item.name === "Home" ? "flex lg:hidden xl:flex" : ""
+      } h-full text-[#333]`}
+      href={item.link}
+      size="lg"
+      key={item.name}
+    >
+      <NavbarItem>{item.name}</NavbarItem>
+    </Link>
+  );
+}
+
+function SettingsDropdown() {
+  const router = useRouter();
+  const session = useSession();
+
+  const items: SettingsItem[] = [
+    ...(isAdmin(session.data) ? adminSettingsItems : []),
+    ...(isModerator(session.data) ? moderatorSettingsItems : []),
+    ...userSettingsItems,
+  ];
+
+  return (
+    <Dropdown>
       <DropdownTrigger>
         <Avatar
           isBordered
           showFallback
           as="button"
-          src={endpoints.users.getUserProfilePicture(props.user_id)}
+          src={
+            session.data?.user.image
+              ? getUserProfilePicRoute(
+                  session.data.user.id,
+                  session.data.user.image,
+                )
+              : undefined
+          }
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions" items={items}>
         {(item) => {
-          let i = item as ItemDropdown;
           return (
             <DropdownItem
-              key={i.key}
-              startContent={i.startContent}
+              key={item.key}
+              startContent={item.startContent}
               onClick={() => {
-                router.push(i.link);
+                if (item.key === "logout") {
+                  logout(router);
+                  return;
+                }
+                router.push(item.link);
               }}
             >
-              {i.label}
+              {item.label}
             </DropdownItem>
           );
         }}
@@ -327,5 +487,3 @@ function SettingsDropdown(props: { is_admin: boolean; is_moderator: boolean; use
     </Dropdown>
   );
 }
-
-export default Navbar;

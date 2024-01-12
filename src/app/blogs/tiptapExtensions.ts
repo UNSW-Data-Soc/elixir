@@ -1,34 +1,35 @@
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import BaseHeading from "@tiptap/extension-heading";
-import Strike from "@tiptap/extension-strike";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Underline from "@tiptap/extension-underline";
-import Code from "@tiptap/extension-code";
-import Image from "@tiptap/extension-image";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import Blockquote from "@tiptap/extension-blockquote";
-import OrderedList from "@tiptap/extension-ordered-list";
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import Link from "@tiptap/extension-link";
-import History from "@tiptap/extension-history";
-import Typography from "@tiptap/extension-typography";
-import Dropcursor from "@tiptap/extension-dropcursor";
-import Gapcursor from "@tiptap/extension-gapcursor";
-
 import { mergeAttributes } from "@tiptap/core";
 import { Node } from "@tiptap/core";
+import Blockquote from "@tiptap/extension-blockquote";
+import Bold from "@tiptap/extension-bold";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
+import BulletList from "@tiptap/extension-bullet-list";
+import Code from "@tiptap/extension-code";
+import Document from "@tiptap/extension-document";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Gapcursor from "@tiptap/extension-gapcursor";
+import BaseHeading from "@tiptap/extension-heading";
+import History from "@tiptap/extension-history";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import Image from "@tiptap/extension-image";
+import Italic from "@tiptap/extension-italic";
+import Link from "@tiptap/extension-link";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Paragraph from "@tiptap/extension-paragraph";
+import Strike from "@tiptap/extension-strike";
+import Text from "@tiptap/extension-text";
+import Typography from "@tiptap/extension-typography";
+import Underline from "@tiptap/extension-underline";
+
+import { getBlogImageRoute } from "../utils/s3";
 
 type Levels = 1 | 2 | 3;
 
 const classes: Record<Levels, string> = {
-  1: "text-4xl",
-  2: "text-3xl",
-  3: "text-2xl",
+  1: "text-3xl mb-2",
+  2: "text-2xl mb-2",
+  3: "text-xl mb-2",
 };
 
 export const Heading = BaseHeading.configure({ levels: [1, 2, 3] }).extend({
@@ -123,13 +124,12 @@ export const UploadImage = Image.extend({
     ];
   },
   renderHTML({ node, HTMLAttributes }) {
-    const imageURL = new URL("/file/blog", process.env.NEXT_PUBLIC_BACKEND_URL);
-    imageURL.searchParams.append("blog_id", node.attrs.blogId);
-    imageURL.searchParams.append("photo_id", node.attrs.imageId);
     return [
       `img`,
       mergeAttributes(HTMLAttributes, {
-        src: node.attrs.src ? node.attrs.src : imageURL.href,
+        src: node.attrs.src
+          ? node.attrs.src
+          : getBlogImageRoute(node.attrs.blogId, node.attrs.imageId),
       }),
     ];
   },
@@ -166,7 +166,7 @@ export const TIPTAP_EXTENSIONS = [
   Document,
   Paragraph.configure({
     HTMLAttributes: {
-      class: "text-justify min-h-[1rem]",
+      class: "text-start sm:text-justify min-h-[1rem]",
     },
   }),
   Text,
@@ -188,7 +188,7 @@ export const TIPTAP_EXTENSIONS = [
   }),
   Blockquote.configure({
     HTMLAttributes: {
-      class: "border-l-3 border-slate-200 pl-4 ml-4 my-2",
+      class: "border-l-3 border-slate-300 p-4 my-2 bg-[#f5f5f5]",
     },
   }),
   OrderedList.configure({
@@ -207,7 +207,7 @@ export const TIPTAP_EXTENSIONS = [
     openOnClick: false,
     // validate: (href) => /^https?:\/\//.test(href),
     HTMLAttributes: {
-      class: "text-blue-500 underline",
+      class: "no-underline text-blue-500 hover:text-blue-700 transition-colors",
     },
   }),
   Embed,

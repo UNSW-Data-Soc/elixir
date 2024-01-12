@@ -1,54 +1,70 @@
 "use client";
 
-import { endpoints } from "@/app/api/backend/endpoints";
+import { useRouter } from "next/navigation";
+
+import { useSession } from "next-auth/react";
+
+import { useState } from "react";
+
+import { api } from "@/trpc/react";
+
 import PhotoUploader from "@/app/photoUploader";
 import {
   COVER_PHOTO_X_PXL,
   COVER_PHOTO_Y_PXL,
   Spinner,
-  parseBackendError,
+  isModerator,
 } from "@/app/utils";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { getCoverPhotoKey, upload } from "@/app/utils/s3";
+
 import toast from "react-hot-toast";
 
 export default function CoverPhotoRoot() {
   const router = useRouter();
   const session = useSession();
 
-  const [loading, setLoading] = useState(false);
+  const [photo, setPhoto] = useState<Blob | null>(null);
 
-  useEffect(() => {
-    if (session.status === "unauthenticated" || !session.data?.user.moderator) {
-      router.push("/");
-    }
-  });
+  const { mutate: uploadCoverPhoto, isLoading } =
+    api.coverPhotos.upload.useMutation({
+      onSuccess: async ({ id }) => {
+        if (!photo) {
+          toast.error("Please upload a photo.");
+          return;
+        }
 
-  async function uploadCroppedPhoto(blob: Blob) {
-    setLoading(true);
-    try {
-      let uploaded_photo = await endpoints.file.uploadCoverPhoto(blob);
+        const res = await upload(photo, getCoverPhotoKey(id));
 
-      if (!uploaded_photo) {
-        toast.error("Failed to upload photo.");
-        setLoading(false);
-        return;
-      }
+        if (!res.ok) {
+          toast.error("Failed to upload photo.");
+          return;
+        }
 
-      toast.success("Photo uploaded successfully");
-    } catch (e) {
-      toast.error(parseBackendError(e as Error));
-    } finally {
-      setLoading(false);
-    }
+        toast.success("Cover photo uploaded successfully");
+      },
+      onError: (e) => {
+        toast.error(e.message);
+      },
+    });
+
+  if (session.status === "loading") return <Spinner />;
+  if (!isModerator(session.data)) {
+    router.push("/");
   }
 
-  async function cancelUploadingCroppedPhoto() {}
+  async function uploadCroppedPhoto(blob: Blob) {
+    setPhoto(blob);
+
+    uploadCoverPhoto();
+  }
+
+  async function cancelUploadingCroppedPhoto() {
+    // TODO: cancel uploading photo
+  }
 
   return (
-    <div>
-      {loading && <Spinner />}
+    <div className="min-w-[270px] sm:min-w-[500px]">
+      {isLoading && <Spinner />}
       <PhotoUploader
         uploadCroppedPhoto={uploadCroppedPhoto}
         cancelUploadingCroppedPhoto={cancelUploadingCroppedPhoto}

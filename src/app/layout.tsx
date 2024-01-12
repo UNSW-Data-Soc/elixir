@@ -1,32 +1,41 @@
-import "./globals.css";
-import "./markdown.css";
 import { Inter } from "next/font/google";
 
-import { Toaster } from "react-hot-toast";
-
-import Navbar from "./navbar";
-import SessionProvider from "./NextAuthSession";
 import Footer from "./footer";
+import "./globals.css";
+import Navbar from "./navbar";
+import { Providers } from "./providers";
+import { ServerProviders } from "./serverProviders";
+
+import { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
   title: "UNSW DataSoc",
   description: "Official website of the Data Science Society of UNSW",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <SessionProvider>
-          <Toaster />
-          <Navbar />
-          <div className="flex flex-col h-screen justify-between">
-            {children}
-            <Footer/>
-          </div>
-        </SessionProvider>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} overscroll-y-none scroll-smooth`}>
+        <ServerProviders>
+          <Providers>
+            <Toaster />
+            <div className="flex h-screen flex-col justify-between">
+              <Navbar />
+              {children}
+              <Footer />
+            </div>
+          </Providers>
+        </ServerProviders>
       </body>
     </html>
   );

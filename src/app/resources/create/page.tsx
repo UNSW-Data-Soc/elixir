@@ -1,223 +1,230 @@
 "use client";
 
-import { endpoints } from "@/app/api/backend/endpoints";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+
+import { useSession } from "next-auth/react";
+
+import { ChangeEvent, useState } from "react";
+
+import { Tooltip } from "@nextui-org/tooltip";
+
+import { api } from "@/trpc/react";
+
 import {
-    FileUploadDropzone,
-    Spinner,
-    IMAGE_FILE_TYPES,
-    RESOURCE_FILE_TYPES,
-    MAX_ALLOWABLE_RESOURCE_FILE_SIZE,
+  FileUploadDropzone,
+  IMAGE_FILE_TYPES,
+  MAX_ALLOWABLE_RESOURCE_FILE_SIZE,
+  RESOURCE_FILE_TYPES,
+  Spinner,
+  isModerator,
 } from "@/app/utils";
-import { CreateResource } from "@/app/api/backend/resources";
-import { Tooltip } from "@nextui-org/react";
+import { getResourceFileKey, upload } from "@/app/utils/s3";
+
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-const ABOUT_YOU_CHAR_LIMIT = 200;
+
+import { toast } from "react-hot-toast";
+
+// TODO: move to utils file
+function isValidURL(text: string) {
+  let url: URL;
+
+  try {
+    url = new URL(text);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
+}
 
 export default function CreateResource() {
-    const router = useRouter();
-    const session = useSession();
+  const router = useRouter();
+  const session = useSession();
 
-    const [loading, setLoading] = useState(true);
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [visible, setVisibility] = useState(true);
-    const [resourceTypeFile, setResourceTypeFile] = useState(true);
-    const [link, setLink] = useState("");
-    const [file, setFile] = useState<Blob | null>(null);
+  const ctx = api.useUtils();
 
-    useEffect(() => {
-        setLoading(false);
-    }, []);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [visible, setVisibility] = useState(false);
+  const [resourceTypeFile, setResourceTypeFile] = useState(true);
+  const [link, setLink] = useState("");
+  const [file, setFile] = useState<Blob | null>(null);
 
-    if (session.status == "loading") return <></>;
-    if (session.status === "unauthenticated" || !session.data?.user) {
-        router.push("/");
-        return <></>;
-    }
-
-    async function handleConfirm() {
-        if (!resourceTypeFile && !isValidURL(link)) {
-            return toast.error("Invalid link!");
-        } else if (resourceTypeFile && !file) {
-            return toast.error("Please upload a file!");
-        } else if(title === "" || description === "") {
-            return toast.error("Please ensure all fields are non-empty!")
-        }
-
-        let resource: CreateResource = {
-            title: title,
-            description: description,
-            link: resourceTypeFile ? null : link,
-            visibility: visible,
-        };
-
-        setLoading(true);
-        let uploadedResource = await endpoints.resources.create(resource, file);
-        if (!uploadedResource) {
-            toast.error("Failed to create resource");
-            setLoading(false);
+  const { mutate: createResource, isLoading } =
+    api.resources.create.useMutation({
+      onSuccess: async ({ id, link: fileId }) => {
+        if (resourceTypeFile && file) {
+          const res = await upload(file, getResourceFileKey(id, fileId));
+          if (!res.ok) {
+            toast.error("Failed to upload resource file");
             return;
-        }
 
-        setLoading(false);
+            // TODO: delete resource?
+          }
+        }
+        void ctx.resources.invalidate();
         toast.success("Created resource successfully");
         router.push("/resources");
-        return;
+      },
+
+      onError: (err) => {
+        toast.error(`Failed to create resource: ${err.message}`);
+      },
+    });
+
+  if (session.status == "loading") return <></>;
+  if (!isModerator(session.data)) {
+    router.push("/auth/login");
+    return <></>;
+  }
+
+  async function handleConfirm() {
+    if (!resourceTypeFile && !isValidURL(link)) {
+      return toast.error("Invalid link!");
+    } else if (resourceTypeFile && !file) {
+      return toast.error("Please upload a file!");
+    } else if (title === "" || description === "") {
+      return toast.error("Please ensure all fields are non-empty!");
     }
 
-    async function handleCancel() {
-        return router.back();
+    createResource({
+      title,
+      description,
+      link: resourceTypeFile ? undefined : link,
+      resourcePublic: visible,
+    });
+  }
+
+  async function handleCancel() {
+    return router.back();
+  }
+
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files;
+    if (
+      files &&
+      (IMAGE_FILE_TYPES.includes(files[0].type) ||
+        RESOURCE_FILE_TYPES.includes(files[0].type))
+    ) {
+      const blob = files[0];
+      setFile(blob);
+    } else {
+      toast.error("Please upload a valid file!");
     }
+  }
 
-    async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-        let files = event.target.files;
-        setLoading(true);
-        if (
-            files &&
-            (IMAGE_FILE_TYPES.includes(files[0].type) ||
-                RESOURCE_FILE_TYPES.includes(files[0].type))
-        ) {
-            let blob = files[0];
-            setFile(blob);
-        } else {
-            toast.error("Please upload a valid file!");
-        }
+  return (
+    <>
+      {isLoading && <Spinner />}
+      {
+        <div className="container m-auto flex flex-col">
+          <div className="container m-auto flex flex-row flex-wrap justify-between">
+            <div>
+              <h1 className="py-3 text-5xl font-semibold">New Resource</h1>
+            </div>
+          </div>
+          <p className="py-5  text-2xl font-semibold">Title</p>
+          <input
+            className="rounded-xl border-2 px-4 py-3 transition-all"
+            type="text"
+            placeholder="Your title..."
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <p className="py-5  text-2xl font-semibold">Description</p>
+          <input
+            className="rounded-xl border-2 px-4 py-3 transition-all"
+            type="text"
+            placeholder="Your description..."
+            value={description}
+            disabled={isLoading}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+          />
 
-        setLoading(false);
-    }
+          <div className="mb-8 mr-8 mt-8 flex items-center gap-5">
+            <p className="py-5  text-2xl font-semibold">Link resource</p>
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input
+                type="checkbox"
+                className="peer sr-only"
+                checked={resourceTypeFile}
+                disabled={isLoading}
+                onChange={(e) => {
+                  setResourceTypeFile(!resourceTypeFile);
+                }}
+              />
+              <div className="peer h-7 w-14 rounded-full bg-gray-200 after:absolute after:left-[4px] after:top-0.5 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:content-[''] after:transition-all peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+            </label>
+            <p className="py-5  text-2xl font-semibold">Upload file</p>
+            <Tooltip
+              content={
+                "Link an existing resource OR upload an image, pdf, csv or plain text file"
+              }
+            >
+              <QuestionMarkCircleIcon className="flex w-5 items-center justify-center align-baseline" />
+            </Tooltip>
+          </div>
 
-    function isValidURL(text: string) {
-        let url: URL;
+          {resourceTypeFile && file === null && (
+            <FileUploadDropzone
+              handleFileChange={handleFileChange}
+              allowLargerFileSize={MAX_ALLOWABLE_RESOURCE_FILE_SIZE}
+            />
+          )}
+          {resourceTypeFile && file !== null && (
+            <div className="item-center m-3 flex justify-center p-3 align-baseline outline outline-2">
+              <p>{file?.name}</p>
+            </div>
+          )}
 
-        try {
-            url = new URL(text);
-        } catch (_) {
-            return false;
-        }
+          {!resourceTypeFile && (
+            <input
+              className="rounded-xl border-2 px-4 py-3 transition-all"
+              type="text"
+              placeholder="Add a link.."
+              value={link}
+              disabled={isLoading}
+              onChange={(e) => {
+                setLink(e.target.value);
+              }}
+            />
+          )}
 
-        return url.protocol === "http:" || url.protocol === "https:";
-    }
+          <div className="mb-8 mr-8 mt-8 flex items-center gap-5">
+            <p className="py-5  text-2xl font-semibold">Draft</p>
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input
+                type="checkbox"
+                className="peer sr-only"
+                checked={visible}
+                disabled={isLoading}
+                onChange={(e) => {
+                  setVisibility(!visible);
+                }}
+              />
+              <div className="peer h-7 w-14 rounded-full bg-gray-200 after:absolute after:left-[4px] after:top-0.5 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:content-[''] after:transition-all peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+            </label>
+            <p className="py-5  text-2xl font-semibold">Publish</p>
+          </div>
 
-    return (
-        <>
-            {loading && <Spinner />}
-            {
-                <div className="container m-auto flex flex-col">
-                    <div className="container m-auto flex flex-row justify-between flex-wrap">
-                        <div>
-                            <h1 className="py-3 text-5xl font-semibold">
-                                New Resource
-                            </h1>
-                            <div></div>
-                        </div>
-                    </div>
-                    <p className="py-5  text-2xl font-semibold">Title</p>
-                    <input
-                        className="py-3 px-4 border-2 rounded-xl transition-all"
-                        type="text"
-                        placeholder="Your title..."
-                        value={title}
-                        onChange={(e) => {
-                            setTitle(e.target.value);
-                        }}
-                    />
-                    <p className="py-5  text-2xl font-semibold">Description</p>
-                    <input
-                        className="py-3 px-4 border-2 rounded-xl transition-all"
-                        type="text"
-                        placeholder="Your description..."
-                        value={description}
-                        onChange={(e) => {
-                            setDescription(e.target.value);
-                        }}
-                    />
-
-                    <div className="flex gap-5 mr-8 mt-8 mb-8 items-center">
-                        <p className="py-5  text-2xl font-semibold">
-                            Link resource
-                        </p>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                checked={resourceTypeFile}
-                                onChange={(e) => {
-                                    setResourceTypeFile(!resourceTypeFile);
-                                }}
-                            />
-                            <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        </label>
-                        <p className="py-5  text-2xl font-semibold">
-                            Upload file
-                        </p>
-                        <Tooltip
-                            content={
-                                "Link an existing resource OR upload an image, pdf, csv or plain text file"
-                            }
-                        >
-                            <QuestionMarkCircleIcon className="flex items-center justify-center align-baseline w-5" />
-                        </Tooltip>
-                    </div>
-
-                    {resourceTypeFile && file === null && (
-                        <FileUploadDropzone
-                            handleFileChange={handleFileChange}
-                            allowLargerFileSize={MAX_ALLOWABLE_RESOURCE_FILE_SIZE}
-                        />
-                    )}
-                    {
-                        resourceTypeFile && file !== null &&
-                        <div className="flex item-center justify-center align-baseline outline outline-2 p-3 m-3">
-                            <p>{file?.name}</p>
-                        </div>
-                    }
-
-                    {!resourceTypeFile && (
-                        <input
-                        className="py-3 px-4 border-2 rounded-xl transition-all"
-                        type="text"
-                        placeholder="Add a link.."
-                        value={link}
-                        onChange={(e) => {
-                            setLink(e.target.value);
-                        }}
-                    />
-                    )}
-
-                    <div className="flex gap-5 mr-8 mt-8 mb-8 items-center">
-                        <p className="py-5  text-2xl font-semibold">Draft</p>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                checked={visible}
-                                onChange={(e) => {
-                                    setVisibility(!visible);
-                                }}
-                            />
-                            <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        </label>
-                        <p className="py-5  text-2xl font-semibold">Publish</p>
-                    </div>
-
-                    <button
-                        className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                        onClick={handleConfirm}
-                    >
-                        Add resource
-                    </button>
-                    <button
-                        className="py-2 px-4 mr-2 bg-[#f0f0f0] mt-10 rounded-xl hover:bg-[#ddd] border-2 hover:border-blue-300 transition-all"
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </button>
-                </div>
-            }
-        </>
-    );
+          <button
+            className="mr-2 mt-10 rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
+            onClick={handleConfirm}
+          >
+            Add resource
+          </button>
+          <button
+            className="mr-2 mt-10 rounded-xl border-2 bg-[#f0f0f0] px-4 py-2 transition-all hover:border-blue-300 hover:bg-[#ddd]"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      }
+    </>
+  );
 }

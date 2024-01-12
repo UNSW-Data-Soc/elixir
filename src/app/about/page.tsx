@@ -1,270 +1,231 @@
-'use client';
+import Image from "next/image";
 
-import Image from 'next/image';
-import arcLogo from '/public/arc.png';
-import unswMathsLogo from '/public/unswmaths.png';
-import lightBulbIdea from '/public/lightbulb_idea.png';
-import bulletinBoard from '/public/bulletin_board.png';
-import graphicDesign from '/public/graphic_design.png';
-import zoom from '/public/zoom.png';
-import book from '/public/book.png';
-import coffee from '/public/coffee.png';
-import thumbsUp from '/public/thumbs_up.png';
-import sunglasses from '/public/sunglasses.png';
-import {
-  VerticalTimeline,
-  VerticalTimelineElement,
-} from 'react-vertical-timeline-component';
-import 'react-vertical-timeline-component/style.min.css';
+import DataSocTimeline from "./timeline";
+
+const arcLogo = "/arc.png";
+const book = "/book.png";
+const bulletinBoard = "/bulletin_board.png";
+const coffee = "/coffee.png";
+const graphicDesign = "/graphic_design.png";
+const lightBulbIdea = "/lightbulb_idea.png";
+const sunglasses = "/sunglasses.png";
+const thumbsUp = "/thumbs_up.png";
+const unswMathsLogo = "/unswmaths.png";
+const zoom = "/zoom.png";
 
 export default function About() {
   return (
-    <main className='bg-white'>
-      <header className='text-white p-12 bg-[#4799d1] flex flex-col gap-4'>
-        <h1 className='text-3xl font-semibold'>About Us</h1>
+    <div className="bg-white">
+      <header className="flex flex-col gap-4 bg-[#4799d1] p-8 text-white sm:p-12">
+        <h1 className="text-3xl font-semibold">About Us</h1>
         <p>
           What we really do. Learn about the society that continually seeks the
           best for students.
         </p>
       </header>
-      <section className='flex flex-col my-14 mx-4 lg:mx-72 xl:mx-200 2xl:mx-200'>
-        <h3 className='text-xl font-semibold'>
+      <main className="mx-auto flex max-w-4xl flex-col gap-8 px-8 py-8 sm:py-14 lg:px-20">
+        <p className="border-l-5 pl-4 font-light sm:text-xl">
           Uniting mathematicians, econometricians and computer scientists, UNSW
           DataSoc seeks to empower our members with knowledge and skills of data
           science, machine learning and artificial intelligence.
-        </h3>
-        <h1 className='text-5xl font-semibold mt-20 mb-8'>Affiliated with</h1>
-        <div className='flex flex-col md:flex-row justify-between w-full'>
-          <Image src={unswMathsLogo} height={100} alt='UNSW Maths Logo' />
-          <Image src={arcLogo} height={100} alt='Arc Logo' />
-        </div>
-        <h1 className='text-5xl font-semibold mt-20 mb-8'>Our Goals</h1>
-        <ul className='flex flex-col space-y-4'>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={lightBulbIdea}
-              className='object-contain'
-              width={100}
-              alt='Light Bulb Idea'
-            />
-            <p>
-              DataSoc aims to become Australia’s leading student run society
-              platform in assisting students on achieving their data science
-              career goals.
-            </p>
-          </li>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={bulletinBoard}
-              className='object-contain'
-              width={100}
-              alt='Bulletin Board'
-            />
-            <p>
-              We strive to create the data science related opportunities for
-              students in their studies and careers alike. We host information
-              sessions, networking evenings, and many more career-focused events
-              that could help open new pathways for students.
-            </p>
-          </li>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={graphicDesign}
-              className='object-contain'
-              width={100}
-              alt='Graphic Design'
-            />
-            <p>
-              We aim to enrich students&apos; lives with a sense of community and
-              diversity among UNSW data science students. We host a list of
-              various social activities such as BBQs, competitions, etc. that
-              welcome everyone to attend and meet like minded people.
-            </p>
-          </li>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={zoom}
-              className='object-contain'
-              width={100}
-              alt='Zoom'
-            />
-            <p>
-              We want to support data science students in their studies with
-              DataSoc’s help sessions, workshops and peer supporters.
-            </p>
-          </li>
-        </ul>
-        <p className='mt-10 font-semibold'>
-          With this, DataSoc aims to make your university experience even more
-          fun and fulfilling, whilst maximizing your employment opportunity and
-          career progression in data science.
         </p>
-        <h2 className='text-3xl font-semibold text-center mt-12'>
-          &quot;Opportunities don&apos;t happen. You create them.&quot;
-        </h2>
-        <h1 className='text-5xl font-semibold mt-20 mb-8'>Our Values</h1>
-        <p className='mb-10'>
-          Our successes to date could not have be achieved without our thriving
-          subcommittee teams year after year. Here are our core values that
-          persists amongst all portfolios:
-        </p>
-        <ul className='flex flex-col space-y-4'>
-          <li className='flex flex-row space-x-12'>
+        <section className="flex flex-col gap-3 sm:gap-8">
+          <SectionHeading>Affiliated with</SectionHeading>
+          <div className="flex w-full flex-col items-center gap-5 md:flex-row md:justify-between">
             <Image
-              src={book}
-              width={100}
-              className='object-contain'
-              alt='Book Icon'
+              src={unswMathsLogo}
+              width={500}
+              height={100}
+              alt="UNSW Maths Logo"
             />
-            <div>
-              <strong>Learn continuously and effectively</strong>
-              <p>
-                We seek to provide innovative and meaningful experiences for
-                students, adapting to change and committing to ongoing
-                development. We highly encourage you to actively seek ways to
-                improve and find new ways to solve problems.
-              </p>
-            </div>
-          </li>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={coffee}
-              className='object-contain'
-              width={100}
-              alt='Coffee Icon'
-            />
-            <div>
-              <strong>Have a good time</strong>
-              <p>
+            <Image src={arcLogo} width={100} height={100} alt="Arc Logo" />
+          </div>
+        </section>
+        <section className="flex flex-col gap-4">
+          <SectionHeading>Our Goals</SectionHeading>
+          <SectionList>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image
+                  src={lightBulbIdea}
+                  width={100}
+                  height={100}
+                  alt="Light Bulb Idea"
+                />
+              </ListItemIconWrapper>
+              <ListItemText>
+                DataSoc aims to become Australia&apos;s leading student run
+                society platform in assisting students on achieving their data
+                science career goals.
+              </ListItemText>
+            </SectionListItem>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image
+                  src={bulletinBoard}
+                  width={100}
+                  height={100}
+                  alt="Bulletin Board"
+                />
+              </ListItemIconWrapper>
+              <ListItemText>
+                We strive to create the data science related opportunities for
+                students in their studies and careers alike. We host information
+                sessions, networking evenings, and many more career-focused
+                events that could help open new pathways for students.
+              </ListItemText>
+            </SectionListItem>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image
+                  src={graphicDesign}
+                  width={100}
+                  height={100}
+                  alt="Graphic Design"
+                />
+              </ListItemIconWrapper>
+              <ListItemText>
+                We aim to enrich students&apos; lives with a sense of community
+                and diversity among UNSW data science students. We host a list
+                of various social activities such as BBQs, competitions, etc.
+                that welcome everyone to attend and meet like minded people.
+              </ListItemText>
+            </SectionListItem>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image src={zoom} width={100} height={100} alt="Zoom" />
+              </ListItemIconWrapper>
+              <ListItemText>
+                We want to support data science students in their studies with
+                DataSoc&apos;s help sessions, workshops and peer supporters.
+              </ListItemText>
+            </SectionListItem>
+          </SectionList>
+        </section>
+        <section className="flex flex-col gap-8">
+          <p className="text-center font-semibold">
+            With this, DataSoc aims to make your university experience even more
+            fun and fulfilling, whilst maximizing your employment opportunity
+            and career progression in data science.
+          </p>
+          <h2 className="py-4 text-center text-2xl font-semibold sm:text-3xl">
+            &quot;Opportunities don&apos;t happen. You create them.&quot;
+          </h2>
+        </section>
+        <section className="flex flex-col gap-3 sm:gap-8">
+          <SectionHeading>Our Values</SectionHeading>
+          <p>
+            Our successes to date could not have be achieved without our
+            thriving subcommittee teams year after year. Here are our core
+            values that persists amongst all portfolios:
+          </p>
+          <SectionList>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image src={book} width={100} height={100} alt="Book Icon" />
+              </ListItemIconWrapper>
+              <div>
+                <strong>Learn continuously and effectively</strong>
+                <ListItemText>
+                  We seek to provide innovative and meaningful experiences for
+                  students, adapting to change and committing to ongoing
+                  development. We highly encourage you to actively seek ways to
+                  improve and find new ways to solve problems.
+                </ListItemText>
+              </div>
+            </SectionListItem>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image
+                  src={coffee}
+                  width={100}
+                  height={100}
+                  alt="Coffee Icon"
+                />
+              </ListItemIconWrapper>
+              <ListItemText>
+                <strong>Have a good time</strong>
+                <br />
                 At DataSoc, it is important to us that every experience here is
                 a constructive and positive one. After every event and every
                 meeting, we want you all to be leaving with a smile and a new
                 friend!
-              </p>
-            </div>
-          </li>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={thumbsUp}
-              className='object-contain'
-              width={100}
-              alt='Thumbs Up Icon'
-            />
-            <div>
-              <strong>Be the best at what you do</strong>
-              <p>
+              </ListItemText>
+            </SectionListItem>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image
+                  src={thumbsUp}
+                  className="object-contain"
+                  width={100}
+                  height={100}
+                  alt="Thumbs Up Icon"
+                />
+              </ListItemIconWrapper>
+              <ListItemText>
+                <strong>Be the best at what you do</strong>
+                <br />
                 What distinguishes DataSoc members from others, despite having
                 all different areas and expertise? It&apos;s the passion that we
                 bring to everything we do. We approach every task with
                 confidence, seize all opportunities and never settle for
                 &quot;acceptable&quot;.
-              </p>
-            </div>
-          </li>
-          <li className='flex flex-row space-x-12'>
-            <Image
-              src={sunglasses}
-              className='object-contain'
-              width={100}
-              alt='Sunglasses Icon'
-            />
-            <div>
-              <strong>Take ownership and be transparent</strong>
-              <p>
+              </ListItemText>
+            </SectionListItem>
+            <SectionListItem>
+              <ListItemIconWrapper>
+                <Image
+                  src={sunglasses}
+                  className="object-contain"
+                  width={100}
+                  height={100}
+                  alt="Sunglasses Icon"
+                />
+              </ListItemIconWrapper>
+              <ListItemText>
+                <strong>Take ownership and be transparent</strong>
+                <br />
                 As the DataSoc team, we celebrate the individual work and
                 achievement of others, but must also be accountable for the
                 tasks to which we have committed and see through what we
                 started.
-              </p>
-            </div>
-          </li>
-        </ul>
-        <h1 className='text-5xl font-semibold mt-20 mb-8'>Our History</h1>
-        <VerticalTimeline animate={false} lineColor='#D3D3D3'>
-          <VerticalTimelineElement
-            className='vertical-timeline-element--work'
-            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            visible={true}
-          >
-            <h3 className='vertical-timeline-element-title text-2xl font-semibold'>
-              April, 2017
-            </h3>
-            <p>
-              DataSoc was founded along side its very first iteration of the
-              official website!
-            </p>
-          </VerticalTimelineElement>
-          <VerticalTimelineElement
-            className='vertical-timeline-element--work'
-            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            visible={true}
-          >
-            <h3 className='vertical-timeline-element-title text-2xl font-semibold'>
-              May, 2017
-            </h3>
-            <p>
-              DataSoc announces and hosts its first ever event: Meet the
-              representatives of Tableau Software, and get to know the power of
-              Tableau in AI and modern data science.
-            </p>
-          </VerticalTimelineElement>
-          <VerticalTimelineElement
-            className='vertical-timeline-element--work'
-            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            visible={true}
-          >
-            <h3 className='vertical-timeline-element-title text-2xl font-semibold'>
-              June, 2017
-            </h3>
-            <p>
-              DataSoc hosts its first ever networking night with Alibaba,
-              Suncorp, Bupa, and many more.
-            </p>
-          </VerticalTimelineElement>
-          <VerticalTimelineElement
-            className='vertical-timeline-element--work'
-            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            visible={true}
-          >
-            <h3 className='vertical-timeline-element-title text-2xl font-semibold'>
-              March, 2018
-            </h3>
-            <p>
-              DataSoc celebrates 1000 likes and 1000+ follows on Facebook! This
-              month also marks the beginning of DataSoc&apos;s Weekly Data
-              Discoveries tradition that continues to this day in our
-              newsletters!
-            </p>
-          </VerticalTimelineElement>
-          <VerticalTimelineElement
-            className='vertical-timeline-element--work'
-            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            visible={true}
-          >
-            <h3 className='vertical-timeline-element-title text-2xl font-semibold'>
-              September, 2019
-            </h3>
-            <p>
-              As we celebrate 2000 likes on Facebook, we hosted our first ever
-              international datathon in conjunction with Tsinghua University&apos;s
-              Institute of Data Science!
-            </p>
-          </VerticalTimelineElement>
-          <VerticalTimelineElement
-            className='vertical-timeline-element--work'
-            contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-            visible={true}
-          >
-            <h3 className='vertical-timeline-element-title text-2xl font-semibold'>
-              March, 2020
-            </h3>
-            <p>
-              DataSoc&apos;s website undergoes a modern transformation as we double
-              our subcommitee team.
-            </p>
-          </VerticalTimelineElement>
-        </VerticalTimeline>
-      </section>
-    </main>
+              </ListItemText>
+            </SectionListItem>
+          </SectionList>
+        </section>
+        <section className="flex flex-col gap-5">
+          <SectionHeading>Our History</SectionHeading>
+          <DataSocTimeline />
+        </section>
+      </main>
+    </div>
   );
+}
+
+function SectionHeading({ children }: { children?: React.ReactNode }) {
+  return <h2 className="text-3xl font-semibold sm:text-4xl">{children}</h2>;
+}
+
+function SectionList({ children }: { children?: React.ReactNode }) {
+  return <ul className="flex flex-col gap-4">{children}</ul>;
+}
+
+function SectionListItem({ children }: { children?: React.ReactNode }) {
+  return (
+    <li className="flex flex-row-reverse items-center gap-4 sm:flex-row">
+      {children}
+    </li>
+  );
+}
+
+function ListItemIconWrapper({ children }: { children?: React.ReactNode }) {
+  return (
+    <div className="flex flex-shrink-0 flex-grow-0 basis-16 items-center justify-center sm:basis-16">
+      {children}
+    </div>
+  );
+}
+
+function ListItemText({ children }: { children?: React.ReactNode }) {
+  return <p className="text-start sm:text-justify">{children}</p>;
 }

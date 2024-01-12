@@ -1,26 +1,27 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
+import { getServerAuthSession } from "@/server/auth";
+
+import { isModerator } from "@/app/utils";
+
 import CompanyAddCard from "./companyAddCard";
 import CompanyList from "./companyList";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+export default async function CompanyRoot() {
+  const session = await getServerAuthSession();
 
-export default function CompanyRoot() {
-  const session = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session.status !== "authenticated" || !session.data.user.moderator) {
-      return router.push("/");
-    }
-  }, []);
+  if (!isModerator(session)) {
+    redirect("/auth/login");
+  }
 
   return (
-    <div className="container m-auto flex flex-wrap justify-center gap-5 p-10">
-      <CompanyAddCard />
-      <CompanyList />
-    </div>
+    <>
+      <div className="absolute bottom-5 right-5">
+        <CompanyAddCard />
+      </div>
+      <div className="container m-auto flex flex-wrap justify-center gap-5 p-10 relative">
+        <CompanyList />
+      </div>
+    </>
   );
 }

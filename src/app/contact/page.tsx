@@ -1,5 +1,14 @@
+import Image from "next/image";
 import Link from "next/link";
+
 import LinkButton from "../components/LinkButton";
+import {
+  FacebookIcon,
+  GitHubIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  YouTubeIcon,
+} from "../socialIcons";
 import {
   DATASOC_ADDRESS_JSX,
   DATASOC_EMAIL,
@@ -11,15 +20,8 @@ import {
   DATASOC_REGISTRATION_LINK,
   DATASOC_YOUTUBE_LINK,
 } from "../utils";
-import {
-  FacebookIcon,
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  YouTubeIcon,
-} from "../socialIcons";
-import Image from "next/image";
-import ContactUsQuoteBackground from "/public/contact_us_quote_background.png";
+
+const ContactUsQuoteBackground = "/contact_us_quote_background.png";
 
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
@@ -36,8 +38,8 @@ export default function Contact() {
           </p>
         </header>
         <div className="flex flex-col items-center justify-center align-baseline">
-          <div className="flex max-w-xl flex-col items-start justify-center align-baseline gap-12 p-12">
-            <div className="text-lg flex flex-col items-start justify-center gap-4 align-baseline">
+          <div className="flex max-w-3xl flex-col items-start justify-center gap-12 p-12 align-baseline">
+            <div className="flex flex-col items-start justify-center gap-4 align-baseline text-lg">
               <p>
                 Hi! Whether you&apos;ve got questions about DataSoc or just want
                 to know more, feel free to reach out to us via the email below.
@@ -57,40 +59,28 @@ export default function Contact() {
               <LinkButton
                 to={DATASOC_REGISTRATION_LINK}
                 text="Join Us!"
-                className="text-bold bg-[#0957ff] p-6 text-lg"
+                className="text-bold bg-[#2f71ff] p-6 text-lg text-white"
               />
             </div>
             <div className="flex flex-wrap gap-1">
               <p className="font-bold">Email:</p>
-              <a className="text-blue-600" href={`mailto: ${DATASOC_EMAIL}`}>{DATASOC_EMAIL}</a>
+              <a className="text-blue-600" href={`mailto:${DATASOC_EMAIL}`}>
+                {DATASOC_EMAIL}
+              </a>
             </div>
             <div className="flex flex-col flex-wrap gap-0">
               <p className="font-bold">Address:</p>
               {DATASOC_ADDRESS_JSX}
             </div>
             <SocialIcons />
-            <div className="relative">
-              <Image
-                src={ContactUsQuoteBackground}
-                alt="binary numbers on a blue background"
-                width={600}
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-xs font-bold text-white sm:text-lg">
-                  &quot;The world is one big data problem.&quot;
-                </div>
-                <div className="text-xs text-white sm:text-lg">
-                  Andrew McAfee
-                </div>
-              </div>
-            </div>
+            {/* <Quote /> */}
           </div>
-          <div className="w-full min-h-full">
+          <div className="min-h-full w-full">
             <iframe
-                src={DATASOC_GOOGLE_MAPS_IFRAME_LINK}
-                className="w-full h-full"
-                allowFullScreen
-                aria-hidden="false"
+              src={DATASOC_GOOGLE_MAPS_IFRAME_LINK}
+              className="h-full w-full"
+              allowFullScreen
+              aria-hidden="false"
             />
           </div>
         </div>
@@ -98,6 +88,26 @@ export default function Contact() {
     </>
   );
 }
+
+// function Quote() {
+//   return (
+//     <div className="relative w-full">
+//       <Image
+//         src={ContactUsQuoteBackground}
+//         alt="binary numbers on a blue background"
+//         className="h-auto w-full"
+//         width={480}
+//         height={100}
+//       />
+//       <div className="absolute inset-0 flex flex-col items-center justify-center">
+//         <div className="text-xs font-bold text-white sm:text-lg">
+//           &quot;The world is one big data problem.&quot;
+//         </div>
+//         <div className="text-xs text-white sm:text-lg">Andrew McAfee</div>
+//       </div>
+//     </div>
+//   );
+// }
 
 function SocialIcons() {
   return (

@@ -1,44 +1,40 @@
-"use client";
+import { Tooltip } from "@nextui-org/tooltip";
 
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
+
+import { api } from "@/trpc/server";
+import { RouterOutputs } from "@/trpc/shared";
+
+import { isModerator } from "../utils";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Tooltip } from "@nextui-org/tooltip";
-import { useEffect, useState } from "react";
-import { endpoints } from "../api/backend/endpoints";
-import { UserPublic } from "../api/backend/users";
-import { Event } from "../api/backend/events";
+
 dayjs.extend(relativeTime);
 
-export default function EventInformation(props: { event: Event }) {
-  const session = useSession();
-  const router = useRouter();
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
-  const [author, setAuthor] = useState<UserPublic>();
+export default async function EventInformation(props: { event: Event }) {
+  const session = await getServerAuthSession();
 
-  useEffect(() => {
-    async function getDetails() {
-      let user = await endpoints.users.get(props.event.creator);
-      setAuthor(user);
-    }
-
-    getDetails();
-  }, [props.event.creator]);
-
-  if (session.status !== "authenticated" || !session.data.user.moderator) {
+  if (!isModerator(session)) {
     return <></>;
   }
 
-  const lastEditTime = dayjs(Date.parse(props.event.last_edit_time));
+  const author =
+    (props.event.creator
+      ? (await api.users.getInfo.query({ id: props.event.creator })).name
+      : "unknown") ?? "unknown";
+
+  const lastEditTime = dayjs(props.event.lastEditTime);
 
   return (
     <>
-      <div className="flex flex-col items-start align-baseline">
-        {!!author && <p>Created {<>by {author.name}</>}</p>}
-        {/* <Tooltip content={lastEditTime.format("DD/MM/YYYY HH:mm")}> */}
-        <p>Last edited {lastEditTime.toNow(true)} ago</p>
-        {/* </Tooltip> */}
+      <div className="flex w-full flex-row items-start justify-between align-baseline">
+        {!!author && <p>Created {<>by {author}</>}</p>}
+        <Tooltip content={lastEditTime.format("DD/MM/YYYY HH:mm")}>
+          <p>Last edited {lastEditTime.toNow(true)} ago</p>
+        </Tooltip>
       </div>
     </>
   );

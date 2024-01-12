@@ -1,101 +1,87 @@
-import { endpoints } from "./api/backend/endpoints";
-import { Image as NextUIImage } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
+
+import { api } from "@/trpc/server";
+
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+
+import { getFirstImageUrl } from "./blogs/utils";
+import BlogImageHomePage from "./components/blogImageHomePage";
 import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  GitHubIcon,
-  YouTubeIcon,
-} from "./socialIcons";
-import {
-  DATASOC_FACEBOOK_LINK,
-  DATASOC_INSTAGRAM_LINK,
-  DATASOC_LINKEDIN_LINK,
-  DATASOC_GITHUB_LINK,
-  DATASOC_YOUTUBE_LINK,
-  DATASOC_REGISTRATION_LINK,
-  Event_PHOTO_Y_PXL,
+  COMPANY_PHOTO_X_PXL,
+  COMPANY_PHOTO_Y_PXL,
   Event_PHOTO_X_PXL,
+  Event_PHOTO_Y_PXL,
 } from "./utils";
-import LinkButton from "./components/LinkButton";
-import { SponsorshipType } from "./api/backend/sponsorships";
+import {
+  getCompanyImageRoute,
+  getCoverPhotoRoute,
+  getEventImageRoute,
+} from "./utils/s3";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import BlogImageHomePage from "./components/blogImageHomePage";
+
 dayjs.extend(relativeTime);
 
-const SOCIAL_HEIGHT = 25;
-const SOCIAL_WIDTH = 25;
-
 const NUM_DISPLAY_EVENTS = 3;
+const NUM_DISPLAY_BLOGS = 3;
 
 export default async function Home() {
-  const events = (await endpoints.events.getAll(false)).slice(
-    0,
-    NUM_DISPLAY_EVENTS,
-  );
-  const futureEvents = events.filter(
-    (e) => new Date(e.start_date) > new Date(),
-  );
+  const [futureEvents, blogs, sponsors, coverPhoto] = await Promise.all([
+    api.events.getUpcoming.query({ limit: NUM_DISPLAY_EVENTS }),
+    api.blogs.getRecent.query({ limit: NUM_DISPLAY_BLOGS }),
+    api.sponsorships.getAll.query({ publicOnly: true }),
+    api.coverPhotos.getLatest.query(),
+  ]);
 
-  const blogs = (await endpoints.blogs.getAll({ authRequired: false })).slice(
-    0,
-    NUM_DISPLAY_EVENTS,
-  );
-  const sponsors = (
-    await Promise.all(
-      (await endpoints.sponsorships.getAll(false)).map(async (sponsorship) => {
-        const company = await endpoints.companies.get(sponsorship.company);
-        return {
-          id: company.id,
-          name: company.name,
-          logo: endpoints.companies.getCompanyPhoto(company.id),
-          link: company.website_url,
-          type: sponsorshipTypeToPos(sponsorship.sponsorship_type),
-        };
-      }),
-    )
-  ).sort((a, b) => a.type - b.type);
+  // we only care about unique companies
+  const companies = sponsors
+    .map(({ company }) => company)
+    .filter(
+      (item, pos, self) => self.findIndex((c) => c.id === item.id) == pos,
+    );
 
   return (
     <>
       {/* navbar height hardcoded as 4rem here */}
-      <main className="bg-light-rainbow left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none">
-        <div className="fade-in-image mix-blend-multiply">
-          <Image
-            src={endpoints.file.getCoverPhoto()}
-            alt="Cover Photo"
-            fill
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-            }}
-            priority
-            quality={100}
-            className="coverPhoto"
-          />
+      <main className="bg-light-rainbow relative left-0 top-0 z-0 mt-[-4rem] min-h-screen w-full select-none mix-blend-multiply">
+        <div className="mix-blend-multiply">
+          {!!coverPhoto.id && (
+            <Image
+              src={getCoverPhotoRoute(coverPhoto.id)}
+              alt="Cover Photo"
+              fill
+              sizes="100vw"
+              priority
+              quality={100}
+              className="coverPhoto object-cover mix-blend-multiply"
+              draggable={false}
+            />
+          )}
         </div>
-        <div className="flex flex-col items-center justify-center gap-3 px-8 pt-48 align-baseline  text-white brightness-200 sm:items-start md:pl-20 md:pt-48 lg:pl-36 xl:pl-48">
-          <div className="text-center text-3xl sm:text-left">
-            Welcome to the
+        <div className="flex flex-col items-center justify-center gap-5 px-8 pt-48 align-baseline text-white brightness-200 sm:items-start sm:px-20 md:pt-48 lg:px-36 xl:px-36 2xl:px-56 2xl:pt-56">
+          <div className="flex flex-col gap-3">
+            <div className="text-center text-3xl sm:text-left">
+              Welcome to the
+            </div>
+            <div className="text-center text-6xl font-bold sm:text-left sm:text-7xl lg:text-8xl">
+              Data Science Society
+            </div>
+            <div className="pt-2 text-center text-3xl sm:text-left">@ UNSW</div>
           </div>
-          <div className="text-center text-6xl font-bold sm:text-left sm:text-7xl">
-            Data Science Society
-          </div>
-          <div className="text-center text-3xl sm:text-left">
-            University of New South Wales
-          </div>
-          <LinkButton
-            to={DATASOC_REGISTRATION_LINK}
-            text="Join Us!"
-            className="text-bold bg-[#0957ff] p-6 text-lg"
-          />
-          <SocialIcons />
         </div>
+        <a
+          href="#main"
+          className="absolute bottom-0 left-[50%] flex translate-x-[-50%] items-center justify-center p-5"
+        >
+          <ChevronDownIcon height={50} color="white" />
+        </a>
       </main>
-      <div className="flex items-center justify-center p-12 align-baseline">
+      <div
+        className="flex items-center justify-center p-12 py-16 align-baseline"
+        id="main"
+      >
         <div className="flex flex-col items-center justify-center gap-1 align-baseline text-2xl">
           <p className="w-full text-center">UNSW DataSoc</p>
           <p className="w-full text-center font-light">
@@ -106,69 +92,91 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-7 bg-[#b6e2ff] p-12 py-24 align-baseline">
+        <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
+        {futureEvents.length === 0 && (
+          <p className="w-full text-center text-xl font-light">
+            No upcoming events! Stay peeled for more!
+          </p>
+        )}
+        {futureEvents.length > 0 && (
+          <div className="flex flex-row gap-8 p-3">
+            {futureEvents.map((event) => (
+              <Link key={event.id} href={event.link ?? `/events`}>
+                <div
+                  className="group/eventCard relative flex aspect-[16/9] flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  key={event.id}
+                >
+                  <Image
+                    src={
+                      event.photo
+                        ? getEventImageRoute(event.id, event.photo)
+                        : "/logo.png" // TODO: is this an ok default image?
+                    }
+                    alt="Event picture"
+                    className="rounded-xl object-cover"
+                    height={Event_PHOTO_Y_PXL * 0.4}
+                    width={Event_PHOTO_X_PXL * 0.4}
+                  />
+                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
+                    <p className="w-full text-center">{event.title}</p>
+                    <p className="w-full text-center text-xs">
+                      {dayjs(event.startTime).fromNow()}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
         <h3 className="w-full text-center text-3xl">Recent Blog Posts</h3>
         {blogs.length === 0 && (
           <p className="w-full text-center font-light">No blogs posts yet!</p>
         )}
-        <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
-          {blogs.length > 0 &&
-            blogs.map((blog) => {
-              const firstImageUrl: string | null = JSON.parse(
-                blog.body,
-              ).content.filter((c: any) => c.type === "image")[0]?.attrs.src;
-
-              return (
+        {blogs.length > 0 && (
+          <div className="flex flex-row flex-wrap items-center justify-center gap-4 p-3">
+            <Link
+              href={`/blogs/${blogs[0].slug}`}
+              className="relative flex aspect-[8/7] flex-col items-stretch justify-center gap-1 overflow-hidden bg-transparent align-baseline sm:h-[500px]"
+            >
+              <BlogImageHomePage
+                imgSrc={getFirstImageUrl(JSON.parse(blogs[0].body)).url}
+              />
+              <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-1 bg-gradient-to-t from-slate-800 p-5 text-white transition-all sm:gap-2">
+                <p className="w-full text-2xl font-semibold tracking-wide sm:text-3xl">
+                  {blogs[0].title}
+                </p>
+                <p className="w-full text-lg">
+                  {dayjs(blogs[0].createdTime).fromNow()}
+                </p>
+              </div>
+            </Link>
+            <div className="flex flex-row flex-wrap items-center justify-center gap-4 sm:flex-nowrap">
+              {blogs.slice(1).map((blog) => (
                 <Link
                   key={blog.id}
                   href={`/blogs/${blog.slug}`}
-                  className="group/eventCard relative flex h-[200px] min-w-[300px] flex-col items-stretch justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  className="relative flex aspect-[8/7] flex-col items-stretch gap-1 bg-transparent align-baseline sm:aspect-[9/16] sm:h-[500px]"
                 >
-                  <BlogImageHomePage imgSrc={firstImageUrl ?? "/logo.png"} />
-                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-80 transition-all group-hover/eventCard:opacity-100 md:opacity-0">
-                    <p className="w-full text-center">{blog.title}</p>
-                    <p className="w-full text-center text-xs">
-                      {dayjs(Date.parse(blog.created_time)).fromNow()}
+                  <div className="h-full sm:aspect-[4/5] sm:h-auto sm:flex-shrink-0 sm:flex-grow-0">
+                    <BlogImageHomePage
+                      imgSrc={getFirstImageUrl(JSON.parse(blog.body)).url}
+                    />
+                  </div>
+                  <div className="absolute bottom-0 left-0 top-0 z-10 flex w-full flex-col justify-end gap-1 bg-gradient-to-t from-slate-800 p-5 text-white sm:static sm:h-full sm:justify-start sm:bg-white sm:from-transparent sm:p-0 sm:py-1 sm:text-black">
+                    <p className="w-full whitespace-pre-wrap text-2xl font-semibold">
+                      {blog.title}
+                    </p>
+                    <p className="w-full text-base">
+                      {dayjs(blog.createdTime).fromNow()}
                     </p>
                   </div>
                 </Link>
-              );
-            })}
-        </div>
-      </div>
-      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
-        <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
-        {futureEvents.length === 0 && (
-          <p className="w-full text-center font-light">
-            No upcoming events! Stay peeled for more!
-          </p>
+              ))}
+            </div>
+          </div>
         )}
-        <div className="flex flex-row gap-8 p-3">
-          {futureEvents.length > 0 &&
-            futureEvents.map((event) => {
-              return (
-                <Link key={event.id} href={`/events`}>
-                  <div
-                    className="group/eventCard relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
-                    key={event.id}
-                  >
-                    <Image
-                      src={endpoints.events.getEventPhoto(event.id)}
-                      alt="Event picture"
-                      className="rounded-xl object-cover"
-                      height={Event_PHOTO_Y_PXL * 0.4}
-                      width={Event_PHOTO_X_PXL * 0.4}
-                    />
-                    <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
-                      <p className="w-full text-center">{event.title}</p>
-                      <p className="w-full text-center text-xs">
-                        {dayjs(Date.parse(event.start_date)).fromNow()}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-        </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-5 bg-[#fadcff] p-12 py-20 align-baseline">
         <p className="w-full text-center text-xl">
@@ -181,77 +189,39 @@ export default async function Home() {
           Subscribe to our newsletter
         </Link>
         <p className="w-full text-center text-xl">
-          Or get in touch with us {/* TODO: update to new contact us page */}
+          Or get in touch with us{" "}
           <Link className="underline" href={"/contact"}>
             here
           </Link>
           .
         </p>
       </div>
-      <div className="container mx-auto flex flex-col items-center justify-center bg-[#fff] p-12 align-baseline">
-        {sponsors.length > 0 && (
-          <>
-            <h3 className="w-full text-2xl font-light">
-              Proudly sponsored by:
-            </h3>
-            <div className="flex flex-row flex-wrap justify-center">
-              {sponsors.map((company, index) => (
+      {companies.length > 0 && (
+        <div className="container mx-auto flex flex-col items-center justify-center bg-[#fff] p-12 align-baseline">
+          <h3 className="w-full text-2xl font-light">Proudly sponsored by:</h3>
+          <div className="flex flex-row flex-wrap justify-center">
+            {companies.map((company, index) => {
+              if (!company.logo) return <></>;
+              return (
                 <div
                   key={index}
                   className="flex max-w-[19rem] items-center justify-center p-10"
                 >
-                  <Link href={company.link}>
+                  <Link href={company.websiteUrl ?? "/"}>
                     <Image
-                      src={company.logo}
+                      src={getCompanyImageRoute(company.id, company.logo)}
                       alt="Sponsor Logo"
                       className="object-contain"
-                      width={500}
-                      height={500}
+                      width={COMPANY_PHOTO_X_PXL}
+                      height={COMPANY_PHOTO_Y_PXL}
                     />
                   </Link>
                 </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </>
   );
-}
-
-function SocialIcons() {
-  return (
-    <>
-      <div className="flex items-start justify-start gap-3 align-baseline text-[#b4b6b7]">
-        <Link href={DATASOC_FACEBOOK_LINK} className="flex gap-1">
-          <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-        </Link>
-        <Link href={DATASOC_INSTAGRAM_LINK} className="flex gap-1">
-          <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-        </Link>
-        <Link href={DATASOC_LINKEDIN_LINK} className="flex gap-1">
-          <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-        </Link>
-        <Link href={DATASOC_GITHUB_LINK} className="flex gap-1">
-          <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-        </Link>
-        <Link href={DATASOC_YOUTUBE_LINK} className="flex gap-1">
-          <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
-        </Link>
-      </div>
-    </>
-  );
-}
-
-function sponsorshipTypeToPos(type: SponsorshipType): number {
-  switch (type) {
-    case "major":
-      return 0;
-    case "partner":
-      return 1;
-    case "other":
-      return 2;
-    default:
-      return 3;
-  }
 }
