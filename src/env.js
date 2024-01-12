@@ -4,12 +4,6 @@ const envSchema = z.object({
   NEXTAUTH_SECRET: z.string().min(1),
   NEXTAUTH_URL: z.string().min(1),
 
-  NEXT_PUBLIC_BACKEND_URL: z.string().min(1),
-  NEXT_PUBLIC_PROTOCOL: z.string().min(1),
-  NEXT_PUBLIC_HOSTNAME: z.string().min(1),
-  NEXT_PUBLIC_BACKEND_PORT: z.string().min(1),
-  NEXT_PUBLIC_REMOTE_PATTERN_PATHNAME: z.string().min(1),
-
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
