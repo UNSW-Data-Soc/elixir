@@ -26,6 +26,8 @@ export async function generateMetadata({
   return {
     title: `${blog.title} | DataSoc`,
     description: getBlogExcerpt(JSON.parse(blog.body)),
+    author: blog.author,
+    date: blog.createdTime,
   };
 }
 
