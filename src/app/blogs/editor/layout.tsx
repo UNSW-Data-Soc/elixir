@@ -1,19 +1,16 @@
-import Head from "next/head";
 import EditorContextProvider from "./editorContext";
+
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blogs Editor | DataSoc",
+  description: "Edit blog posts on the website.",
+};
 
 export default function EditorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <Head>
-        <title>Blogs Editor</title>
-      </Head>
-      <div>
-        <EditorContextProvider>{children}</EditorContextProvider>
-      </div>
-    </>
-  );
+  return <EditorContextProvider>{children}</EditorContextProvider>;
 }
