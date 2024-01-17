@@ -1,5 +1,3 @@
-import Head from "next/head";
-
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,18 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <Head>
-        <title>Events | UNSW DataSoc</title>
-        <meta
-          key="description"
-          name="description"
-          content="From social events to workshops to networking opportunities, stay
-          updated to make sure you don't miss out!"
-        />
-      </Head>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

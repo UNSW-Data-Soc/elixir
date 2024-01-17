@@ -5,8 +5,10 @@ export type UserLevel = (typeof userLevels)[number];
 export type BlogNode =
   | {
       type: "heading";
-      attrs: {};
-      content: {};
+      attrs: {
+        level: 1 | 2 | 3;
+      };
+      content: { type: "text"; text: string }[];
     }
   | {
       type: "image";
@@ -17,6 +19,13 @@ export type BlogNode =
         alt: string | null;
         title: string | null;
       };
+    }
+  | {
+      type: "paragraph";
+      content?: {
+        type: "text";
+        text: string;
+      }[];
     };
 
 export type BlogBody = {

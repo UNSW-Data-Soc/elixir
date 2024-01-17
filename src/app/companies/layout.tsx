@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Publications | DataSoc",
-  description:
-    "You can find all of our publications here, including our newsletters and guides!",
+  title: "Companies | DataSoc",
+  description: "Companies that DataSoc has partnered with.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
