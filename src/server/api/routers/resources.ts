@@ -7,9 +7,12 @@ import { resources } from "@/server/db/schema";
 
 import { isModerator } from "@/app/utils";
 
+import { TRPCError } from "@trpc/server";
+
+import { generateFileId } from "../utils";
+
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 
 export const resourcesRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -34,14 +37,18 @@ export const resourcesRouter = createTRPCRouter({
         description: z.string(),
         link: z.string().optional(),
         resourcePublic: z.boolean().default(false),
+        resourceFileType: z.string().optional(),
       }),
     )
     .mutation(
-      async ({ ctx, input: { title, description, link, resourcePublic } }) => {
+      async ({
+        ctx,
+        input: { title, description, link, resourcePublic, resourceFileType },
+      }) => {
         const id = crypto.randomUUID();
 
         if (!link) {
-          link = crypto.randomUUID();
+          link = generateFileId(resourceFileType);
         }
 
         await ctx.db.insert(resources).values({

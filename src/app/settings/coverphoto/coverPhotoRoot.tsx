@@ -55,7 +55,7 @@ export default function CoverPhotoRoot() {
   async function uploadCroppedPhoto(blob: Blob) {
     setPhoto(blob);
 
-    uploadCoverPhoto();
+    uploadCoverPhoto({ filetype: blob.type });
   }
 
   async function cancelUploadingCroppedPhoto() {

@@ -5,6 +5,8 @@ import {
 } from "@/server/api/trpc";
 import { companies } from "@/server/db/schema";
 
+import { generateFileId } from "../utils";
+
 import { asc, eq } from "drizzle-orm";
 import { z } from "zod";
 
@@ -24,15 +26,18 @@ export const companiesRouter = createTRPCRouter({
         name: z.string().min(1),
         description: z.string().optional(),
         websiteUrl: z.string().optional(),
-        logo: z.boolean().optional().default(false),
+        logoFileType: z.string().optional(),
       }),
     )
     .mutation(
-      async ({ ctx, input: { name, description, websiteUrl, logo } }) => {
+      async ({
+        ctx,
+        input: { name, description, websiteUrl, logoFileType },
+      }) => {
         const id = crypto.randomUUID();
 
         // generate logo id
-        const logoId = logo ? crypto.randomUUID().slice(0, 36) : null;
+        const logoId = logoFileType ? generateFileId(logoFileType) : null;
 
         await ctx.db.insert(companies).values({
           id,
@@ -46,40 +51,41 @@ export const companiesRouter = createTRPCRouter({
       },
     ),
 
-  update: moderatorProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string().min(1).optional(),
-        description: z.string().optional(),
-        websiteUrl: z.string().optional(),
-        logo: z.union([z.boolean(), z.null()]).optional().default(null),
-      }),
-    )
-    .mutation(
-      async ({ ctx, input: { id, name, description, websiteUrl, logo } }) => {
-        let logoId: string | null | undefined;
-        if (logo === true) {
-          logoId = crypto.randomUUID().slice(0, 36);
-        } else if (logo === false) {
-          logoId = null;
-        } else if (logo === null) {
-          logoId = undefined;
-        }
+  // TODO: not sure if this is needed -- if we use it, we need to update how images work
+  // update: moderatorProcedure
+  //   .input(
+  //     z.object({
+  //       id: z.string(),
+  //       name: z.string().min(1).optional(),
+  //       description: z.string().optional(),
+  //       websiteUrl: z.string().optional(),
+  //       logo: z.union([z.boolean(), z.null()]).optional().default(null),
+  //     }),
+  //   )
+  //   .mutation(
+  //     async ({ ctx, input: { id, name, description, websiteUrl, logo } }) => {
+  //       let logoId: string | null | undefined;
+  //       if (logo === true) {
+  //         logoId = crypto.randomUUID().slice(0, 36);
+  //       } else if (logo === false) {
+  //         logoId = null;
+  //       } else if (logo === null) {
+  //         logoId = undefined;
+  //       }
 
-        await ctx.db
-          .update(companies)
-          .set({
-            name,
-            description,
-            websiteUrl,
-            logo: logoId, // TODO: does setting logoId to undefined prevent from updating?
-          })
-          .where(eq(companies.id, id));
+  //       await ctx.db
+  //         .update(companies)
+  //         .set({
+  //           name,
+  //           description,
+  //           websiteUrl,
+  //           logo: logoId, // TODO: does setting logoId to undefined prevent from updating?
+  //         })
+  //         .where(eq(companies.id, id));
 
-        return { id, logoId };
-      },
-    ),
+  //       return { id, logoId };
+  //     },
+  //   ),
 
   delete: moderatorProcedure
     .input(z.object({ id: z.string() }))

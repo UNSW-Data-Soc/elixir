@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { Modal, ModalContent, Tooltip, useDisclosure } from "@nextui-org/react";
 
+import { generateFileId } from "@/server/api/utils";
+
 import { BACKEND_URL, endpoints } from "@/app/api/backend/endpoints";
 
 import useClickAway from "@/app/hooks/useClickAway";
@@ -310,12 +312,17 @@ const EditorAddImage = () => {
             <FileUploadDropzone
               handleFileChange={async (e) => {
                 const files = e.target.files;
-                if (!files || !IMAGE_FILE_TYPES.includes(files[0].type)) {
+                if (
+                  !files ||
+                  files.length === 0 ||
+                  !IMAGE_FILE_TYPES.includes(files[0].type)
+                ) {
                   toast.error("Please upload a valid image!");
                   return;
                 }
 
-                const imageId = crypto.randomUUID();
+                const imageId = generateFileId(files[0].type);
+
                 try {
                   toast.loading("Uploading image...", {
                     id: TOAST_ID_UPLOADING_PHOTO,

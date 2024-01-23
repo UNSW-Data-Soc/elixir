@@ -9,6 +9,8 @@ import { isModerator } from "@/app/utils";
 
 import { TRPCError } from "@trpc/server";
 
+import { generateFileId } from "../utils";
+
 import { desc, eq, getTableColumns } from "drizzle-orm";
 import { z } from "zod";
 
@@ -43,20 +45,25 @@ export const jobsRouter = createTRPCRouter({
         companyId: z.string(),
         expiration: z.date(),
         link: z.string().optional(),
-        photo: z.boolean(),
+        photoFileType: z.string().optional(),
       }),
     )
     .mutation(
       async ({
         ctx,
-        input: { title, description, body, companyId, expiration, link, photo },
+        input: {
+          title,
+          description,
+          body,
+          companyId,
+          expiration,
+          link,
+          photoFileType,
+        },
       }) => {
         const id = crypto.randomUUID();
 
-        let photoId = null;
-        if (photo) {
-          photoId = crypto.randomUUID();
-        }
+        const photoId = photoFileType ? generateFileId(photoFileType) : null;
 
         await ctx.db.insert(jobPostings).values({
           id,

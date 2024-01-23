@@ -6,6 +6,7 @@ import { ChangeEvent } from "react";
 
 import { Session } from "next-auth";
 import toast from "react-hot-toast";
+import { file } from "zod-form-data";
 
 export const ALL_FILE_TYPES_STR =
   "image/png, image/jpg, image/gif, image/jpeg, image/webp, application/pdf, text/csv, text/plain";

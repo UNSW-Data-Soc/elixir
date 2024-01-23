@@ -5,13 +5,16 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { hasModeratorPermissions } from "@/server/api/utils";
+import { generateFileId, hasModeratorPermissions } from "@/server/api/utils";
 import { events, userYearsActive, users } from "@/server/db/schema";
+
 import { userRoleGroups } from "@/trpc/types";
+
+import { isAdmin } from "@/app/utils";
 
 import { TRPCError } from "@trpc/server";
 
-import { and, asc, count, countDistinct, eq, sql, or } from "drizzle-orm";
+import { and, asc, count, countDistinct, eq, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
 /** CONSTANTS + PARAMETERS **/
@@ -140,18 +143,15 @@ export const usersRouter = createTRPCRouter({
         id: z.string().optional(),
         name: z.string().min(1).optional(),
         about: z.string().optional(),
-        image: z.boolean().optional().default(false),
+        imageFileType: z.string().optional(),
       }),
     )
     .mutation(
       async ({
         ctx,
-        input: { id = ctx.session.user.id, name, about, image },
+        input: { id = ctx.session.user.id, name, about, imageFileType },
       }) => {
-        if (
-          id !== ctx.session.user.id &&
-          !hasModeratorPermissions(ctx.session)
-        ) {
+        if (id !== ctx.session.user.id && !isAdmin(ctx.session)) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "You are not authorized to update this user's info.",
@@ -160,11 +160,11 @@ export const usersRouter = createTRPCRouter({
 
         // TODO: check if email already exists
 
-        const imageId = image ? crypto.randomUUID().slice(0, 36) : null;
+        const imageId = imageFileType ? generateFileId(imageFileType) : null;
 
         await ctx.db
           .update(users)
-          .set({ name, about, image: image ? imageId : undefined }) // TODO: does this delete or do nothing
+          .set({ name, about, image: imageFileType ? imageId : undefined }) // TODO: does this delete or do nothing
           .where(eq(users.id, id));
 
         return { id, name, about, imageId };

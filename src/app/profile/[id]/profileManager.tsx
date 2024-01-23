@@ -114,7 +114,7 @@ export default function ProfileManager(props: { userId: string }) {
       id: user.id,
       name: name,
       about: about,
-      image: !!profilePic,
+      imageFileType: profilePic?.type,
     });
   }
 

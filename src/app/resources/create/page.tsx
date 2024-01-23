@@ -91,6 +91,7 @@ export default function CreateResource() {
       title,
       description,
       link: resourceTypeFile ? undefined : link,
+      resourceFileType: resourceTypeFile ? file?.type : undefined,
       resourcePublic: visible,
     });
   }
