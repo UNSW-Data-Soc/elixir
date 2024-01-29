@@ -70,7 +70,7 @@ export default function CreateCompanyRoot() {
       name,
       websiteUrl,
       description,
-      logo: !!photo,
+      logoFileType: photo?.type,
     });
   }
 
