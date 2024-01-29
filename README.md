@@ -56,7 +56,7 @@ faster compilation times (but possibly buggy behaviour)
 To run drizzle-studio (i.e., to interact directly with the MySQL database)
 
 ```bash
-npx drizzle-kit studio
+npm run drizzle
 ```
 
 Open [https://local.drizzle.studio](https://local.drizzle.studio) with your browser.
