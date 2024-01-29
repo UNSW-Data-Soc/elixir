@@ -10,8 +10,6 @@ import { Octokit } from "@octokit/core";
 
 import { zfd } from "zod-form-data";
 
-export const config = {};
-
 const octokit = new Octokit({
   auth: env.GITHUB_STATIC_TOKEN,
 });
