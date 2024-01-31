@@ -6,23 +6,40 @@ import { env } from "@/env";
 
 import { isModerator } from "@/app/utils";
 
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-
-import { s3 } from "../s3";
+import { Octokit } from "@octokit/core";
 
 import { zfd } from "zod-form-data";
 
-const uploadFile = async (file: Blob, key: string) => {
-  const putCommand = new PutObjectCommand({
-    Bucket: env.S3_BUCKET_NAME,
-    Key: key,
-    Body: (await file.arrayBuffer()) as any, // * dumb typecast to make it not complain
-  });
+const octokit = new Octokit({
+  auth: env.GITHUB_STATIC_TOKEN,
+});
+
+const blobToBase64 = async (blob: Blob) => {
+  const buffer = Buffer.from(await blob.arrayBuffer());
+  return buffer.toString("base64");
+};
+
+const uploadFile = async (file: File, key: string) => {
   try {
-    const res = await s3.send(putCommand);
-    return res;
-  } catch (err) {
-    throw new Error("Error uploading file");
+    const content = await blobToBase64(file);
+
+    const res = await octokit.request(
+      `PUT /repos/unswdata/static/contents/elixir/${key}`,
+      {
+        owner: "unswdata",
+        repo: "static",
+        path: `/elixir/${key}`,
+        message: `uploaded content to key: ${key} at ${new Date().toISOString()}`,
+        content,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      },
+    );
+
+    console.log(res);
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -31,7 +48,6 @@ const schema = zfd.formData({
   key: zfd.text(),
 });
 
-// TODO: more accurate error messages / statuses
 export async function POST(req: Request) {
   const session = await getServerAuthSession();
 
@@ -40,15 +56,19 @@ export async function POST(req: Request) {
   }
 
   try {
+    // get form data
     const r = await req.formData();
+    const { file, key } = schema.parse(r);
+
     try {
-      const { file, key } = schema.parse(r);
+      // upload file to github
       await uploadFile(file, key);
     } catch (err) {
-      return new Response("Invalid form data", { status: 400 });
+      console.log(err);
+      return new Response(`Error uploading file: ${err}`, { status: 500 });
     }
   } catch (err) {
-    return new Response("Error uploading file", { status: 500 });
+    return new Response("Invalid form data", { status: 400 });
   }
 
   return NextResponse.json({});

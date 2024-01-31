@@ -10,60 +10,70 @@ export async function upload(file: Blob, key: string) {
 }
 
 /* the backend route to get a photo */
-function getImageRoute(key: string) {
-  return `/api/download?key=${key}`;
+function getImageRoute(key: string): string {
+  // return `/api/download?key=${key}`;
+  return `https://cdn.jsdelivr.net/gh/unswdata/static/elixir/${key}`;
 }
 
 /* EVENT CPs */
-export function getEventImageKey(eventId: string, imageId: string) {
+export function getEventImageKey(eventId: string, imageId: string): string {
   return `events/${eventId}/${imageId}`;
 }
 
-export function getEventImageRoute(eventId: string, imageId: string) {
+export function getEventImageRoute(eventId: string, imageId: string): string {
   return getImageRoute(getEventImageKey(eventId, imageId));
 }
 
 /* BLOG IMAGES */
-export function getBlogImageKey(blogId: string, imageId: string) {
+export function getBlogImageKey(blogId: string, imageId: string): string {
   return `blogs/${blogId}/${imageId}`;
 }
 
-export function getBlogImageRoute(blogId: string, imageId: string) {
+export function getBlogImageRoute(blogId: string, imageId: string): string {
   return getImageRoute(getBlogImageKey(blogId, imageId));
 }
 
 /* COMPANY LOGO */
-export function getCompanyImageKey(companyId: string, imageId: string) {
+export function getCompanyImageKey(companyId: string, imageId: string): string {
   return `companies/${companyId}/${imageId}`;
 }
 
-export function getCompanyImageRoute(companyId: string, imageId: string) {
+export function getCompanyImageRoute(
+  companyId: string,
+  imageId: string,
+): string {
   return getImageRoute(getCompanyImageKey(companyId, imageId));
 }
 
 /* COVER PHOTO */
-export function getCoverPhotoKey(imageId: string) {
+export function getCoverPhotoKey(imageId: string): string {
   return `coverphoto/${imageId}`;
 }
 
-export function getCoverPhotoRoute(imageId: string) {
+export function getCoverPhotoRoute(imageId: string): string {
   return getImageRoute(getCoverPhotoKey(imageId));
 }
 
 /* USER PROFILE PICTURES */
-export function getUserProfilePicKey(userId: string, imageId: string) {
+export function getUserProfilePicKey(userId: string, imageId: string): string {
   return `users/${userId}/${imageId}`;
 }
 
-export function getUserProfilePicRoute(userId: string, imageId: string) {
+export function getUserProfilePicRoute(
+  userId: string,
+  imageId: string,
+): string {
   return getImageRoute(getUserProfilePicKey(userId, imageId));
 }
 
 /* RESOURCE FILES */
-export function getResourceFileKey(resourceId: string, fileId: string) {
+export function getResourceFileKey(resourceId: string, fileId: string): string {
   return `resources/${resourceId}/${fileId}`;
 }
 
-export function getResourceFileRoute(resourceId: string, fileId: string) {
+export function getResourceFileRoute(
+  resourceId: string,
+  fileId: string,
+): string {
   return getImageRoute(getResourceFileKey(resourceId, fileId));
 }

@@ -72,7 +72,7 @@ export default function CreateJob() {
       description: description.trim(),
       body: body.trim(),
       companyId: company,
-      photo: false, // TODO: do we need a photo for job postings?
+      photoFileType: undefined, // TODO: do we need a photo for job postings?
       expiration: expirationTime,
       link: link.trim() === "" ? undefined : link.trim(),
     });

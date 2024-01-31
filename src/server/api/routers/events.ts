@@ -9,6 +9,8 @@ import { isModerator } from "@/app/utils";
 
 import { TRPCError } from "@trpc/server";
 
+import { generateFileId } from "../utils";
+
 import { and, count, desc, eq, gt, lte } from "drizzle-orm";
 import { z } from "zod";
 
@@ -133,7 +135,7 @@ export const eventRouter = createTRPCRouter({
         endTime: z.date(),
         location: z.string().optional().default("Earth"),
         link: z.string().optional().default(DEFAULT_EVENT_LINK),
-        photo: z.boolean(),
+        photoFileType: z.string().optional(),
       }),
     )
     .mutation(
@@ -147,7 +149,7 @@ export const eventRouter = createTRPCRouter({
           endTime,
           eventPublic,
           link,
-          photo,
+          photoFileType,
         },
       }) => {
         // check that startTime is before endTime
@@ -168,7 +170,7 @@ export const eventRouter = createTRPCRouter({
         }
 
         // generate image id
-        const photoId = photo ? crypto.randomUUID().slice(0, 36) : null;
+        const photoId = photoFileType ? generateFileId(photoFileType) : null;
 
         await ctx.db.insert(events).values({
           id,
