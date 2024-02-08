@@ -103,7 +103,7 @@ export default async function Home() {
             {futureEvents.map((event) => (
               <Link key={event.id} href={event.link ?? `/events`}>
                 <div
-                  className="group/eventCard relative flex aspect-[16/9] flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl"
+                  className="relative flex aspect-[16/9] flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#f5f5f5] align-baseline text-2xl shadow-xl transition-all hover:scale-[.98] active:scale-95"
                   key={event.id}
                 >
                   <Image
@@ -117,12 +117,6 @@ export default async function Home() {
                     height={Event_PHOTO_Y_PXL * 0.4}
                     width={Event_PHOTO_X_PXL * 0.4}
                   />
-                  <div className="absolute z-10 flex h-full w-full flex-col items-center justify-center bg-[#fffa] opacity-0 transition-all group-hover/eventCard:opacity-100">
-                    <p className="w-full text-center">{event.title}</p>
-                    <p className="w-full text-center text-xs">
-                      {dayjs(event.startTime).fromNow()}
-                    </p>
-                  </div>
                 </div>
               </Link>
             ))}
