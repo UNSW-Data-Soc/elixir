@@ -61,8 +61,10 @@ export const FYG_2024_LINK =
 export const CAREERS_GUIDE =
   "https://drive.google.com/file/d/1-y2Uv3YahnbM9O8Xp1knhRs2qTSDTBJ5/preview";
 
+// export const DATASOC_REGISTRATION_LINK =
+//   "https://docs.google.com/forms/d/e/1FAIpQLSfEJZ5-mx3yPrnI5ArorJripmcqRDfGSl2QJ-W1HZ7KKEsWHQ/viewform";
 export const DATASOC_REGISTRATION_LINK =
-  "https://docs.google.com/forms/d/e/1FAIpQLSfEJZ5-mx3yPrnI5ArorJripmcqRDfGSl2QJ-W1HZ7KKEsWHQ/viewform";
+  "https://docs.google.com/forms/d/e/1FAIpQLSe7ZarJ91GWovAAYDiRIJgXS-9RBuFOJLRQ1yZh8rjolhey-A/viewform";
 export const NEWSLETTER_ARCHIVE_LINK =
   "https://us19.campaign-archive.com/home/?u=8dc568d0db37b26ed75ba4d94&id=01f8128da2";
 export const DATASOC_CONSTITUION_LINK =

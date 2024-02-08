@@ -57,6 +57,7 @@ export default function Contact() {
                 the link below!
               </p>
               <LinkButton
+                target="_blank"
                 to={DATASOC_REGISTRATION_LINK}
                 text="Join Us!"
                 className="text-bold bg-[#2f71ff] p-6 text-lg text-white"
@@ -113,19 +114,35 @@ function SocialIcons() {
   return (
     <>
       <div className="flex items-start justify-start gap-3 align-baseline text-[#b4b6b7]">
-        <Link href={DATASOC_FACEBOOK_LINK} className="flex gap-1">
+        <Link
+          target="_blank"
+          href={DATASOC_FACEBOOK_LINK}
+          className="flex gap-1"
+        >
           <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
         </Link>
-        <Link href={DATASOC_INSTAGRAM_LINK} className="flex gap-1">
+        <Link
+          target="_blank"
+          href={DATASOC_INSTAGRAM_LINK}
+          className="flex gap-1"
+        >
           <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
         </Link>
-        <Link href={DATASOC_LINKEDIN_LINK} className="flex gap-1">
+        <Link
+          target="_blank"
+          href={DATASOC_LINKEDIN_LINK}
+          className="flex gap-1"
+        >
           <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
         </Link>
-        <Link href={DATASOC_GITHUB_LINK} className="flex gap-1">
+        <Link target="_blank" href={DATASOC_GITHUB_LINK} className="flex gap-1">
           <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
         </Link>
-        <Link href={DATASOC_YOUTUBE_LINK} className="flex gap-1">
+        <Link
+          target="_blank"
+          href={DATASOC_YOUTUBE_LINK}
+          className="flex gap-1"
+        >
           <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
         </Link>
       </div>

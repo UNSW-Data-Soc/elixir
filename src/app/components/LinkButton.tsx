@@ -8,9 +8,11 @@ export default function LinkButton(props: {
   to: string;
   text: string;
   className: string;
+  target?: string;
 }) {
   return (
     <Button
+      target={props.target}
       as={Link}
       color="primary"
       href={props.to}
