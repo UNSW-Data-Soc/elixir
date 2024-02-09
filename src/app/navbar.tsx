@@ -404,6 +404,7 @@ function DesktopNavbarDropdown({ item }: { item: Required<MenuItem> }) {
         </DropdownTrigger>
         <DropdownMenu
           items={[{ name: item.name, link: item.link }, ...item.subItems]}
+          aria-label="navbar actions"
         >
           {(subItem) => (
             <DropdownItem
