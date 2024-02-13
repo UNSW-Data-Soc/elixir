@@ -109,6 +109,12 @@ export default function Footer() {
         <p className="font-bold uppercase tracking-wide text-[#444e5f]">
           Internals
         </p>
+        <Link
+          href={"/about/tech"}
+          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+        >
+          Tech
+        </Link>
         <LoginButton />
       </div>
     </footer>
