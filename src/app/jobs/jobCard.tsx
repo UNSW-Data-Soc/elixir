@@ -44,7 +44,7 @@ export default function JobCard({
     <div className="relative">
       <Link
         href={link}
-        className={`group flex aspect-video flex-col gap-1 rounded-xl border bg-white p-5 transition-all hover:shadow-md ${
+        className={`group flex h-full flex-col justify-between gap-1 rounded-xl border bg-white p-5 transition-all hover:shadow-md ${
           job.public || !moderatorView ? "opacity-100" : "opacity-30"
         }`}
       >
@@ -70,7 +70,7 @@ export default function JobCard({
           }`}
         >
           <h3 className="text-xl font-semibold">{job.title}</h3>
-          <div className="flex flex-row justify-between gap-8">
+          <div className="flex flex-row justify-between gap-4 sm:gap-8">
             <p>{company.name}</p>
             <p className="text-default-500">
               Posted {dayjs(job.createdTime).fromNow()}
