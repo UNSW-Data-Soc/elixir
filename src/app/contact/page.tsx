@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import LinkButton from "../components/LinkButton";
@@ -20,8 +19,6 @@ import {
   DATASOC_REGISTRATION_LINK,
   DATASOC_YOUTUBE_LINK,
 } from "../utils";
-
-const ContactUsQuoteBackground = "/contact_us_quote_background.png";
 
 const SOCIAL_HEIGHT = 25;
 const SOCIAL_WIDTH = 25;
@@ -89,26 +86,6 @@ export default function Contact() {
     </>
   );
 }
-
-// function Quote() {
-//   return (
-//     <div className="relative w-full">
-//       <Image
-//         src={ContactUsQuoteBackground}
-//         alt="binary numbers on a blue background"
-//         className="h-auto w-full"
-//         width={480}
-//         height={100}
-//       />
-//       <div className="absolute inset-0 flex flex-col items-center justify-center">
-//         <div className="text-xs font-bold text-white sm:text-lg">
-//           &quot;The world is one big data problem.&quot;
-//         </div>
-//         <div className="text-xs text-white sm:text-lg">Andrew McAfee</div>
-//       </div>
-//     </div>
-//   );
-// }
 
 function SocialIcons() {
   return (
