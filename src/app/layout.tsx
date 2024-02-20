@@ -15,7 +15,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "UNSW DataSoc",
-  description: "Official website of the Data Science Society of UNSW",
+  description:
+    "Welcome to the Data Science Society of UNSW! DataSoc aims to become Australia's leading student-run society platform in assisting students on achieving their data science career goals. As the first undergraduate data science society in Australia, we strive to create data science related opportunities for students in their studies and careers, whilst fostering a sense of community and diversity among UNSW data science students.",
 };
 
 export default function RootLayout({
