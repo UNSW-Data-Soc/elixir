@@ -6,10 +6,12 @@ import { api } from "@/trpc/server";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { getFirstImageUrl } from "./blogs/utils";
+import LinkButton from "./components/LinkButton";
 import BlogImageHomePage from "./components/blogImageHomePage";
 import {
   COMPANY_PHOTO_X_PXL,
   COMPANY_PHOTO_Y_PXL,
+  DATASOC_REGISTRATION_LINK,
   Event_PHOTO_X_PXL,
   Event_PHOTO_Y_PXL,
 } from "./utils";
@@ -70,6 +72,12 @@ export default async function Home() {
             </div>
             <div className="pt-2 text-center text-3xl sm:text-left">@ UNSW</div>
           </div>
+          <LinkButton
+            target="_blank"
+            to={DATASOC_REGISTRATION_LINK}
+            text="Join Us!"
+            className="text-bold bg-[#155bf2] p-7 text-2xl text-white"
+          />
         </div>
         <a
           href="#main"
@@ -91,7 +99,7 @@ export default async function Home() {
           </p>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center gap-7 bg-[#b6e2ff] p-12 py-24 align-baseline">
+      <div className="flex flex-col items-center justify-center gap-7 bg-[#b6e2ff] p-5 py-16 align-baseline sm:p-12 sm:py-24">
         <h3 className="w-full text-center text-3xl">Upcoming Events</h3>
         {futureEvents.length === 0 && (
           <p className="w-full text-center text-xl font-light">
@@ -99,7 +107,7 @@ export default async function Home() {
           </p>
         )}
         {futureEvents.length > 0 && (
-          <div className="flex flex-row gap-8 p-3">
+          <div className="flex flex-row flex-wrap items-center justify-center gap-8 p-3">
             {futureEvents.map((event) => (
               <Link key={event.id} href={event.link ?? `/events`}>
                 <div
@@ -123,7 +131,7 @@ export default async function Home() {
           </div>
         )}
       </div>
-      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-12 py-24 align-baseline">
+      <div className="flex flex-col items-center justify-center gap-7 bg-[#fff] p-5 py-16 align-baseline sm:p-12 sm:py-24">
         <h3 className="w-full text-center text-3xl">Recent Blog Posts</h3>
         {blogs.length === 0 && (
           <p className="w-full text-center font-light">No blogs posts yet!</p>
