@@ -41,14 +41,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ---
 
-You can also edit the `package.json` file to add the `--turbo` flag for much
-faster compilation times (but possibly buggy behaviour)
+For faster compilation times (but possibly buggy behaviour), you can use:
 
-```json
-"scripts": {
-    "dev": "next dev --turbo",
-    ...
-}
+```bash
+npm run turbo
 ```
 
 ---
@@ -66,7 +62,7 @@ Open [https://local.drizzle.studio](https://local.drizzle.studio) with your brow
 To update the SQL schema, edit the `schema.ts` file and run
 
 ```bash
-npx drizzle-kit push:msql
+npx drizzle-kit push:mysql
 ```
 
 to push the changes to PlanetScale.
