@@ -24,7 +24,7 @@ export default function jobsList({ jobs: initJobs }: { jobs: Job[] }) {
           No jobs listed for now. Check back later!
         </p>
       ) : (
-        <div className="flex flex-row">
+        <div className="flex flex-row flex-wrap items-center justify-center gap-8">
           {jobs.map((j) => (
             <JobCard key={j.jobPosting.id} job={j} />
           ))}
