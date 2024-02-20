@@ -70,7 +70,7 @@ export default function JobCard({
           }`}
         >
           <h3 className="text-xl font-semibold">{job.title}</h3>
-          <div className="flex flex-row justify-between gap-1">
+          <div className="flex flex-row justify-between gap-8">
             <p>{company.name}</p>
             <p className="text-default-500">
               Posted {dayjs(job.createdTime).fromNow()}
