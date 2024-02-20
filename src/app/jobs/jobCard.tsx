@@ -44,7 +44,7 @@ export default function JobCard({
     <div className="relative">
       <Link
         href={link}
-        className={`group flex flex-col gap-1 rounded-xl border bg-white p-5 transition-all hover:shadow-md ${
+        className={`group flex aspect-video flex-col gap-1 rounded-xl border bg-white p-5 transition-all hover:shadow-md ${
           job.public || !moderatorView ? "opacity-100" : "opacity-30"
         }`}
       >
@@ -54,13 +54,13 @@ export default function JobCard({
             height={COMPANY_PHOTO_Y_PXL}
             width={COMPANY_PHOTO_X_PXL}
             alt={`${company.name} logo`}
-            className={`mx-auto block max-w-[280px] transition-all ${
+            className={`mx-auto block w-[280px] transition-all ${
               showJobBody ? "group-hover:opacity-10" : ""
             } sm:max-w-xs`}
           />
         )}
         {showJobBody && (
-          <div className="absolute bottom-5 left-5 right-5 top-5 mx-auto flex items-center justify-center opacity-0 transition-all group-hover:opacity-100">
+          <div className="absolute bottom-5 left-5 right-5 top-5 mx-auto overflow-y-auto px-2 opacity-0 transition-all group-hover:opacity-100">
             <p className="text-center">{job.body}</p>
           </div>
         )}
