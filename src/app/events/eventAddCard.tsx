@@ -21,5 +21,7 @@ export default function EventAddCard() {
     return <></>;
   }
 
-  return <AddCard onPress={() => router.push("/events/create")} />;
+  return (
+    <AddCard onPress={() => router.push("/events/create")} text="Add Event" />
+  );
 }

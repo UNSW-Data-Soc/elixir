@@ -12,7 +12,7 @@ export default function Events() {
         </p>
       </header>
       <div className="flex w-full flex-wrap justify-center gap-5 p-10">
-        <div className="absolute bottom-5 right-5 z-50">
+        <div className="fixed bottom-5 right-5 z-50">
           <EventAddCard />
         </div>
         <EventList />

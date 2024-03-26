@@ -1,19 +1,16 @@
 import Image from "next/image";
-import Link from "next/link";
 
-import { getServerAuthSession } from "@/server/auth";
+import { useSession } from "next-auth/react";
 
 import { api } from "@/trpc/server";
+import { RouterOutputs } from "@/trpc/shared";
 
-import { getEventImageRoute } from "@/app/utils/s3";
+import { PastEventCard } from "./eventCard";
+import EventCard from "./eventCard2";
 
-import { Event_PHOTO_X_PXL, Event_PHOTO_Y_PXL } from "../utils";
-import { EventsCard, PastEventCard } from "./eventCard";
-import { DEFAULT_EVENT_IMAGE } from "./eventCard";
+type Event = RouterOutputs["events"]["getAll"]["upcoming"][number];
 
 export default async function EventList() {
-  const session = await getServerAuthSession();
-
   const { upcoming, past } = await api.events.getAll.query();
 
   return (
@@ -26,9 +23,9 @@ export default async function EventList() {
         </div>
       )}
       {upcoming.length > 0 && (
-        <div className="flex flex-row flex-wrap justify-center gap-5">
+        <div className="flex flex-col flex-wrap justify-center gap-5">
           {upcoming.map((event) => (
-            <EventsCard key={event.id} event={event} />
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       )}
