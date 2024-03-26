@@ -24,7 +24,7 @@ export const sponsorshipsRouter = createTRPCRouter({
       const now = new Date();
 
       if (publicOnly || !isModerator(ctx.session)) {
-        return await ctx.db
+        const spons = await ctx.db
           .select()
           .from(sponsorships)
           .innerJoin(companies, eq(sponsorships.company, companies.id))
@@ -37,15 +37,24 @@ export const sponsorshipsRouter = createTRPCRouter({
           .orderBy(
             sql`case ${sponsorships.type} when 'major' then 1 when 'partner' then 2 else 3 end, ${sponsorships.order} desc`,
           );
+        return spons.map((s) => ({
+          company: s.companies,
+          sponsorship: s.sponsorships,
+        }));
       }
 
-      return await ctx.db
+      const spons = await ctx.db
         .select()
         .from(sponsorships)
         .innerJoin(companies, eq(sponsorships.company, companies.id))
         .orderBy(
           sql`case ${sponsorships.type} when 'major' then 1 when 'partner' then 2 else 3 end, ${sponsorships.order} desc`,
         );
+
+      return spons.map((s) => ({
+        company: s.companies,
+        sponsorship: s.sponsorships,
+      }));
     }),
 
   create: moderatorProcedure

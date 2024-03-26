@@ -1,10 +1,12 @@
-import { users, sessions, verificationTokens } from "./schema";
-import { and, eq } from "drizzle-orm";
-import { MySqlDatabase } from "drizzle-orm/mysql-core";
 import { Adapter } from "next-auth/adapters";
 
+import { sessions, users, verificationTokens } from "./schema";
+
+import { and, eq } from "drizzle-orm";
+import { LibSQLDatabase } from "drizzle-orm/libsql";
+
 export function DrizzleAdapter(
-  client: InstanceType<typeof MySqlDatabase>,
+  client: InstanceType<typeof LibSQLDatabase>,
 ): Adapter {
   return {
     // async createUser(data) {

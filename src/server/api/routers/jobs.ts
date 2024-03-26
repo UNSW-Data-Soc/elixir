@@ -22,18 +22,27 @@ import { z } from "zod";
 export const jobsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     if (isModerator(ctx.session)) {
-      return await ctx.db
+      const jobs = await ctx.db
         .select()
         .from(jobPostings)
         .innerJoin(companies, eq(jobPostings.company, companies.id))
         .orderBy(desc(jobPostings.createdTime));
+      return jobs.map((j) => ({
+        jobPosting: j.jobPostings,
+        company: j.companies,
+      }));
     }
-    return await ctx.db
+
+    const jobs = await ctx.db
       .select()
       .from(jobPostings)
       .innerJoin(companies, eq(jobPostings.company, companies.id))
       .where(eq(jobPostings.public, true))
       .orderBy(desc(jobPostings.createdTime));
+    return jobs.map((j) => ({
+      jobPosting: j.jobPostings,
+      company: j.companies,
+    }));
   }),
 
   create: moderatorProcedure

@@ -67,7 +67,7 @@ export default async function UsersList() {
               {users
                 .filter(({ userYearsActive }) => userYearsActive.year === year)
                 .map((user) => (
-                  <UserCard user={user} key={user.user.id} />
+                  <UserCard user={user} key={user.users.id} />
                 ))}
             </div>
           </div>
@@ -78,7 +78,7 @@ export default async function UsersList() {
 }
 
 function UserCard({
-  user: { user, userYearsActive: yearsActive },
+  user: { users: user, userYearsActive: yearsActive },
 }: {
   user: User;
 }) {
@@ -113,7 +113,7 @@ function UserCard({
   );
 }
 
-function UserInfo({ user }: { user: User["user"] }) {
+function UserInfo({ user }: { user: User["users"] }) {
   return (
     <div className="flex flex-row gap-2">
       {/* <Tooltip content={<p>{user.email}</p>} placement="bottom"> */}
