@@ -8,15 +8,8 @@ const envSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
 
-  DATABASE_HOST: z.string().min(1),
-  DATABASE_USERNAME: z.string().min(1),
-  DATABASE_PASSWORD: z.string().min(1),
-  DATABASE_URL: z.string().min(1),
-
-  S3_USER: z.string().min(1),
-  S3_PASSWORD: z.string().min(1),
-  S3_BUCKET_NAME: z.string().min(1),
-  S3_REGION_NAME: z.string().min(1),
+  TURSO_DATABASE_URL: z.string().min(1),
+  TURSO_AUTH_TOKEN: z.string().min(1),
 
   SECRET_KEY: z.string().min(1),
 

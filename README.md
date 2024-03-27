@@ -59,13 +59,21 @@ Open [https://local.drizzle.studio](https://local.drizzle.studio) with your brow
 
 ---
 
-To update the SQL schema, edit the `schema.ts` file and run
+To update the db schema, edit the `schema.ts` file and run
 
 ```bash
-npx drizzle-kit push:mysql
+npx drizzle-kit generate:sqlite
 ```
 
-to push the changes to PlanetScale.
+to generate the relevant SQL migration in `./db/`
+
+After checking the migration is appropriate, you can then use
+
+```bash
+turso db shell elixir
+```
+
+and `.read` to update the elixir database schema.
 
 ## Contributors
 

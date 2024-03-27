@@ -24,6 +24,7 @@ const DEFAULT_EVENT_LINK = ""; // TODO: change to default to website link
 /** HELPER FUNCTIONS **/
 const createSlug = (str: string) =>
   str
+    .replace(/[^A-Za-z0-9 ]/g, "") // remove non-alphanumeric characters
     .replace(/([a-z])([A-Z])/g, "$1-$2")
     .replace(/[\s_]+/g, "-")
     .toLowerCase()

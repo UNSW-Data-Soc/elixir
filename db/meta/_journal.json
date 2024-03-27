@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1711506458751,
+      "tag": "0000_parched_adam_warlock",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,20 +1,20 @@
-import { connect } from "@planetscale/database";
-import { drizzle } from "drizzle-orm/planetscale-serverless";
-
 import { env } from "@/env";
-import * as schema from "./schema";
-// import { hash } from "@/server/auth";
+
+import { createClient } from "@libsql/client";
+
+import { drizzle } from "drizzle-orm/libsql";
+
+// import * as schema from "./schema";
 
 export const db = drizzle(
-  connect({
-    // host: env.DATABASE_HOST,
-    // username: env.DATABASE_USERNAME,
-    // password: env.DATABASE_PASSWORD,
-    url: env.DATABASE_URL,
+  createClient({
+    authToken: env.TURSO_AUTH_TOKEN,
+    url: env.TURSO_DATABASE_URL,
   }),
-  { schema },
 );
 
+// import { hash } from "@/server/auth";
+//
 // if (env.NODE_ENV === "development") {
 //   db.insert(schema.users).values({
 //     id: crypto.randomUUID(),
