@@ -59,6 +59,22 @@ Open [https://local.drizzle.studio](https://local.drizzle.studio) with your brow
 
 ---
 
+To update the db schema, edit the `schema.ts` file and run
+
+```bash
+npx drizzle-kit generate:sqlite
+```
+
+to generate the relevant SQL migration in `./db/`
+
+After checking the migration is appropriate, you can then use
+
+```bash
+turso db shell elixir
+```
+
+and `.read` to update the elixir database schema.
+
 ## Contributors
 
 2024: Aditya Muthukattu, Josh Lim
