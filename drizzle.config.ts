@@ -10,5 +10,5 @@ export default {
     authToken: env.TURSO_AUTH_TOKEN,
   },
   tablesFilter: ["elixir_*"],
-  out: "./hahaha",
+  out: "./db",
 } satisfies Config;

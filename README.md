@@ -59,14 +59,6 @@ Open [https://local.drizzle.studio](https://local.drizzle.studio) with your brow
 
 ---
 
-To update the SQL schema, edit the `schema.ts` file and run
-
-```bash
-npx drizzle-kit push:mysql
-```
-
-to push the changes to PlanetScale.
-
 ## Contributors
 
 2024: Aditya Muthukattu, Josh Lim
