@@ -48,8 +48,6 @@ export async function EventsCard(props: { event: Event }) {
   const endTime = dayjs(props.event.endTime);
   const inFuture = endTime.isAfter(Date.now());
 
-  console.log(startTime.format("HH:mm:ss"), endTime.format("HH:mm:ss"));
-
   return (
     <>
       <EventDescription event={props.event}>
