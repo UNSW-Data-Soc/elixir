@@ -24,7 +24,7 @@ const SOCIAL_WIDTH = 25;
 export default function Footer() {
   return (
     <footer className="flex flex-wrap items-start justify-between gap-10 bg-[#f5f5f5] px-7 py-7 align-baseline md:px-12 md:py-12 lg:px-24">
-      <div className="align-start flex flex-grow-[2] flex-col items-start justify-start gap-6 pr-5 text-sm text-[#b4b6b7] sm:w-2/5 md:pr-10">
+      <div className="align-start flex flex-grow-[2] flex-col items-start justify-start gap-6 pr-5 text-sm text-[#808482] sm:w-2/5 md:pr-10">
         <Image
           src="/logo.png"
           width={118}
@@ -42,7 +42,7 @@ export default function Footer() {
           and future.
         </p>
       </div>
-      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#b4b6b7]">
+      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#808482]">
         <p className="font-bold uppercase tracking-wide text-[#444e5f]">
           DataSoc
         </p>
@@ -59,48 +59,48 @@ export default function Footer() {
         ].map(({ name, href }) => (
           <Link
             key={name}
-            className="text-[#aaa] transition-all hover:text-[#888]"
+            className="text-[#808482] transition-all hover:text-[#5c5f5d]"
             href={href}
           >
             {name}
           </Link>
         ))}
       </div>
-      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#b4b6b7]">
+      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#808482]">
         <p className="font-bold uppercase tracking-wide text-[#444e5f]">
           Get In Touch
         </p>
         <Link
           href={DATASOC_FACEBOOK_LINK}
-          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
         >
           <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           Facebook
         </Link>
         <Link
           href={DATASOC_INSTAGRAM_LINK}
-          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
         >
           <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           Instagram
         </Link>
         <Link
           href={DATASOC_LINKEDIN_LINK}
-          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
         >
           <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           LinkedIn
         </Link>
         <Link
           href={DATASOC_GITHUB_LINK}
-          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
         >
           <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           GitHub
         </Link>
         <Link
           href={DATASOC_YOUTUBE_LINK}
-          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
         >
           <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           YouTube
@@ -111,7 +111,7 @@ export default function Footer() {
         </p>
         <Link
           href={"/about/tech"}
-          className="flex gap-2 text-[#aaa] transition-all hover:text-[#888]"
+          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
         >
           Tech
         </Link>
