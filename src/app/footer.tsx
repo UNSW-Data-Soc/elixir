@@ -23,10 +23,10 @@ const SOCIAL_WIDTH = 25;
 
 export default function Footer() {
   return (
-    <footer className="flex flex-wrap items-start justify-between gap-10 bg-[#f5f5f5] px-7 py-7 align-baseline md:px-12 md:py-12 lg:px-24">
-      <div className="align-start flex flex-grow-[2] flex-col items-start justify-start gap-6 pr-5 text-sm text-[#808482] sm:w-2/5 md:pr-10">
+    <footer className="flex flex-wrap items-start justify-between gap-10 bg-[#444e5f] px-7 py-7 align-baseline md:px-12 md:py-12 lg:px-24">
+      <div className="align-start flex flex-grow-[2] flex-col items-start justify-start gap-6 pr-5 text-sm text-[#FFFFFF] sm:w-2/5 md:pr-10">
         <Image
-          src="/logo.png"
+          src="/logo_white.png"
           width={118}
           height={32}
           className="h-[2rem] w-auto"
@@ -42,8 +42,8 @@ export default function Footer() {
           and future.
         </p>
       </div>
-      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#808482]">
-        <p className="font-bold uppercase tracking-wide text-[#444e5f]">
+      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#FFFFFF]">
+        <p className="font-bold uppercase tracking-wide text-[#FFFFFF]">
           DataSoc
         </p>
         {[
@@ -59,63 +59,63 @@ export default function Footer() {
         ].map(({ name, href }) => (
           <Link
             key={name}
-            className="text-[#808482] transition-all hover:text-[#5c5f5d]"
+            className="text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
             href={href}
           >
             {name}
           </Link>
         ))}
       </div>
-      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#808482]">
-        <p className="font-bold uppercase tracking-wide text-[#444e5f]">
+      <div className="flex flex-grow-[1] flex-col items-start justify-start gap-1 align-baseline text-[#d4d4d4]">
+        <p className="font-bold uppercase tracking-wide text-[#FFFFFF]">
           Get In Touch
         </p>
         <Link
           href={DATASOC_FACEBOOK_LINK}
-          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
+          className="flex gap-2 text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
         >
           <FacebookIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           Facebook
         </Link>
         <Link
           href={DATASOC_INSTAGRAM_LINK}
-          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
+          className="flex gap-2 text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
         >
           <InstagramIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           Instagram
         </Link>
         <Link
           href={DATASOC_LINKEDIN_LINK}
-          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
+          className="flex gap-2 text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
         >
           <LinkedInIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           LinkedIn
         </Link>
         <Link
           href={DATASOC_GITHUB_LINK}
-          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
+          className="flex gap-2 text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
         >
           <GitHubIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           GitHub
         </Link>
         <Link
           href={DATASOC_YOUTUBE_LINK}
-          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
+          className="flex gap-2 text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
         >
           <YouTubeIcon width={SOCIAL_WIDTH} height={SOCIAL_HEIGHT} />
           YouTube
         </Link>
         <div className="h-4"></div>
-        <p className="font-bold uppercase tracking-wide text-[#444e5f]">
+        <p className="font-bold uppercase tracking-wide text-[#FFFFFF]">
           Internals
         </p>
         <Link
           href={"/about/tech"}
-          className="flex gap-2 text-[#808482] transition-all hover:text-[#5c5f5d]"
+          className="flex gap-2 text-[#d4d4d4] transition-all hover:text-[#FFFFFF]"
         >
           Tech
         </Link>
-        <LoginButton />
+        <LoginButton/>
       </div>
     </footer>
   );
