@@ -59,6 +59,8 @@ export const FYG_2024_LINK =
   "https://drive.google.com/file/d/1D6m4pJouKCBALRmy2kAFpMcdnJwS6lyH/preview";
 
 export const CAREERS_GUIDE =
+  "https://drive.google.com/file/d/1iBsJdAYltRyh9b3eBlt9pkXC1gPPwo1c/preview";
+export const CAREERS_GUIDE_2021 =
   "https://drive.google.com/file/d/1-y2Uv3YahnbM9O8Xp1knhRs2qTSDTBJ5/preview";
 
 // export const DATASOC_REGISTRATION_LINK =
