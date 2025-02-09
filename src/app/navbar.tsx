@@ -129,8 +129,8 @@ const menuItems: MenuItem[] = [
   },
   { name: "Sponsors", link: "/sponsorships" },
   { name: "Events", link: "/events" },
-  { name: "Jobs Board", link: "/jobs" },
-  { name: "Blogs", link: "/blogs" },
+  // { name: "Jobs Board", link: "/jobs" },
+  // { name: "Blogs", link: "/blogs" },
   { name: "Resources", link: "/resources" },
   {
     name: "Publications",
