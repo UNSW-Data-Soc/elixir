@@ -3,11 +3,11 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 import { authRouter } from "./routers/auth";
-import { blogRouter } from "./routers/blogs";
+// import { blogRouter } from "./routers/blogs";
 import { companiesRouter } from "./routers/companies";
 import { coverPhotoRouter } from "./routers/coverphoto";
 import { eventRouter } from "./routers/events";
-import { jobsRouter } from "./routers/jobs";
+// import { jobsRouter } from "./routers/jobs";
 import { resourcesRouter } from "./routers/resources";
 import { sponsorshipsRouter } from "./routers/sponsorships";
 import { tagsRouter } from "./routers/tags";
@@ -21,11 +21,11 @@ export const appRouter = createTRPCRouter({
     throw new TRPCError({ code: "BAD_REQUEST", message: "Bad greeting" });
   }),
   auth: authRouter,
-  blogs: blogRouter,
+  // blogs: blogRouter,
   companies: companiesRouter,
   coverPhotos: coverPhotoRouter,
   events: eventRouter,
-  jobs: jobsRouter,
+  // jobs: jobsRouter,
   resources: resourcesRouter,
   sponsorships: sponsorshipsRouter,
   tags: tagsRouter,
