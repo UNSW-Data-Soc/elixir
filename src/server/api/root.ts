@@ -6,8 +6,8 @@ import { authRouter } from "./routers/auth";
 // import { blogRouter } from "./routers/blogs";
 import { companiesRouter } from "./routers/companies";
 import { coverPhotoRouter } from "./routers/coverphoto";
-import { eventRouter } from "./routers/events";
-// import { jobsRouter } from "./routers/jobs";
+// import { eventRouter } from "./routers/events";
+import { jobsRouter } from "./routers/jobs";
 import { resourcesRouter } from "./routers/resources";
 import { sponsorshipsRouter } from "./routers/sponsorships";
 import { tagsRouter } from "./routers/tags";
@@ -24,8 +24,8 @@ export const appRouter = createTRPCRouter({
   // blogs: blogRouter,
   companies: companiesRouter,
   coverPhotos: coverPhotoRouter,
-  events: eventRouter,
-  // jobs: jobsRouter,
+  // events: eventRouter,
+  jobs: jobsRouter,
   resources: resourcesRouter,
   sponsorships: sponsorshipsRouter,
   tags: tagsRouter,
